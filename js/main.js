@@ -1,63 +1,107 @@
-import { promptEnhancer } from './promptEnhancer.js';
+import { PromptEnhancer } from './features/promptEnhancer.js';
+import { promptTypes } from './features/promptTypes.js';
 
-document.addEventListener('DOMContentLoaded', () => {
-    // Get DOM elements
-    const originalPrompt = document.getElementById('originalPrompt');
-    const promptType = document.getElementById('promptType');
-    const generateBtn = document.getElementById('generateBtn');
-    const enhancedPrompt = document.getElementById('enhancedPrompt');
-    const copyBtn = document.getElementById('copyBtn');
-    const saveBtn = document.getElementById('saveBtn');
-    const improvementsList = document.getElementById('improvementsList');
+class PromptUI {
+    constructor() {
+        this.enhancer = new PromptEnhancer();
+        this.initializeElements();
+        this.attachEventListeners();
+        this.loadSavedPrompts();
+    }
 
-    // Initialize local storage
-    const savedPrompts = JSON.parse(localStorage.getItem('savedPrompts') || '[]');
+    initializeElements() {
+        this.elements = {
+            originalPrompt: document.getElementById('originalPrompt'),
+            promptType: document.getElementById('promptType'),
+            generateBtn: document.getElementById('generateBtn'),
+            enhancedPrompt: document.getElementById('enhancedPrompt'),
+            copyBtn: document.getElementById('copyBtn'),
+            saveBtn: document.getElementById('saveBtn'),
+            improvementsList: document.getElementById('improvementsList')
+        };
 
-    // Generate enhanced prompt
-    generateBtn.addEventListener('click', () => {
-        const prompt = originalPrompt.value.trim();
+        // Initialize type selector
+        this.elements.promptType.innerHTML = Object.entries(promptTypes)
+            .map(([value, type]) => `<option value="${value}">${type.name}</option>`)
+            .join('');
+    }
+
+    attachEventListeners() {
+        // Generate enhanced prompt
+        this.elements.generateBtn.addEventListener('click', () => this.generateEnhancedPrompt());
+
+        // Copy enhanced prompt
+        this.elements.copyBtn.addEventListener('click', () => this.copyToClipboard());
+
+        // Save prompt
+        this.elements.saveBtn.addEventListener('click', () => this.savePrompt());
+
+        // Handle textarea auto-resize
+        this.elements.originalPrompt.addEventListener('input', (e) => this.autoResizeTextarea(e.target));
+
+        // Handle prompt type change
+        this.elements.promptType.addEventListener('change', () => this.handleTypeChange());
+    }
+
+    async generateEnhancedPrompt() {
+        const prompt = this.elements.originalPrompt.value.trim();
         if (!prompt) {
-            alert('Please enter a prompt first.');
+            this.showMessage('Please enter a prompt first.', 'error');
             return;
         }
 
-        const type = promptType.value;
-        const { enhancedPrompt: newPrompt, improvements } = promptEnhancer.enhance(prompt, type);
+        const type = this.elements.promptType.value;
+        const options = this.getOptionsForType(type);
 
-        // Update UI with enhanced prompt
-        enhancedPrompt.innerHTML = `<pre>${newPrompt}</pre>`;
-        
-        // Update improvements list
-        improvementsList.innerHTML = improvements
-            .map(improvement => `<li>${improvement}</li>`)
-            .join('');
+        try {
+            const { enhancedPrompt, improvements, wasModified } = this.enhancer.enhance(prompt, type, options);
 
-        // Show success message
-        generateBtn.innerHTML = '<i class="fas fa-check"></i> Enhanced!';
-        setTimeout(() => {
-            generateBtn.innerHTML = '<i class="fas fa-magic"></i> Enhance Prompt';
-        }, 2000);
-    });
+            // Update UI
+            this.elements.enhancedPrompt.innerHTML = `<pre>${enhancedPrompt}</pre>`;
+            this.elements.improvementsList.innerHTML = improvements
+                .map(improvement => `<li>${improvement}</li>`)
+                .join('');
 
-    // Copy enhanced prompt
-    copyBtn.addEventListener('click', () => {
-        const promptText = enhancedPrompt.textContent;
-        navigator.clipboard.writeText(promptText).then(() => {
-            copyBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
-            setTimeout(() => {
-                copyBtn.innerHTML = '<i class="fas fa-copy"></i> Copy';
-            }, 2000);
-        });
-    });
+            // Show success message
+            this.updateButtonState(this.elements.generateBtn, 'Enhanced!', 'fa-check');
+        } catch (error) {
+            console.error('Enhancement error:', error);
+            this.showMessage('Failed to enhance prompt.', 'error');
+        }
+    }
 
-    // Save prompt
-    saveBtn.addEventListener('click', () => {
-        const originalText = originalPrompt.value;
-        const enhancedText = enhancedPrompt.textContent;
-        const type = promptType.value;
+    getOptionsForType(type) {
+        const typeConfig = promptTypes[type];
+        const options = {};
+
+        // Add type-specific options
+        if (type === 'image') {
+            options.quality = true;
+            options.style = true;
+        } else if (type === 'chat') {
+            options.tone = true;
+        }
+
+        return options;
+    }
+
+    async copyToClipboard() {
+        const promptText = this.elements.enhancedPrompt.textContent;
+        try {
+            await navigator.clipboard.writeText(promptText);
+            this.updateButtonState(this.elements.copyBtn, 'Copied!', 'fa-check');
+        } catch (error) {
+            this.showMessage('Failed to copy to clipboard.', 'error');
+        }
+    }
+
+    savePrompt() {
+        const originalText = this.elements.originalPrompt.value;
+        const enhancedText = this.elements.enhancedPrompt.textContent;
+        const type = this.elements.promptType.value;
 
         if (!enhancedText || enhancedText.includes('Your enhanced prompt will appear here...')) {
-            alert('Please generate an enhanced prompt first.');
+            this.showMessage('Please generate an enhanced prompt first.', 'error');
             return;
         }
 
@@ -68,25 +112,47 @@ document.addEventListener('DOMContentLoaded', () => {
             timestamp: new Date().toISOString()
         };
 
+        this.saveToLocalStorage(promptData);
+        this.updateButtonState(this.elements.saveBtn, 'Saved!', 'fa-check');
+    }
+
+    saveToLocalStorage(promptData) {
+        const savedPrompts = JSON.parse(localStorage.getItem('savedPrompts') || '[]');
         savedPrompts.unshift(promptData);
-        localStorage.setItem('savedPrompts', JSON.stringify(savedPrompts.slice(0, 10))); // Keep last 10 prompts
+        localStorage.setItem('savedPrompts', JSON.stringify(savedPrompts.slice(0, 10))); // Keep last 10
+    }
 
-        saveBtn.innerHTML = '<i class="fas fa-check"></i> Saved!';
-        setTimeout(() => {
-            saveBtn.innerHTML = '<i class="fas fa-save"></i> Save';
-        }, 2000);
-    });
+    loadSavedPrompts() {
+        const savedPrompts = JSON.parse(localStorage.getItem('savedPrompts') || '[]');
+        // Implement saved prompts UI if needed
+    }
 
-    // Handle textarea auto-resize
-    originalPrompt.addEventListener('input', () => {
-        originalPrompt.style.height = 'auto';
-        originalPrompt.style.height = originalPrompt.scrollHeight + 'px';
-    });
-
-    // Handle prompt type change
-    promptType.addEventListener('change', () => {
-        if (originalPrompt.value && enhancedPrompt.textContent) {
-            generateBtn.click(); // Re-generate with new type
+    handleTypeChange() {
+        if (this.elements.originalPrompt.value && !this.elements.enhancedPrompt.textContent.includes('Your enhanced prompt will appear here...')) {
+            this.generateEnhancedPrompt();
         }
-    });
+    }
+
+    autoResizeTextarea(textarea) {
+        textarea.style.height = 'auto';
+        textarea.style.height = textarea.scrollHeight + 'px';
+    }
+
+    updateButtonState(button, text, icon, duration = 2000) {
+        const originalHTML = button.innerHTML;
+        button.innerHTML = `<i class="fas ${icon}"></i> ${text}`;
+        setTimeout(() => {
+            button.innerHTML = originalHTML;
+        }, duration);
+    }
+
+    showMessage(message, type = 'info') {
+        // Implement message/notification system
+        console.log(`${type}: ${message}`);
+    }
+}
+
+// Initialize the UI when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+    window.promptUI = new PromptUI();
 }); 
