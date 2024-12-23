@@ -50,13 +50,13 @@
                         <p class="placeholder">Your enhanced prompt will appear here...</p>
                     </div>
                     <div class="actions">
-                        <button id="shareBtn" class="secondary-btn" title="Share Prompt" aria-label="Share Prompt">
+                        <button id="shareBtn" class="secondary-btn" title="Share Prompt">
                             <i class="fas fa-share-alt"></i> Share
                         </button>
-                        <button id="copyBtn" class="secondary-btn" title="Copy to Clipboard" aria-label="Copy to Clipboard">
+                        <button id="copyBtn" class="secondary-btn" title="Copy to Clipboard">
                             <i class="fas fa-copy"></i> Copy
                         </button>
-                        <button id="saveBtn" class="secondary-btn" title="Save Prompt" aria-label="Save Prompt">
+                        <button id="saveBtn" class="secondary-btn" title="Save Prompt">
                             <i class="fas fa-save"></i> Save
                         </button>
                     </div>
@@ -65,9 +65,7 @@
 
             <div class="improvements-section">
                 <h3>Improvements Made</h3>
-                <ul id="improvementsList">
-                    <!-- Will be populated by JavaScript -->
-                </ul>
+                <ul id="improvementsList"></ul>
             </div>
         </main>
 
@@ -76,11 +74,26 @@
         </footer>
     </div>
 
+    <!-- Saved Prompts Viewer -->
+    <div id="savedPromptsViewer" class="saved-prompts-viewer">
+        <div class="saved-prompts-content">
+            <div class="saved-prompts-header">
+                <h3>Saved Prompts</h3>
+                <button class="close-viewer-btn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="saved-prompts-list"></div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
     <script type="module" src="js/features/uiFeatures.js"></script>
     <script type="module" src="js/features/promptTypes.js"></script>
     <script type="module" src="js/features/enhancementRules.js"></script>
     <script type="module" src="js/features/promptValidator.js"></script>
     <script type="module" src="js/features/promptEnhancer.js"></script>
+    <script type="module" src="js/features/shareFeatures.js"></script>
     <script type="module" src="js/main.js"></script>
 </body>
 </html> 

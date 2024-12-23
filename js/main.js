@@ -43,6 +43,9 @@ class PromptUI {
             this.elements.originalPrompt,
             this.elements.charCounter
         );
+
+        // Initialize saved prompts
+        uiFeatures.savedPrompts.initialize();
     }
 
     attachEventListeners() {

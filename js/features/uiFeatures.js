@@ -41,79 +41,67 @@ export const uiFeatures = {
 
     darkMode: {
         isDark: false,
-        
         initialize() {
-            // Check local storage first
-            const storedPreference = localStorage.getItem('darkMode');
-            
-            if (storedPreference !== null) {
-                this.isDark = storedPreference === 'true';
-            } else {
-                // Check system preference
-                this.isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            // Check system preference
+            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                this.enable();
             }
-            
-            // Apply initial theme
-            this.applyTheme();
-            
-            // Watch for system theme changes
-            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-                if (localStorage.getItem('darkMode') === null) {
-                    this.isDark = e.matches;
-                    this.applyTheme();
-                }
-            });
+            // Check saved preference
+            const savedPreference = localStorage.getItem('darkMode');
+            if (savedPreference === 'true') {
+                this.enable();
+            }
         },
-
+        enable() {
+            document.body.classList.add('dark-mode');
+            this.isDark = true;
+            localStorage.setItem('darkMode', 'true');
+        },
+        disable() {
+            document.body.classList.remove('dark-mode');
+            this.isDark = false;
+            localStorage.setItem('darkMode', 'false');
+        },
         toggle() {
-            this.isDark = !this.isDark;
-            localStorage.setItem('darkMode', this.isDark);
-            this.applyTheme();
-            return this.isDark; // Return new state for UI updates
-        },
-
-        applyTheme() {
-            document.documentElement.classList.toggle('dark-mode', this.isDark);
-            // Update favicon and meta theme color
-            this.updateMetaTheme();
-        },
-
-        updateMetaTheme() {
-            const themeColor = this.isDark ? '#1a1a1a' : '#f8fafc';
-            const metaTheme = document.querySelector('meta[name="theme-color"]');
-            if (metaTheme) {
-                metaTheme.setAttribute('content', themeColor);
+            if (this.isDark) {
+                this.disable();
+                return false;
             } else {
-                const meta = document.createElement('meta');
-                meta.name = 'theme-color';
-                meta.content = themeColor;
-                document.head.appendChild(meta);
+                this.enable();
+                return true;
             }
         }
     },
 
     characterCounter: {
-        initialize(textarea, counter) {
-            this.updateCount(textarea, counter);
-            textarea.addEventListener('input', () => this.updateCount(textarea, counter));
-        },
+        initialize(textarea, counter, maxLength = 2000) {
+            const updateCount = () => {
+                const length = textarea.value.length;
+                counter.textContent = `${length}/${maxLength}`;
+                
+                if (length >= maxLength * 0.9) {
+                    counter.classList.add('near-limit');
+                } else {
+                    counter.classList.remove('near-limit');
+                }
+            };
 
-        updateCount(textarea, counter) {
-            const maxLength = textarea.getAttribute('data-max-length') || 2000;
-            const currentLength = textarea.value.length;
-            counter.textContent = `${currentLength}/${maxLength}`;
-            counter.classList.toggle('near-limit', currentLength > maxLength * 0.9);
+            textarea.addEventListener('input', updateCount);
+            updateCount();
         }
     },
 
     loadingState: {
         show(button) {
-            const originalText = button.innerHTML;
+            const originalContent = button.innerHTML;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
             button.disabled = true;
-            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enhancing...';
+            button.classList.add('loading');
+
             return () => {
+                button.innerHTML = originalContent;
                 button.disabled = false;
-                button.innerHTML = originalText;
+                button.classList.remove('loading');
             };
         }
     },
@@ -123,16 +111,40 @@ export const uiFeatures = {
             const notification = document.createElement('div');
             notification.className = `notification ${type}`;
             notification.textContent = message;
-            
             document.body.appendChild(notification);
-            
+
+            // Trigger animation
+            setTimeout(() => notification.classList.add('show'), 10);
+
+            // Remove after delay
             setTimeout(() => {
-                notification.classList.add('show');
-                setTimeout(() => {
-                    notification.classList.remove('show');
-                    setTimeout(() => notification.remove(), 300);
-                }, 3000);
-            }, 100);
+                notification.classList.remove('show');
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+    },
+
+    savedPrompts: {
+        initialize() {
+            // Add click outside listener to close saved prompts viewer
+            document.addEventListener('click', (e) => {
+                const viewer = document.getElementById('savedPromptsViewer');
+                if (viewer && viewer.classList.contains('show')) {
+                    if (!viewer.querySelector('.saved-prompts-content').contains(e.target)) {
+                        viewer.classList.remove('show');
+                    }
+                }
+            });
+
+            // Add escape key listener
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    const viewer = document.getElementById('savedPromptsViewer');
+                    if (viewer && viewer.classList.contains('show')) {
+                        viewer.classList.remove('show');
+                    }
+                }
+            });
         }
     }
 }; 
