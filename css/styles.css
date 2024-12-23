@@ -12,6 +12,8 @@
     --dark-bg: #1a1a1a;
     --dark-surface: #2d2d2d;
     --dark-text: #e5e5e5;
+    --dark-border: #404040;
+    --dark-hover: #3d3d3d;
 }
 
 * {
@@ -267,6 +269,7 @@ footer {
 .dark-mode {
     --background-color: var(--dark-bg);
     --text-color: var(--dark-text);
+    --border-color: var(--dark-border);
     color-scheme: dark;
 }
 
@@ -948,6 +951,39 @@ footer {
     min-width: 180px;
 }
 
+.form-select:hover {
+    border-color: var(--primary-color);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1);
+}
+
+.form-select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+/* Dark mode adjustments */
+.dark-mode .form-select {
+    background-color: var(--dark-bg);
+    border-color: var(--dark-border);
+    color: var(--dark-text);
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23e5e5e5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+}
+
+.dark-mode .form-select:hover {
+    border-color: var(--primary-color);
+    background-color: var(--dark-hover);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+}
+
+.dark-mode .form-select:focus {
+    border-color: var(--primary-color);
+    background-color: var(--dark-hover);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+}
+
+/* Dropdown options */
 .form-select option {
     padding: 0.75rem 1rem;
     background-color: var(--background-color);
@@ -955,14 +991,17 @@ footer {
     font-size: 0.9375rem;
 }
 
-.form-select option:hover {
-    background-color: var(--primary-color);
-    color: white;
+/* Dark mode dropdown options */
+.dark-mode .form-select option {
+    background-color: var(--dark-bg);
+    color: var(--dark-text);
 }
 
-/* Dark mode adjustments */
-.dark-mode .form-select option {
-    background-color: var(--dark-surface);
+.dark-mode .form-select option:hover,
+.dark-mode .form-select option:focus,
+.dark-mode .form-select option:active,
+.dark-mode .form-select option:checked {
+    background-color: var(--dark-hover);
     color: var(--dark-text);
 }
 
@@ -1028,33 +1067,3 @@ footer {
 }
 
 /* ... rest of the existing styles ... */ 
-
-.form-select:hover {
-    border-color: var(--primary-color);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1);
-}
-
-.form-select:focus {
-    outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-}
-
-/* Dark mode adjustments for form-select */
-.dark-mode .form-select {
-    background-color: var(--dark-surface);
-    border-color: #404040;
-    color: var(--dark-text);
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23e5e5e5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-}
-
-.dark-mode .form-select:hover {
-    border-color: var(--primary-color);
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
-}
-
-.dark-mode .form-select:focus {
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
-} 
