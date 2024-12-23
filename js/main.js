@@ -1,5 +1,5 @@
 import { PromptEnhancer } from './features/promptEnhancer.js';
-import { promptTypes } from './features/promptTypes.js';
+import { mediumTypes, getFactors, getTypeInfo, getMediumInfo } from './features/promptTypes.js';
 import { uiFeatures } from './features/uiFeatures.js';
 import { shareFeatures } from './features/shareFeatures.js';
 
@@ -16,6 +16,7 @@ class PromptUI {
     initializeElements() {
         this.elements = {
             originalPrompt: document.getElementById('originalPrompt'),
+            promptMedium: document.getElementById('promptMedium'),
             promptType: document.getElementById('promptType'),
             generateBtn: document.getElementById('generateBtn'),
             enhancedPrompt: document.getElementById('enhancedPrompt'),
@@ -27,10 +28,26 @@ class PromptUI {
             darkModeBtn: document.getElementById('darkModeBtn')
         };
 
-        // Initialize type selector
-        this.elements.promptType.innerHTML = Object.entries(promptTypes)
-            .map(([value, type]) => `<option value="${value}">${type.name}</option>`)
-            .join('');
+        // Initialize medium selector
+        this.updateMediumTypes();
+        
+        // Initialize type selector based on default medium
+        this.updatePromptTypes(this.elements.promptMedium.value);
+    }
+
+    updateMediumTypes() {
+        this.elements.promptMedium.innerHTML = Object.entries(mediumTypes)
+            .map(([value, medium]) => `
+                <option value="${value}">${medium.name}</option>
+            `).join('');
+    }
+
+    updatePromptTypes(medium) {
+        const types = mediumTypes[medium]?.types || {};
+        this.elements.promptType.innerHTML = Object.entries(types)
+            .map(([value, type]) => `
+                <option value="${value}">${type.name}</option>
+            `).join('');
     }
 
     initializeFeatures() {
@@ -73,7 +90,13 @@ class PromptUI {
         // Handle textarea auto-resize
         this.elements.originalPrompt.addEventListener('input', (e) => this.autoResizeTextarea(e.target));
 
-        // Handle prompt type change
+        // Handle medium change
+        this.elements.promptMedium.addEventListener('change', (e) => {
+            this.updatePromptTypes(e.target.value);
+            this.handleTypeChange();
+        });
+
+        // Handle type change
         this.elements.promptType.addEventListener('change', () => this.handleTypeChange());
     }
 
@@ -84,14 +107,15 @@ class PromptUI {
             return;
         }
 
+        const medium = this.elements.promptMedium.value;
         const type = this.elements.promptType.value;
-        const options = this.getOptionsForType(type);
+        const options = this.getOptionsForType(medium, type);
 
         // Show loading state
         const hideLoading = uiFeatures.loadingState.show(this.elements.generateBtn);
 
         try {
-            const { enhancedPrompt, improvements, wasModified } = this.enhancer.enhance(prompt, type, options);
+            const { enhancedPrompt, improvements, wasModified } = this.enhancer.enhance(prompt, medium, type, options);
 
             // Update UI
             this.elements.enhancedPrompt.innerHTML = `<pre>${enhancedPrompt}</pre>`;
@@ -119,6 +143,7 @@ class PromptUI {
         const promptData = {
             original: this.elements.originalPrompt.value,
             enhanced: enhancedText,
+            medium: this.elements.promptMedium.value,
             type: this.elements.promptType.value
         };
 
@@ -234,6 +259,7 @@ class PromptUI {
     savePrompt() {
         const originalText = this.elements.originalPrompt.value;
         const enhancedText = this.elements.enhancedPrompt.textContent;
+        const medium = this.elements.promptMedium.value;
         const type = this.elements.promptType.value;
 
         if (!enhancedText || enhancedText.includes('Your enhanced prompt will appear here...')) {
@@ -244,11 +270,11 @@ class PromptUI {
         const promptData = {
             original: originalText,
             enhanced: enhancedText,
+            medium: medium,
             type: type,
             timestamp: new Date().toISOString()
         };
 
-        // Use the new savedPrompts module
         uiFeatures.savedPrompts.save(promptData);
         uiFeatures.savedPrompts.showViewer();
         uiFeatures.notifications.show('Prompt saved successfully!', 'success');
@@ -259,32 +285,42 @@ class PromptUI {
         const listContainer = viewer.querySelector('.saved-prompts-list');
         const savedPrompts = uiFeatures.savedPrompts.getAll();
 
-        listContainer.innerHTML = savedPrompts.length ? savedPrompts.map((prompt, index) => `
-            <div class="saved-prompt-item">
-                <div class="saved-prompt-header">
-                    <span class="prompt-type">${promptTypes[prompt.type]?.name || 'General'}</span>
-                    <span class="prompt-date">${new Date(prompt.timestamp).toLocaleDateString()}</span>
-                </div>
-                <div class="prompt-content">
-                    <div class="original-prompt">
-                        <strong>Original:</strong>
-                        <p>${prompt.original}</p>
+        listContainer.innerHTML = savedPrompts.length ? savedPrompts.map((prompt, index) => {
+            const medium = prompt.medium || 'text'; // Default to text for backward compatibility
+            const typeInfo = getTypeInfo(medium, prompt.type);
+            const mediumInfo = getMediumInfo(medium);
+            
+            return `
+                <div class="saved-prompt-item">
+                    <div class="saved-prompt-header">
+                        <div class="prompt-info">
+                            <span class="prompt-medium">${mediumInfo?.name || 'Text'}</span>
+                            <span class="prompt-separator">›</span>
+                            <span class="prompt-type">${typeInfo?.name || 'General'}</span>
+                        </div>
+                        <span class="prompt-date">${new Date(prompt.timestamp).toLocaleDateString()}</span>
                     </div>
-                    <div class="enhanced-prompt">
-                        <strong>Enhanced:</strong>
-                        <p>${prompt.enhanced}</p>
+                    <div class="prompt-content">
+                        <div class="original-prompt">
+                            <strong>Original:</strong>
+                            <p>${prompt.original}</p>
+                        </div>
+                        <div class="enhanced-prompt">
+                            <strong>Enhanced:</strong>
+                            <p>${prompt.enhanced}</p>
+                        </div>
+                    </div>
+                    <div class="prompt-actions">
+                        <button class="load-prompt-btn" data-index="${index}">
+                            <i class="fas fa-upload"></i> Load
+                        </button>
+                        <button class="delete-prompt-btn" data-index="${index}">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
                     </div>
                 </div>
-                <div class="prompt-actions">
-                    <button class="load-prompt-btn" data-index="${index}">
-                        <i class="fas fa-upload"></i> Load
-                    </button>
-                    <button class="delete-prompt-btn" data-index="${index}">
-                        <i class="fas fa-trash"></i> Delete
-                    </button>
-                </div>
-            </div>
-        `).join('') : '<div class="no-prompts">No saved prompts yet</div>';
+            `;
+        }).join('') : '<div class="no-prompts">No saved prompts yet</div>';
 
         // Add event listeners for load and delete buttons
         listContainer.querySelectorAll('.load-prompt-btn').forEach(btn => {
@@ -292,6 +328,8 @@ class PromptUI {
                 const index = e.currentTarget.dataset.index;
                 const prompt = savedPrompts[index];
                 this.elements.originalPrompt.value = prompt.original;
+                this.elements.promptMedium.value = prompt.medium || 'text';
+                this.updatePromptTypes(prompt.medium || 'text');
                 this.elements.promptType.value = prompt.type;
                 this.generateEnhancedPrompt();
                 uiFeatures.savedPrompts.hideViewer();
@@ -310,24 +348,15 @@ class PromptUI {
         uiFeatures.savedPrompts.showViewer();
     }
 
-    getOptionsForType(type) {
-        const typeConfig = promptTypes[type];
+    getOptionsForType(medium, type) {
+        const factors = getFactors(medium, type);
         const options = {};
 
-        if (type === 'image') {
-            options.quality = true;
-            options.style = true;
-        } else if (type === 'chat') {
-            options.tone = true;
-        }
+        factors.forEach(factor => {
+            options[factor] = true;
+        });
 
         return options;
-    }
-
-    saveToLocalStorage(promptData) {
-        const savedPrompts = JSON.parse(localStorage.getItem('savedPrompts') || '[]');
-        savedPrompts.unshift(promptData);
-        localStorage.setItem('savedPrompts', JSON.stringify(savedPrompts.slice(0, 10)));
     }
 
     loadSavedPrompts() {
@@ -366,13 +395,19 @@ class PromptUI {
             try {
                 const promptData = JSON.parse(atob(sharedData));
                 this.elements.originalPrompt.value = promptData.original;
+                
+                // Set medium first, then update types
+                this.elements.promptMedium.value = promptData.medium || 'text';
+                this.updatePromptTypes(promptData.medium || 'text');
                 this.elements.promptType.value = promptData.type;
+                
                 this.generateEnhancedPrompt();
                 
                 // Clean URL
                 window.history.replaceState({}, document.title, window.location.pathname);
             } catch (error) {
                 console.error('Failed to load shared prompt:', error);
+                uiFeatures.notifications.show('Failed to load shared prompt.', 'error');
             }
         }
     }

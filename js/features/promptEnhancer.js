@@ -1,5 +1,4 @@
-import { promptTypes } from './promptTypes.js';
-import { enhancementRules } from './enhancementRules.js';
+import { mediumTypes, getFactors } from './promptTypes.js';
 import { PromptValidator } from './promptValidator.js';
 
 export class PromptEnhancer {
@@ -8,34 +7,32 @@ export class PromptEnhancer {
         this.improvements = [];
     }
 
-    enhance(prompt, type = 'general', options = {}) {
+    enhance(prompt, medium, type, options = {}) {
         try {
             this.improvements = [];
             let enhancedPrompt = this.sanitizeInput(prompt);
 
             // Validate prompt
-            if (!this.validator.validate(enhancedPrompt, type, options)) {
+            if (!this.validator.validate(enhancedPrompt, medium, type, options)) {
                 const errors = this.validator.getErrors();
                 console.warn('Validation warnings:', errors);
             }
 
             // Get type configuration
-            const typeConfig = promptTypes[type];
-            if (!typeConfig) {
+            const typeInfo = mediumTypes[medium]?.types[type];
+            if (!typeInfo) {
                 throw new Error('Invalid prompt type');
             }
 
-            // Apply required components
-            enhancedPrompt = this.applyRequiredComponents(enhancedPrompt, typeConfig, type);
+            // Apply factors based on medium and type
+            enhancedPrompt = this.applyFactors(enhancedPrompt, medium, type, options);
 
-            // Apply optional components if specified in options
-            enhancedPrompt = this.applyOptionalComponents(enhancedPrompt, typeConfig, options, type);
-
-            // Apply type-specific enhancements
-            enhancedPrompt = this.applyTypeSpecificEnhancements(enhancedPrompt, type);
+            // Apply medium-specific enhancements
+            enhancedPrompt = this.applyMediumSpecificEnhancements(enhancedPrompt, medium, type);
 
             // Ensure prompt doesn't exceed max length
-            enhancedPrompt = this.truncateIfNeeded(enhancedPrompt, typeConfig.maxLength);
+            const maxLength = medium === 'text' ? 2000 : 1000;
+            enhancedPrompt = this.truncateIfNeeded(enhancedPrompt, maxLength);
 
             return {
                 enhancedPrompt,
@@ -58,21 +55,16 @@ export class PromptEnhancer {
             .replace(/[\r\n]+/g, '\n'); // Normalize line endings
     }
 
-    applyRequiredComponents(prompt, typeConfig, type) {
+    applyFactors(prompt, medium, type, options) {
         let enhanced = prompt;
+        const factors = getFactors(medium, type);
         
-        typeConfig.requiredComponents.forEach(component => {
-            if (enhancementRules[component]) {
-                const rule = enhancementRules[component];
-                const hasComponent = Object.values(rule.patterns)
-                    .some(pattern => pattern.test(enhanced));
-
-                if (!hasComponent) {
-                    const original = enhanced;
-                    enhanced = rule.enhance(enhanced, type);
-                    if (original !== enhanced) {
-                        this.improvements.push(`Added ${component}`);
-                    }
+        factors.forEach(factor => {
+            if (!this.validator.hasFactor(enhanced, factor, options)) {
+                const original = enhanced;
+                enhanced = this.addFactor(enhanced, factor, medium, type);
+                if (original !== enhanced) {
+                    this.improvements.push(`Added ${factor}`);
                 }
             }
         });
@@ -80,49 +72,58 @@ export class PromptEnhancer {
         return enhanced;
     }
 
-    applyOptionalComponents(prompt, typeConfig, options, type) {
-        let enhanced = prompt;
-
-        typeConfig.optionalComponents.forEach(component => {
-            if (options[component] && enhancementRules[component]) {
-                const rule = enhancementRules[component];
-                const hasComponent = Object.values(rule.patterns)
-                    .some(pattern => pattern.test(enhanced));
-
-                if (!hasComponent) {
-                    const original = enhanced;
-                    enhanced = rule.enhance(enhanced, type);
-                    if (original !== enhanced) {
-                        this.improvements.push(`Added optional ${component}`);
-                    }
+    addFactor(prompt, factor, medium, type) {
+        switch (factor) {
+            case 'objective':
+                return `I want you to ${prompt}`;
+            case 'context':
+                return `Context: This is a ${type} prompt for ${medium} generation.\n${prompt}`;
+            case 'role':
+                return `You are an AI assistant specialized in ${type} ${medium} generation. ${prompt}`;
+            case 'tone':
+                return `Please respond in a professional and clear tone.\n${prompt}`;
+            case 'format':
+                return `Please format the output clearly and logically.\n${prompt}`;
+            case 'style':
+                if (medium === 'image') {
+                    return `${prompt}\nStyle: High-quality, professional, detailed`;
                 }
-            }
-        });
-
-        return enhanced;
+                return prompt;
+            case 'quality':
+                if (medium === 'image') {
+                    return `${prompt}\nQuality: 4K, highly detailed, professional quality`;
+                }
+                return prompt;
+            default:
+                return prompt;
+        }
     }
 
-    applyTypeSpecificEnhancements(prompt, type) {
+    applyMediumSpecificEnhancements(prompt, medium, type) {
         let enhanced = prompt;
 
-        // Apply type-specific enhancements
-        switch (type) {
+        switch (medium) {
             case 'image':
-                if (!enhancementRules.quality.patterns.hasQuality.test(enhanced)) {
-                    enhanced = enhancementRules.quality.enhance(enhanced, type);
-                    this.improvements.push('Enhanced image quality specifications');
+                if (type === 'generation') {
+                    if (!/(resolution|quality|detailed)/i.test(enhanced)) {
+                        enhanced += '\nHigh resolution, professional quality, highly detailed';
+                        this.improvements.push('Added quality specifications');
+                    }
                 }
                 break;
 
-            case 'chat':
-                if (!enhancementRules.style.patterns.hasStyle.test(enhanced)) {
-                    enhanced = enhancementRules.style.enhance(enhanced, type);
-                    this.improvements.push('Enhanced conversation style');
+            case 'text':
+                if (type === 'chat') {
+                    if (!/(tone|style|manner)/i.test(enhanced)) {
+                        enhanced = `Please respond in a clear and professional manner.\n${enhanced}`;
+                        this.improvements.push('Added tone specification');
+                    }
+                } else if (type === 'code') {
+                    if (!/(comments|documentation)/i.test(enhanced)) {
+                        enhanced += '\nPlease include clear comments and documentation.';
+                        this.improvements.push('Added documentation requirement');
+                    }
                 }
-                break;
-
-            case 'completion':
-                // Add any completion-specific enhancements
                 break;
         }
 

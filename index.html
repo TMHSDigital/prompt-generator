@@ -31,17 +31,24 @@
                         data-max-length="2000"
                     ></textarea>
                     <div class="char-counter" id="charCounter">0/2000</div>
-                    <div class="options">
-                        <select id="promptType" aria-label="Select prompt type">
-                            <option value="general">General</option>
-                            <option value="completion">Completion</option>
-                            <option value="chat">Chat</option>
-                            <option value="image">Image Generation</option>
-                        </select>
-                        <button id="generateBtn" class="primary-btn">
-                            <i class="fas fa-magic"></i> Enhance Prompt
-                        </button>
+                    <div class="prompt-type-section">
+                        <div class="select-group">
+                            <label for="promptMedium">Medium</label>
+                            <select id="promptMedium" class="form-select" aria-label="Select prompt medium">
+                                <option value="text">Text</option>
+                                <option value="image">Image</option>
+                            </select>
+                        </div>
+                        <div class="select-group">
+                            <label for="promptType">Type</label>
+                            <select id="promptType" class="form-select" aria-label="Select prompt type">
+                                <!-- Dynamically populated based on selected medium -->
+                            </select>
+                        </div>
                     </div>
+                    <button id="generateBtn" class="primary-btn">
+                        <i class="fas fa-magic"></i> Enhance Prompt
+                    </button>
                 </div>
 
                 <div class="output-section">

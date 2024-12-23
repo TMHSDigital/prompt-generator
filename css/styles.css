@@ -905,4 +905,61 @@ footer {
         width: 100%;
         justify-content: center;
     }
-} 
+}
+
+.prompt-type-section {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.select-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.select-group label {
+    font-size: 0.9rem;
+    color: var(--text-color);
+    font-weight: 500;
+}
+
+.form-select {
+    padding: 0.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.form-select:hover {
+    border-color: var(--primary-color);
+}
+
+.form-select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px var(--primary-color-alpha);
+}
+
+/* Dark mode adjustments */
+.dark-mode .form-select {
+    background-color: var(--bg-color-dark);
+    border-color: var(--border-color-dark);
+}
+
+.dark-mode .form-select:hover {
+    border-color: var(--primary-color-light);
+}
+
+.dark-mode .form-select:focus {
+    border-color: var(--primary-color-light);
+    box-shadow: 0 0 0 2px var(--primary-color-light-alpha);
+}
+
+/* ... rest of the existing styles ... */ 
