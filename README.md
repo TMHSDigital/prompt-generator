@@ -2,7 +2,13 @@
 
 Transform your prompts with best practices - A powerful tool for enhancing AI prompts.
 
-![Prompt Engine](https://tmhsdigital.github.io/prompt-generator/preview.png)
+## 🌟 Preview
+
+### Light Mode
+![Prompt Engine Light Mode](light-preview.png)
+
+### Dark Mode
+![Prompt Engine Dark Mode](dark-preview.png)
 
 ## 🚀 Features
 
