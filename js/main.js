@@ -38,7 +38,9 @@ class PromptUI {
     updateMediumTypes() {
         this.elements.promptMedium.innerHTML = Object.entries(mediumTypes)
             .map(([value, medium]) => `
-                <option value="${value}">${medium.name}</option>
+                <option value="${value}" title="${medium.description}">
+                    ${medium.name}
+                </option>
             `).join('');
     }
 
@@ -46,7 +48,9 @@ class PromptUI {
         const types = mediumTypes[medium]?.types || {};
         this.elements.promptType.innerHTML = Object.entries(types)
             .map(([value, type]) => `
-                <option value="${value}">${type.name}</option>
+                <option value="${value}" title="${type.description}">
+                    ${type.name}
+                </option>
             `).join('');
     }
 
