@@ -51,15 +51,19 @@ class PromptUI {
         this.elements.copyBtn.addEventListener('click', () => this.copyToClipboard());
 
         // Share prompt
-        this.elements.shareBtn.addEventListener('click', () => this.sharePrompt());
+        this.elements.shareBtn.addEventListener('click', async () => {
+            const result = await this.sharePrompt();
+            uiFeatures.notifications.show(result.message, result.success ? 'success' : 'error');
+        });
 
         // Save prompt
         this.elements.saveBtn.addEventListener('click', () => this.savePrompt());
 
         // Dark mode toggle
         this.elements.darkModeBtn.addEventListener('click', () => {
-            uiFeatures.darkMode.toggle();
-            this.updateDarkModeButton();
+            const isDark = uiFeatures.darkMode.toggle();
+            this.elements.darkModeBtn.innerHTML = `<i class="fas fa-${isDark ? 'sun' : 'moon'}"></i>`;
+            uiFeatures.notifications.show(`${isDark ? 'Dark' : 'Light'} mode enabled`, 'info');
         });
 
         // Handle textarea auto-resize

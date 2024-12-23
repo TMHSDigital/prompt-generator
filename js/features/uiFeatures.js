@@ -12,28 +12,30 @@ export const uiFeatures = {
 
         async sharePrompt(promptData) {
             const shareText = `Check out this enhanced AI prompt:\n\nOriginal: ${promptData.original}\n\nEnhanced: ${promptData.enhanced}`;
+            const shareUrl = this.generateShareLink(promptData);
             
+            // Try native share API first
             if (navigator.share) {
                 try {
                     await navigator.share({
                         title: 'AI Prompt Generator',
                         text: shareText,
-                        url: this.generateShareLink(promptData)
+                        url: shareUrl
                     });
-                    return { success: true };
+                    return { success: true, message: 'Shared successfully!' };
                 } catch (err) {
-                    console.error('Share failed:', err);
-                    return this.fallbackShare(shareText);
+                    console.warn('Native share failed, falling back to clipboard:', err);
                 }
-            } else {
-                return this.fallbackShare(shareText);
             }
-        },
-
-        fallbackShare(text) {
-            return navigator.clipboard.writeText(text)
-                .then(() => ({ success: true, message: 'Share link copied to clipboard!' }))
-                .catch(() => ({ success: false, message: 'Failed to copy share link.' }));
+            
+            // Fallback to clipboard
+            try {
+                await navigator.clipboard.writeText(`${shareText}\n\nTry it yourself: ${shareUrl}`);
+                return { success: true, message: 'Share link copied to clipboard!' };
+            } catch (err) {
+                console.error('Clipboard fallback failed:', err);
+                return { success: false, message: 'Failed to share. Please try copying manually.' };
+            }
         }
     },
 
@@ -41,13 +43,25 @@ export const uiFeatures = {
         isDark: false,
         
         initialize() {
-            this.isDark = localStorage.getItem('darkMode') === 'true';
+            // Check local storage first
+            const storedPreference = localStorage.getItem('darkMode');
+            
+            if (storedPreference !== null) {
+                this.isDark = storedPreference === 'true';
+            } else {
+                // Check system preference
+                this.isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            }
+            
+            // Apply initial theme
             this.applyTheme();
             
             // Watch for system theme changes
             window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-                this.isDark = e.matches;
-                this.applyTheme();
+                if (localStorage.getItem('darkMode') === null) {
+                    this.isDark = e.matches;
+                    this.applyTheme();
+                }
             });
         },
 
@@ -55,10 +69,26 @@ export const uiFeatures = {
             this.isDark = !this.isDark;
             localStorage.setItem('darkMode', this.isDark);
             this.applyTheme();
+            return this.isDark; // Return new state for UI updates
         },
 
         applyTheme() {
             document.documentElement.classList.toggle('dark-mode', this.isDark);
+            // Update favicon and meta theme color
+            this.updateMetaTheme();
+        },
+
+        updateMetaTheme() {
+            const themeColor = this.isDark ? '#1a1a1a' : '#f8fafc';
+            const metaTheme = document.querySelector('meta[name="theme-color"]');
+            if (metaTheme) {
+                metaTheme.setAttribute('content', themeColor);
+            } else {
+                const meta = document.createElement('meta');
+                meta.name = 'theme-color';
+                meta.content = themeColor;
+                document.head.appendChild(meta);
+            }
         }
     },
 
