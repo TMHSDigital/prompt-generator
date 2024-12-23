@@ -1,12 +1,34 @@
 import { mediumTypes, getFactors, getBestPractices } from './promptTypes.js';
 import { PromptValidator } from './promptValidator.js';
 
+/**
+ * Enhanced prompt generation system that implements best practices and smart enhancements.
+ * Supports both text and image prompts with medium-specific optimizations.
+ */
 export class PromptEnhancer {
+    /**
+     * Creates a new instance of the PromptEnhancer.
+     * Initializes the validator and improvements tracking.
+     */
     constructor() {
         this.validator = new PromptValidator();
         this.improvements = [];
     }
 
+    /**
+     * Enhances a prompt based on its medium and type.
+     * @param {string} prompt - The original prompt to enhance
+     * @param {string} medium - The medium type ('text' or 'image')
+     * @param {string} type - The specific prompt type within the medium
+     * @param {Object} options - Additional options for enhancement
+     * @param {boolean} [options.versionControl=false] - Whether to add version control information
+     * @param {Object} [options.factors={}] - Additional factors to consider
+     * @returns {Object} Enhanced prompt data
+     * @returns {string} .enhancedPrompt - The enhanced prompt text
+     * @returns {string[]} .improvements - List of improvements made
+     * @returns {boolean} .wasModified - Whether the prompt was modified
+     * @returns {Object} .settings - Additional settings like temperature
+     */
     enhance(prompt, medium, type, options = {}) {
         try {
             this.improvements = [];
@@ -79,12 +101,26 @@ export class PromptEnhancer {
         }
     }
 
+    /**
+     * Sanitizes the input prompt by normalizing whitespace and line endings.
+     * @param {string} prompt - The prompt to sanitize
+     * @returns {string} Sanitized prompt
+     * @private
+     */
     sanitizeInput(prompt) {
         return prompt.trim()
             .replace(/\s+/g, ' ')  // Replace multiple spaces with single space
             .replace(/[\r\n]+/g, '\n'); // Normalize line endings
     }
 
+    /**
+     * Applies chain-of-thought prompting by breaking down complex tasks.
+     * @param {string} prompt - The original prompt
+     * @param {string} medium - The medium type
+     * @param {string} type - The prompt type
+     * @returns {string} Enhanced prompt with chain-of-thought structure
+     * @private
+     */
     applyChainOfThought(prompt, medium, type) {
         const subProblems = this.identifySubProblems(prompt, medium, type);
         if (subProblems.length > 1) {
@@ -99,6 +135,14 @@ export class PromptEnhancer {
         return prompt;
     }
 
+    /**
+     * Identifies sub-problems in a complex prompt.
+     * @param {string} prompt - The prompt to analyze
+     * @param {string} medium - The medium type
+     * @param {string} type - The prompt type
+     * @returns {string[]} Array of identified sub-problems
+     * @private
+     */
     identifySubProblems(prompt, medium, type) {
         // Split complex prompts into logical sub-tasks
         const problems = [];
@@ -115,11 +159,26 @@ export class PromptEnhancer {
         return problems.length ? problems : [prompt];
     }
 
+    /**
+     * Checks if text contains action verbs.
+     * @param {string} text - The text to check
+     * @returns {boolean} Whether the text contains action verbs
+     * @private
+     */
     containsActionVerb(text) {
         const actionVerbs = /(create|make|generate|write|develop|implement|design|modify|update|enhance|improve|analyze)/i;
         return actionVerbs.test(text);
     }
 
+    /**
+     * Applies enhancement factors to the prompt.
+     * @param {string} prompt - The prompt to enhance
+     * @param {string} medium - The medium type
+     * @param {string} type - The prompt type
+     * @param {Object} options - Enhancement options
+     * @returns {string} Enhanced prompt with applied factors
+     * @private
+     */
     applyFactors(prompt, medium, type, options) {
         let enhanced = prompt;
         const factors = getFactors(medium, type);
@@ -137,6 +196,15 @@ export class PromptEnhancer {
         return enhanced;
     }
 
+    /**
+     * Adds a specific enhancement factor to the prompt.
+     * @param {string} prompt - The prompt to enhance
+     * @param {string} factor - The factor to add
+     * @param {string} medium - The medium type
+     * @param {string} type - The prompt type
+     * @returns {string} Enhanced prompt with added factor
+     * @private
+     */
     addFactor(prompt, factor, medium, type) {
         const factorMap = {
             objective: (p) => `I want you to ${p}`,
@@ -160,6 +228,14 @@ export class PromptEnhancer {
         return factorMap[factor] ? factorMap[factor](prompt, medium) : prompt;
     }
 
+    /**
+     * Adds relevant examples to the prompt based on medium and type.
+     * @param {string} prompt - The prompt to enhance
+     * @param {string} medium - The medium type
+     * @param {string} type - The prompt type
+     * @returns {string} Enhanced prompt with examples
+     * @private
+     */
     addExamples(prompt, medium, type) {
         // Add relevant examples based on medium and type
         const examples = this.getExamplesForType(medium, type);
@@ -171,6 +247,13 @@ export class PromptEnhancer {
         return prompt;
     }
 
+    /**
+     * Gets example templates for a specific medium and type.
+     * @param {string} medium - The medium type
+     * @param {string} type - The prompt type
+     * @returns {string[]} Array of example templates
+     * @private
+     */
     getExamplesForType(medium, type) {
         const exampleMap = {
             text: {
@@ -220,6 +303,15 @@ export class PromptEnhancer {
         return exampleMap[medium]?.[type] || [];
     }
 
+    /**
+     * Applies medium-specific enhancements to the prompt.
+     * @param {string} prompt - The prompt to enhance
+     * @param {string} medium - The medium type
+     * @param {string} type - The prompt type
+     * @param {Object} practices - Best practices configuration
+     * @returns {string} Enhanced prompt with medium-specific improvements
+     * @private
+     */
     applyMediumSpecificEnhancements(prompt, medium, type, practices) {
         let enhanced = prompt;
 
@@ -235,6 +327,14 @@ export class PromptEnhancer {
         return enhanced;
     }
 
+    /**
+     * Enhances image-specific prompts with quality and composition details.
+     * @param {string} prompt - The prompt to enhance
+     * @param {string} type - The image prompt type
+     * @param {Object} practices - Best practices configuration
+     * @returns {string} Enhanced image prompt
+     * @private
+     */
     enhanceImagePrompt(prompt, type, practices) {
         let enhanced = prompt;
 
@@ -252,6 +352,14 @@ export class PromptEnhancer {
         return enhanced;
     }
 
+    /**
+     * Enhances text-specific prompts with appropriate formatting and documentation.
+     * @param {string} prompt - The prompt to enhance
+     * @param {string} type - The text prompt type
+     * @param {Object} practices - Best practices configuration
+     * @returns {string} Enhanced text prompt
+     * @private
+     */
     enhanceTextPrompt(prompt, type, practices) {
         let enhanced = prompt;
 
@@ -268,6 +376,12 @@ export class PromptEnhancer {
         return enhanced;
     }
 
+    /**
+     * Adds weighted components to image prompts for better control.
+     * @param {string} prompt - The prompt to enhance
+     * @returns {string} Enhanced prompt with weighted components
+     * @private
+     */
     addWeightedPrompts(prompt) {
         // Add weight to important elements using (: :) syntax
         const elements = prompt.split(',').map(p => p.trim());
@@ -279,6 +393,13 @@ export class PromptEnhancer {
         }).join(', ');
     }
 
+    /**
+     * Truncates a prompt if it exceeds the maximum length.
+     * @param {string} prompt - The prompt to check
+     * @param {number} maxLength - Maximum allowed length
+     * @returns {string} Truncated prompt if necessary
+     * @private
+     */
     truncateIfNeeded(prompt, maxLength) {
         if (prompt.length > maxLength) {
             this.improvements.push('Truncated to prevent excessive length');

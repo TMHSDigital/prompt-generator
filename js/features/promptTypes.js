@@ -1,6 +1,27 @@
 /**
+ * @typedef {Object} Factor
+ * @property {string} name - The name of the factor
+ * @property {string} description - Description of what the factor does
+ */
+
+/**
+ * @typedef {Object} Type
+ * @property {string} name - The name of the type
+ * @property {string} description - Description of the type's purpose
+ * @property {string[]} factors - Array of factors applicable to this type
+ */
+
+/**
+ * @typedef {Object} Medium
+ * @property {string} name - The name of the medium
+ * @property {string} description - Description of the medium's purpose
+ * @property {Object.<string, Type>} types - Map of types available for this medium
+ */
+
+/**
  * Defines the available mediums and their associated prompt types.
  * Each medium has a name and a set of types, and each type has specific factors.
+ * @type {Object.<string, Medium>}
  */
 export const mediumTypes = {
     text: {
@@ -66,7 +87,7 @@ export function getFactors(medium, type) {
  * Gets information about a specific prompt type within a medium.
  * @param {string} medium - The medium (text/image)
  * @param {string} type - The prompt type to get info for
- * @returns {Object|null} Type information or null if not found
+ * @returns {Type|null} Type information or null if not found
  */
 export function getTypeInfo(medium, type) {
     return mediumTypes[medium]?.types[type] || null;
@@ -75,13 +96,23 @@ export function getTypeInfo(medium, type) {
 /**
  * Gets information about a specific medium.
  * @param {string} medium - The medium to get info for
- * @returns {Object|null} Medium information or null if not found
+ * @returns {Medium|null} Medium information or null if not found
  */
 export function getMediumInfo(medium) {
     return mediumTypes[medium] || null;
 }
 
-// Helper function to get best practices for a specific medium and type
+/**
+ * Gets best practices configuration for a specific medium and type.
+ * @param {string} medium - The medium (text/image)
+ * @param {string} type - The prompt type
+ * @returns {Object} Best practices configuration
+ * @returns {boolean} .clearContext - Whether to include clear context
+ * @returns {boolean} .chainOfThought - Whether to use chain-of-thought prompting
+ * @returns {boolean} .validateInput - Whether to validate input
+ * @returns {boolean} .useExamples - Whether to include examples
+ * @returns {number} .temperature - Recommended temperature setting
+ */
 export function getBestPractices(medium, type) {
     const commonPractices = {
         clearContext: true,
