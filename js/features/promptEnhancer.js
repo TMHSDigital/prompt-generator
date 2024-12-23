@@ -328,6 +328,54 @@ export class PromptEnhancer {
     }
 
     /**
+     * Adds weighted components to prompts based on medium type.
+     * @param {string} prompt - The prompt to enhance
+     * @param {string} medium - The medium type ('text' or 'image')
+     * @returns {string} Enhanced prompt with weighted components
+     * @private
+     */
+    addWeightedPrompts(prompt, medium) {
+        if (medium === 'image') {
+            // Image-specific weighting using explicit numerical weights
+            const elements = prompt.split(',').map(p => p.trim());
+            return elements.map(element => {
+                // Core subject elements get higher weight
+                if (/(subject|main|focus|primary)/i.test(element)) {
+                    return `(${element}:1.4)`;
+                }
+                // Quality and style specifications get medium weight
+                if (/(quality|resolution|detailed|professional|style)/i.test(element)) {
+                    return `(${element}:1.2)`;
+                }
+                // Modifiers and secondary elements get lower weight
+                if (/(background|texture|effect|additional)/i.test(element)) {
+                    return `(${element}:0.8)`;
+                }
+                return element;
+            }).join(', ');
+        } else {
+            // Text-specific weighting using implicit structural emphasis
+            const lines = prompt.split('\n');
+            const enhancedLines = lines.map(line => {
+                // Add structural emphasis for important instructions
+                if (/(must|important|essential|key|critical)/i.test(line)) {
+                    return `[Important] ${line}`;
+                }
+                // Add context markers for background information
+                if (/(context|background|note)/i.test(line)) {
+                    return `[Context] ${line}`;
+                }
+                // Add emphasis for specific requirements
+                if (/(require|need|should|must)/i.test(line)) {
+                    return `[Requirement] ${line}`;
+                }
+                return line;
+            });
+            return enhancedLines.join('\n');
+        }
+    }
+
+    /**
      * Enhances image-specific prompts with quality and composition details.
      * @param {string} prompt - The prompt to enhance
      * @param {string} type - The image prompt type
@@ -339,21 +387,44 @@ export class PromptEnhancer {
         let enhanced = prompt;
 
         if (type === 'generation' && practices.useWeighting) {
-            // Add weighted prompts for better control
-            enhanced = this.addWeightedPrompts(enhanced);
-            this.improvements.push('Added weighted prompt components');
+            // Add weighted prompts for better control over visual elements
+            enhanced = this.addWeightedPrompts(enhanced, 'image');
+            this.improvements.push('Added weighted components for better visual control');
         }
 
+        // Add quality specifications if not present
         if (!/(resolution|quality|detailed)/i.test(enhanced)) {
-            enhanced += '\nHigh resolution, professional quality, highly detailed';
-            this.improvements.push('Added quality specifications');
+            enhanced += ', (high resolution:1.2), (professional quality:1.2), (highly detailed:1.2)';
+            this.improvements.push('Added quality specifications with appropriate weights');
+        }
+
+        // Add composition guidance based on type
+        switch (type) {
+            case 'generation':
+                if (!/(composition|layout|arrangement)/i.test(enhanced)) {
+                    enhanced += ', (balanced composition:1.1), (professional lighting:1.1)';
+                    this.improvements.push('Added composition and lighting guidance');
+                }
+                break;
+            case 'editing':
+                if (!/(preserve|maintain|keep)/i.test(enhanced)) {
+                    enhanced += ', (preserve original elements:1.3), (seamless integration:1.2)';
+                    this.improvements.push('Added preservation and integration guidance');
+                }
+                break;
+            case 'variation':
+                if (!/(consistent|coherent)/i.test(enhanced)) {
+                    enhanced += ', (maintain style consistency:1.3), (coherent variations:1.2)';
+                    this.improvements.push('Added consistency guidance for variations');
+                }
+                break;
         }
 
         return enhanced;
     }
 
     /**
-     * Enhances text-specific prompts with appropriate formatting and documentation.
+     * Enhances text-specific prompts with appropriate formatting and emphasis.
      * @param {string} prompt - The prompt to enhance
      * @param {string} type - The text prompt type
      * @param {Object} practices - Best practices configuration
@@ -363,34 +434,32 @@ export class PromptEnhancer {
     enhanceTextPrompt(prompt, type, practices) {
         let enhanced = prompt;
 
-        if (type === 'chat' && !/(tone|style|manner)/i.test(enhanced)) {
-            enhanced = `Please respond in a clear and professional manner.\n${enhanced}`;
-            this.improvements.push('Added tone specification');
-        }
+        // Add implicit weighting through structural emphasis
+        enhanced = this.addWeightedPrompts(enhanced, 'text');
 
-        if (type === 'code' && !/(comments|documentation)/i.test(enhanced)) {
-            enhanced += '\nPlease include clear comments and documentation.';
-            this.improvements.push('Added documentation requirement');
+        // Add type-specific enhancements
+        switch (type) {
+            case 'chat':
+                if (!/(tone|style|manner)/i.test(enhanced)) {
+                    enhanced = `[Important] Please respond in a clear and professional manner.\n${enhanced}`;
+                    this.improvements.push('Added tone specification with emphasis');
+                }
+                break;
+            case 'code':
+                if (!/(comments|documentation)/i.test(enhanced)) {
+                    enhanced = `[Requirement] Include clear comments and documentation.\n${enhanced}`;
+                    this.improvements.push('Added documentation requirement with emphasis');
+                }
+                break;
+            case 'completion':
+                if (!/(style|voice|tone)/i.test(enhanced)) {
+                    enhanced = `[Important] Maintain consistent style and tone with the existing content.\n${enhanced}`;
+                    this.improvements.push('Added style consistency requirement');
+                }
+                break;
         }
 
         return enhanced;
-    }
-
-    /**
-     * Adds weighted components to image prompts for better control.
-     * @param {string} prompt - The prompt to enhance
-     * @returns {string} Enhanced prompt with weighted components
-     * @private
-     */
-    addWeightedPrompts(prompt) {
-        // Add weight to important elements using (: :) syntax
-        const elements = prompt.split(',').map(p => p.trim());
-        return elements.map(element => {
-            if (/(quality|resolution|detailed|professional)/i.test(element)) {
-                return `(${element}:1.3)`;
-            }
-            return element;
-        }).join(', ');
     }
 
     /**
