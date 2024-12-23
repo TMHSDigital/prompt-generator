@@ -247,7 +247,65 @@ class PromptUI {
         };
 
         this.saveToLocalStorage(promptData);
+        this.showSavedPrompts();
         uiFeatures.notifications.show('Prompt saved successfully!', 'success');
+    }
+
+    showSavedPrompts() {
+        const viewer = document.getElementById('savedPromptsViewer');
+        const listContainer = viewer.querySelector('.saved-prompts-list');
+        const savedPrompts = JSON.parse(localStorage.getItem('savedPrompts') || '[]');
+
+        listContainer.innerHTML = savedPrompts.length ? savedPrompts.map((prompt, index) => `
+            <div class="saved-prompt-item">
+                <div class="saved-prompt-header">
+                    <span class="prompt-type">${promptTypes[prompt.type]?.name || 'General'}</span>
+                    <span class="prompt-date">${new Date(prompt.timestamp).toLocaleDateString()}</span>
+                </div>
+                <div class="prompt-content">
+                    <div class="original-prompt">
+                        <strong>Original:</strong>
+                        <p>${prompt.original}</p>
+                    </div>
+                    <div class="enhanced-prompt">
+                        <strong>Enhanced:</strong>
+                        <p>${prompt.enhanced}</p>
+                    </div>
+                </div>
+                <div class="prompt-actions">
+                    <button class="load-prompt-btn" data-index="${index}">
+                        <i class="fas fa-upload"></i> Load
+                    </button>
+                    <button class="delete-prompt-btn" data-index="${index}">
+                        <i class="fas fa-trash"></i> Delete
+                    </button>
+                </div>
+            </div>
+        `).join('') : '<div class="no-prompts">No saved prompts yet</div>';
+
+        // Add event listeners for load and delete buttons
+        listContainer.querySelectorAll('.load-prompt-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const index = e.currentTarget.dataset.index;
+                const prompt = savedPrompts[index];
+                this.elements.originalPrompt.value = prompt.original;
+                this.elements.promptType.value = prompt.type;
+                this.generateEnhancedPrompt();
+                viewer.classList.remove('show');
+            });
+        });
+
+        listContainer.querySelectorAll('.delete-prompt-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const index = e.currentTarget.dataset.index;
+                savedPrompts.splice(index, 1);
+                localStorage.setItem('savedPrompts', JSON.stringify(savedPrompts));
+                this.showSavedPrompts(); // Refresh the list
+                uiFeatures.notifications.show('Prompt deleted successfully!', 'success');
+            });
+        });
+
+        viewer.classList.add('show');
     }
 
     getOptionsForType(type) {
@@ -272,7 +330,30 @@ class PromptUI {
 
     loadSavedPrompts() {
         const savedPrompts = JSON.parse(localStorage.getItem('savedPrompts') || '[]');
-        // Implement saved prompts UI if needed
+        
+        // Create saved prompts viewer if it doesn't exist
+        if (!document.getElementById('savedPromptsViewer')) {
+            const viewer = document.createElement('div');
+            viewer.id = 'savedPromptsViewer';
+            viewer.className = 'saved-prompts-viewer';
+            viewer.innerHTML = `
+                <div class="saved-prompts-content">
+                    <div class="saved-prompts-header">
+                        <h3>Saved Prompts</h3>
+                        <button class="close-viewer-btn">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="saved-prompts-list"></div>
+                </div>
+            `;
+            document.body.appendChild(viewer);
+
+            // Add close button listener
+            viewer.querySelector('.close-viewer-btn').addEventListener('click', () => {
+                viewer.classList.remove('show');
+            });
+        }
     }
 
     checkForSharedPrompt() {
