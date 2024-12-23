@@ -10,6 +10,11 @@
 <body>
     <div class="container">
         <header>
+            <div class="feature-buttons">
+                <button id="darkModeBtn" class="feature-btn" title="Toggle Dark Mode">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
             <h1>AI Prompt Generator</h1>
             <p>Transform your prompts with best practices</p>
         </header>
@@ -18,10 +23,13 @@
             <div class="prompt-container">
                 <div class="input-section">
                     <h2>Original Prompt</h2>
-                    <textarea id="originalPrompt" 
+                    <textarea 
+                        id="originalPrompt" 
                         placeholder="Enter your prompt here..."
                         aria-label="Enter your original prompt"
+                        data-max-length="2000"
                     ></textarea>
+                    <div class="char-counter" id="charCounter">0/2000</div>
                     <div class="options">
                         <select id="promptType" aria-label="Select prompt type">
                             <option value="general">General</option>
@@ -41,10 +49,13 @@
                         <p class="placeholder">Your enhanced prompt will appear here...</p>
                     </div>
                     <div class="actions">
-                        <button id="copyBtn" class="secondary-btn">
+                        <button id="shareBtn" class="secondary-btn" title="Share Prompt">
+                            <i class="fas fa-share-alt"></i> Share
+                        </button>
+                        <button id="copyBtn" class="secondary-btn" title="Copy to Clipboard">
                             <i class="fas fa-copy"></i> Copy
                         </button>
-                        <button id="saveBtn" class="secondary-btn">
+                        <button id="saveBtn" class="secondary-btn" title="Save Prompt">
                             <i class="fas fa-save"></i> Save
                         </button>
                     </div>
@@ -64,8 +75,11 @@
         </footer>
     </div>
 
-    <script type="module" src="js/bestPractices.js"></script>
-    <script type="module" src="js/promptEnhancer.js"></script>
+    <script type="module" src="js/features/uiFeatures.js"></script>
+    <script type="module" src="js/features/promptTypes.js"></script>
+    <script type="module" src="js/features/enhancementRules.js"></script>
+    <script type="module" src="js/features/promptValidator.js"></script>
+    <script type="module" src="js/features/promptEnhancer.js"></script>
     <script type="module" src="js/main.js"></script>
 </body>
 </html> 
