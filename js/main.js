@@ -1,10 +1,12 @@
 import { PromptEnhancer } from './features/promptEnhancer.js';
 import { promptTypes } from './features/promptTypes.js';
 import { uiFeatures } from './features/uiFeatures.js';
+import { ShareManager } from './features/shareFeatures.js';
 
 class PromptUI {
     constructor() {
         this.enhancer = new PromptEnhancer();
+        this.shareManager = new ShareManager();
         this.initializeElements();
         this.initializeFeatures();
         this.attachEventListeners();
@@ -109,7 +111,7 @@ class PromptUI {
         const enhancedText = this.elements.enhancedPrompt.textContent;
         if (!enhancedText || enhancedText.includes('Your enhanced prompt will appear here...')) {
             uiFeatures.notifications.show('Please generate an enhanced prompt first.', 'error');
-            return;
+            return { success: false, message: 'No prompt to share' };
         }
 
         const promptData = {
@@ -118,11 +120,61 @@ class PromptUI {
             type: this.elements.promptType.value
         };
 
-        const result = await uiFeatures.sharing.sharePrompt(promptData);
-        uiFeatures.notifications.show(
-            result.message || (result.success ? 'Shared successfully!' : 'Failed to share.'),
-            result.success ? 'success' : 'error'
-        );
+        // Show share options if available
+        const platforms = this.shareManager.getAvailablePlatforms();
+        if (platforms.length > 1 && !navigator.share) {
+            // If we have multiple platforms and no native share, show platform selection
+            const platform = await this.showSharePlatformDialog(platforms);
+            if (platform) {
+                return await this.shareManager.share(promptData, platform);
+            }
+            return { success: false, message: 'Share cancelled' };
+        }
+
+        // Otherwise use default sharing
+        return await this.shareManager.share(promptData);
+    }
+
+    async showSharePlatformDialog(platforms) {
+        // Create a simple dialog for platform selection
+        const dialog = document.createElement('div');
+        dialog.className = 'share-dialog';
+        dialog.innerHTML = `
+            <div class="share-dialog-content">
+                <h3>Share Enhanced Prompt</h3>
+                <div class="share-platforms">
+                    ${platforms.map(platform => `
+                        <button class="share-platform-btn" data-platform="${platform}">
+                            <i class="fab fa-${platform}"></i>
+                            <span>${platform.charAt(0).toUpperCase() + platform.slice(1)}</span>
+                        </button>
+                    `).join('')}
+                </div>
+                <button class="share-dialog-close">
+                    <i class="fas fa-times"></i>
+                    <span>Cancel</span>
+                </button>
+            </div>
+        `;
+
+        return new Promise(resolve => {
+            const handleClick = (e) => {
+                const platformBtn = e.target.closest('.share-platform-btn');
+                if (platformBtn) {
+                    const platform = platformBtn.dataset.platform;
+                    dialog.remove();
+                    resolve(platform);
+                }
+            };
+
+            dialog.querySelector('.share-platforms').addEventListener('click', handleClick);
+            dialog.querySelector('.share-dialog-close').addEventListener('click', () => {
+                dialog.remove();
+                resolve(null);
+            });
+
+            document.body.appendChild(dialog);
+        });
     }
 
     async copyToClipboard() {
