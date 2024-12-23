@@ -314,4 +314,26 @@ class PromptUI {
 // Initialize the UI when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     window.promptUI = new PromptUI();
+});
+
+// Initialize dark mode button with pulse animation
+document.addEventListener('DOMContentLoaded', () => {
+    const darkModeBtn = document.getElementById('darkModeBtn');
+    
+    // Add pulse animation class
+    darkModeBtn.classList.add('pulse');
+    
+    // Remove pulse after 3 animations (6 seconds)
+    setTimeout(() => {
+        darkModeBtn.classList.remove('pulse');
+    }, 6000);
+    
+    // Remove pulse on hover or click
+    darkModeBtn.addEventListener('mouseenter', () => {
+        darkModeBtn.classList.remove('pulse');
+    });
+    
+    darkModeBtn.addEventListener('click', () => {
+        darkModeBtn.classList.remove('pulse');
+    });
 }); 

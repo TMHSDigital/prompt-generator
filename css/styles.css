@@ -354,147 +354,29 @@ footer {
 /* Feature Buttons */
 .feature-buttons {
     position: absolute;
-    top: 0;
-    right: 0;
+    top: 1rem;
+    right: 1rem;
     display: flex;
     gap: 0.75rem;
 }
 
 .feature-btn {
-    padding: 0.5rem;
-    border-radius: 0.375rem;
-    background: transparent;
-    border: 1px solid var(--border-color);
-    cursor: pointer;
-    color: var(--text-color);
-    transition: all 0.2s ease;
-}
-
-.feature-btn:hover {
-    background: var(--background-color);
-}
-
-.feature-btn.active {
-    background: var(--primary-color);
-    color: white;
-    border-color: var(--primary-color);
-}
-
-/* Responsive Design Updates */
-@media (max-width: 768px) {
-    .notification {
-        left: 1rem;
-        right: 1rem;
-        text-align: center;
-    }
-
-    .feature-buttons {
-        flex-wrap: wrap;
-        justify-content: center;
-    }
-}
-
-/* Share Dialog */
-.share-dialog {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-    opacity: 0;
-    animation: fadeIn 0.2s ease forwards;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-.share-dialog-content {
-    background: white;
-    padding: 2rem;
+    width: 2.75rem;
+    height: 2.75rem;
     border-radius: 1rem;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-    max-width: 90%;
-    width: 500px;
-    transform: translateY(20px);
-    animation: slideUp 0.3s ease forwards;
-    max-height: 90vh;
-    overflow-y: auto;
-}
-
-@keyframes slideUp {
-    from { transform: translateY(20px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
-}
-
-.dark-mode .share-dialog-content {
-    background: var(--dark-surface);
-    color: var(--dark-text);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-}
-
-.share-dialog h3 {
-    font-size: 1.5rem;
-    font-weight: 700;
-    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    margin-bottom: 1.5rem;
-    text-align: center;
-}
-
-.share-section {
-    margin-bottom: 2rem;
-}
-
-.share-section:last-of-type {
-    margin-bottom: 1.5rem;
-}
-
-.share-section h4 {
-    font-size: 1rem;
-    font-weight: 600;
-    color: var(--text-color);
-    margin-bottom: 1rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 1px solid var(--border-color);
-}
-
-.dark-mode .share-section h4 {
-    color: var(--dark-text);
-    border-color: #404040;
-}
-
-.share-platforms {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-    gap: 1rem;
-}
-
-.share-platform-btn {
-    padding: 1rem;
+    background: white;
     border: 2px solid var(--border-color);
-    border-radius: 0.75rem;
-    background: transparent;
     cursor: pointer;
+    color: var(--text-color);
+    transition: all 0.3s ease;
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
-    transition: all 0.2s ease;
     position: relative;
     overflow: hidden;
 }
 
-.share-platform-btn::before {
+.feature-btn::before {
     content: '';
     position: absolute;
     top: 0;
@@ -507,130 +389,85 @@ footer {
     z-index: 0;
 }
 
-.share-platform-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.share-platform-btn:hover::before {
-    opacity: 0.05;
-}
-
-.share-platform-btn i {
-    font-size: 1.5rem;
-    margin-bottom: 0.25rem;
+.feature-btn i {
+    font-size: 1.25rem;
     z-index: 1;
+    transition: all 0.3s ease;
 }
 
-.share-platform-btn span {
-    font-size: 0.875rem;
-    font-weight: 500;
-    z-index: 1;
-}
-
-.dark-mode .share-platform-btn {
-    border-color: #404040;
-}
-
-.dark-mode .share-platform-btn:hover {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-}
-
-.share-dialog-close {
-    width: 100%;
-    padding: 1rem;
+/* Dark Mode Toggle Specific Styles */
+#darkModeBtn {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
     border: none;
-    border-radius: 0.75rem;
-    background: var(--background-color);
-    color: var(--text-color);
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
+    color: white;
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2);
 }
 
-.share-dialog-close:hover {
-    background: var(--border-color);
+#darkModeBtn:hover {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 6px 16px rgba(245, 158, 11, 0.3);
 }
 
-.dark-mode .share-dialog-close {
-    background: var(--dark-bg);
-    color: var(--dark-text);
-}
-
-.dark-mode .share-dialog-close:hover {
-    background: #404040;
-}
-
-/* Platform-specific styling */
-.share-platform-btn[data-platform="twitter"] {
-    color: #1DA1F2;
-    border-color: #1DA1F2;
-}
-
-.share-platform-btn[data-platform="linkedin"] {
-    color: #0077B5;
-    border-color: #0077B5;
-}
-
-.share-platform-btn[data-platform="facebook"] {
-    color: #1877F2;
-    border-color: #1877F2;
-}
-
-.share-platform-btn[data-platform="whatsapp"] {
-    color: #25D366;
-    border-color: #25D366;
-}
-
-.share-platform-btn[data-platform="telegram"] {
-    color: #0088cc;
-    border-color: #0088cc;
-}
-
-.share-platform-btn[data-platform="email"] {
-    color: #EA4335;
-    border-color: #EA4335;
-}
-
-.share-platform-btn[data-platform="copyLink"] {
-    color: var(--primary-color);
-    border-color: var(--primary-color);
-}
-
-.share-platform-btn[data-platform="qrCode"] {
-    color: #000000;
-    border-color: #000000;
-}
-
-.dark-mode .share-platform-btn[data-platform="qrCode"] {
-    color: #ffffff;
-    border-color: #ffffff;
-}
-
-/* QR Code Modal */
-.qr-code-container {
-    text-align: center;
-    padding: 1rem;
-    background: white;
+#darkModeBtn::after {
+    content: 'Toggle theme';
+    position: absolute;
+    bottom: -2.5rem;
+    left: 50%;
+    transform: translateX(-50%) translateY(10px);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 0.5rem 0.75rem;
     border-radius: 0.5rem;
-    margin-top: 1rem;
+    font-size: 0.875rem;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s ease;
+    pointer-events: none;
 }
 
-.dark-mode .qr-code-container {
-    background: var(--dark-surface);
+#darkModeBtn:hover::after {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
 }
 
-/* Dark mode adjustments for gradient text */
-.dark-mode header h1,
-.dark-mode .share-dialog h3 {
-    background: linear-gradient(135deg, #60a5fa, #3b82f6);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
+/* Dark Mode Button States */
+.dark-mode #darkModeBtn {
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+}
+
+.dark-mode #darkModeBtn:hover {
+    box-shadow: 0 6px 16px rgba(59, 130, 246, 0.3);
+}
+
+.dark-mode #darkModeBtn i {
+    transform: rotate(360deg);
+}
+
+/* Pulse Animation for Initial Load */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.feature-btn.pulse {
+    animation: pulse 2s ease infinite;
+}
+
+/* Mobile Adjustments */
+@media (max-width: 768px) {
+    .feature-buttons {
+        top: 0.75rem;
+        right: 0.75rem;
+    }
+
+    .feature-btn {
+        width: 2.5rem;
+        height: 2.5rem;
+    }
 }
 
 /* Responsive Design Updates */
