@@ -128,6 +128,13 @@ header p {
     height: 3.25rem;
 }
 
+.form-select option {
+    padding: 0.75rem 1rem;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    font-size: 0.9375rem;
+}
+
 .form-select:hover {
     border-color: var(--primary-color);
     transform: translateY(-1px);
@@ -162,6 +169,11 @@ header p {
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23e5e5e5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
 }
 
+.dark-mode .form-select option {
+    background-color: var(--dark-bg);
+    color: var(--dark-text);
+}
+
 .dark-mode .form-select:hover {
     border-color: var(--primary-color);
     background-color: var(--dark-hover);
@@ -194,5 +206,160 @@ header p {
         width: 100%;
         min-width: 0;
         height: 3rem;
+    }
+}
+
+/* Add missing styles for text elements */
+textarea, .enhanced-output {
+    flex: 1;
+    min-height: 250px;
+    padding: 1.5rem;
+    border: 2px solid var(--border-color);
+    border-radius: 1rem;
+    font-size: 1.125rem;
+    line-height: 1.7;
+    background: var(--background-color);
+    color: var(--text-color);
+    transition: all 0.2s ease;
+    resize: vertical;
+    max-height: 500px;
+}
+
+textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+/* Dark mode adjustments for text elements */
+.dark-mode textarea,
+.dark-mode .enhanced-output {
+    background: var(--dark-bg);
+    border-color: var(--dark-border);
+    color: var(--dark-text);
+}
+
+.dark-mode textarea:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+}
+
+/* Add styles for buttons */
+.primary-btn {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    border: none;
+    height: 3.25rem;
+    padding: 0 1.5rem;
+    border-radius: 1rem;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 160px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.primary-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+}
+
+.secondary-btn {
+    background: transparent;
+    border: 2px solid var(--border-color);
+    color: var(--text-color);
+    height: 3rem;
+    padding: 0 1.25rem;
+    border-radius: 1rem;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 130px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.secondary-btn:hover {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1);
+}
+
+/* Dark mode button adjustments */
+.dark-mode .secondary-btn {
+    background: transparent;
+    border-color: var(--dark-border);
+    color: var(--dark-text);
+}
+
+.dark-mode .secondary-btn:hover {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    background-color: var(--dark-hover);
+}
+
+/* Character counter styles */
+.char-counter {
+    font-size: 0.875rem;
+    color: var(--text-color);
+    opacity: 0.8;
+    text-align: right;
+    margin-top: 0.5rem;
+}
+
+.dark-mode .char-counter {
+    color: var(--dark-text);
+}
+
+/* Add styles for headings */
+h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-color);
+    margin-bottom: 1rem;
+}
+
+.dark-mode h2 {
+    color: var(--dark-text);
+}
+
+/* Improvements section */
+.improvements-section {
+    background: white;
+    padding: 2.5rem;
+    border-radius: 1.25rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    margin-top: 2rem;
+}
+
+.dark-mode .improvements-section {
+    background: var(--dark-surface);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Actions section */
+.actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    margin-top: 1.5rem;
+}
+
+@media (max-width: 768px) {
+    .actions {
+        flex-wrap: wrap;
+    }
+    
+    .secondary-btn {
+        flex: 1;
+        min-width: 0;
     }
 }
