@@ -7,81 +7,194 @@ export class PromptValidator {
 
     validate(prompt, medium, type, options = {}) {
         this.errors = [];
-        const typeInfo = mediumTypes[medium]?.types[type];
-
-        if (!typeInfo) {
-            this.errors.push('Invalid prompt type');
+        
+        // Basic validation
+        if (!this.validateBasics(prompt)) {
             return false;
         }
 
-        // Check length
-        const maxLength = medium === 'text' ? 2000 : 1000;
-        if (prompt.length > maxLength) {
-            this.errors.push(`Prompt exceeds maximum length of ${maxLength} characters`);
+        // Medium-specific validation
+        if (!this.validateMedium(prompt, medium)) {
+            return false;
         }
 
-        // Check required factors
-        const factors = getFactors(medium, type);
-        factors.forEach(factor => {
-            if (!this.hasFactor(prompt, factor, options)) {
-                this.errors.push(`Missing required factor: ${factor}`);
-            }
-        });
+        // Type-specific validation
+        if (!this.validateType(prompt, medium, type)) {
+            return false;
+        }
+
+        // Factor validation
+        if (!this.validateFactors(prompt, medium, type, options)) {
+            return false;
+        }
 
         return this.errors.length === 0;
     }
 
-    hasFactor(prompt, factor, options) {
-        switch (factor) {
-            case 'objective':
-                return /(^i want|^i need|^please|^could you|^help me)/i.test(prompt);
-            case 'context':
-                return /(context|background|situation):/i.test(prompt);
-            case 'format':
-                return true; // Format will be added if missing
-            case 'subject':
-                return prompt.length > 3; // Basic check for image subject
-            case 'style':
-                return options.style || /(style|looking like|similar to)/i.test(prompt);
-            case 'quality':
-                return options.quality || /(quality|resolution|detailed)/i.test(prompt);
-            case 'role':
-                return options.role || /(you are|act as|behave like)/i.test(prompt);
-            case 'tone':
-                return options.tone || /(formal|informal|professional|casual|friendly)/i.test(prompt);
-            case 'language':
-                return options.language || /(in|using|with) (language|programming language|syntax):/i.test(prompt);
-            case 'purpose':
-                return options.purpose || /(purpose|goal|objective|aim):/i.test(prompt);
-            case 'documentation':
-                return options.documentation || /(comments|documentation|explain)/i.test(prompt);
-            case 'tests':
-                return options.tests || /(test cases|unit tests|testing)/i.test(prompt);
-            case 'composition':
-                return options.composition || /(composition|layout|arrangement|positioning)/i.test(prompt);
-            case 'lighting':
-                return options.lighting || /(lighting|illumination|shadows|brightness)/i.test(prompt);
-            case 'color':
-                return options.color || /(color|palette|tones|hues)/i.test(prompt);
-            case 'mood':
-                return options.mood || /(mood|atmosphere|feeling|emotion)/i.test(prompt);
-            case 'perspective':
-                return options.perspective || /(perspective|angle|view|viewpoint)/i.test(prompt);
-            case 'modification':
-                return options.modification || /(modify|change|adjust|transform)/i.test(prompt);
-            case 'strength':
-                return options.strength || /(strength|intensity|power|level)/i.test(prompt);
-            case 'preservation':
-                return options.preservation || /(preserve|maintain|keep|retain)/i.test(prompt);
-            case 'blend':
-                return options.blend || /(blend|mix|combine|merge)/i.test(prompt);
-            case 'diversity':
-                return options.diversity || /(diverse|different|variety|range)/i.test(prompt);
-            case 'consistency':
-                return options.consistency || /(consistent|coherent|uniform|matching)/i.test(prompt);
-            default:
-                return true;
+    validateBasics(prompt) {
+        if (!prompt || typeof prompt !== 'string') {
+            this.errors.push('Prompt must be a non-empty string');
+            return false;
         }
+
+        if (prompt.length < 3) {
+            this.errors.push('Prompt is too short');
+            return false;
+        }
+
+        if (prompt.length > 2000) {
+            this.errors.push('Prompt exceeds maximum length of 2000 characters');
+            return false;
+        }
+
+        // Check for common issues
+        if (/[<>{}]/g.test(prompt)) {
+            this.errors.push('Prompt contains invalid characters');
+            return false;
+        }
+
+        return true;
+    }
+
+    validateMedium(prompt, medium) {
+        if (!mediumTypes[medium]) {
+            this.errors.push(`Invalid medium: ${medium}`);
+            return false;
+        }
+
+        // Medium-specific checks
+        switch (medium) {
+            case 'text':
+                if (!this.validateTextPrompt(prompt)) {
+                    return false;
+                }
+                break;
+            case 'image':
+                if (!this.validateImagePrompt(prompt)) {
+                    return false;
+                }
+                break;
+        }
+
+        return true;
+    }
+
+    validateTextPrompt(prompt) {
+        // Check for clear sentence structure
+        if (!/[.!?]$/.test(prompt.trim())) {
+            this.errors.push('Text prompt should end with proper punctuation');
+            return false;
+        }
+
+        // Check for minimum word count
+        const wordCount = prompt.split(/\s+/).length;
+        if (wordCount < 3) {
+            this.errors.push('Text prompt should contain at least 3 words');
+            return false;
+        }
+
+        return true;
+    }
+
+    validateImagePrompt(prompt) {
+        // Check for descriptive elements
+        const hasDescriptiveElements = /(color|style|lighting|composition|mood|atmosphere|quality)/i.test(prompt);
+        if (!hasDescriptiveElements) {
+            this.errors.push('Image prompt should include descriptive elements');
+            return false;
+        }
+
+        // Check for subject clarity
+        const hasSubject = /\b(a|an|the)\s+\w+/i.test(prompt);
+        if (!hasSubject) {
+            this.errors.push('Image prompt should clearly specify the subject');
+            return false;
+        }
+
+        return true;
+    }
+
+    validateType(prompt, medium, type) {
+        const mediumInfo = mediumTypes[medium];
+        if (!mediumInfo?.types[type]) {
+            this.errors.push(`Invalid type: ${type} for medium: ${medium}`);
+            return false;
+        }
+
+        // Type-specific validation
+        switch (type) {
+            case 'code':
+                if (!this.validateCodePrompt(prompt)) {
+                    return false;
+                }
+                break;
+            case 'chat':
+                if (!this.validateChatPrompt(prompt)) {
+                    return false;
+                }
+                break;
+        }
+
+        return true;
+    }
+
+    validateCodePrompt(prompt) {
+        // Check for language specification
+        const hasLanguage = /(in|using|with)\s+(javascript|python|java|c\+\+|ruby|php|html|css|sql)/i.test(prompt);
+        if (!hasLanguage) {
+            this.errors.push('Code prompt should specify programming language');
+            return false;
+        }
+
+        return true;
+    }
+
+    validateChatPrompt(prompt) {
+        // Check for conversational elements
+        const hasConversationalElements = /(ask|tell|say|respond|answer|explain)/i.test(prompt);
+        if (!hasConversationalElements) {
+            this.errors.push('Chat prompt should include conversational elements');
+            return false;
+        }
+
+        return true;
+    }
+
+    validateFactors(prompt, medium, type, options) {
+        const factors = getFactors(medium, type);
+        let isValid = true;
+
+        factors.forEach(factor => {
+            if (!this.hasFactor(prompt, factor, options)) {
+                this.errors.push(`Missing factor: ${factor}`);
+                isValid = false;
+            }
+        });
+
+        return isValid;
+    }
+
+    hasFactor(prompt, factor, options) {
+        const factorPatterns = {
+            objective: /(goal|objective|purpose|task|aim):|^(i want|i need|please|could you)/im,
+            context: /(context|background|situation):|given that|assuming/i,
+            role: /(you are|act as|behave like|take on the role)/i,
+            tone: /(tone|style|manner|voice):|professional|casual|formal/i,
+            format: /(format|structure|organize|layout):|step[- ]by[- ]step/i,
+            language: /(using|in|with)\s+\w+(\s+programming)?(\s+language)?/i,
+            documentation: /comments|documentation|explain|describe/i,
+            tests: /test cases?|unit tests?|testing/i,
+            quality: /(quality|resolution|detailed|professional)/i,
+            style: /(style|artistic|aesthetic|visual)/i,
+            composition: /(composition|layout|arrangement|positioning)/i,
+            lighting: /(lighting|illumination|shadows|brightness)/i,
+            mood: /(mood|atmosphere|feeling|emotion|tone)/i,
+            constraints: /(constraints?|limitations?|restrictions?|requirements?)/i,
+            examples: /(examples?|instances?|cases?|scenarios?)/i
+        };
+
+        // Check if the factor is present in the prompt or options
+        return factorPatterns[factor]?.test(prompt) || options[factor];
     }
 
     getErrors() {

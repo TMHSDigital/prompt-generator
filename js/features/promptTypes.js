@@ -5,48 +5,48 @@
 export const mediumTypes = {
     text: {
         name: 'Text',
-        description: 'For text-based AI models like ChatGPT, GPT-4, etc.',
+        description: 'Generate or enhance text-based prompts',
         types: {
             general: {
                 name: 'General',
-                description: 'For general purpose text generation',
-                factors: ['objective', 'context', 'tone', 'format', 'constraints', 'examples']
+                description: 'General purpose text generation',
+                factors: ['objective', 'tone', 'format', 'constraints', 'examples']
             },
             completion: {
                 name: 'Completion',
-                description: 'For completing or extending text',
-                factors: ['context', 'style', 'length', 'creativity', 'format', 'continuity']
+                description: 'Continue or complete existing text',
+                factors: ['creativity', 'format', 'continuity', 'style', 'context']
             },
             chat: {
                 name: 'Chat',
-                description: 'For conversational AI interactions',
-                factors: ['role', 'tone', 'context', 'memory', 'personality', 'constraints']
+                description: 'Conversational interactions',
+                factors: ['role', 'tone', 'context', 'memory', 'constraints']
             },
             code: {
                 name: 'Code',
-                description: 'For code generation and explanation',
+                description: 'Generate or modify code',
                 factors: ['language', 'purpose', 'complexity', 'style', 'documentation', 'tests']
             }
         }
     },
     image: {
         name: 'Image',
-        description: 'For image generation AI models like DALL-E, Midjourney, etc.',
+        description: 'Generate or modify image prompts',
         types: {
             generation: {
                 name: 'Generation',
-                description: 'For creating images from text descriptions',
+                description: 'Create new images',
                 factors: ['subject', 'style', 'composition', 'lighting', 'color', 'mood', 'detail', 'perspective']
             },
             editing: {
                 name: 'Editing',
-                description: 'For modifying or enhancing existing images',
+                description: 'Modify existing images',
                 factors: ['modification', 'strength', 'style', 'focus', 'preservation', 'blend']
             },
             variation: {
                 name: 'Variation',
-                description: 'For creating variations of images',
-                factors: ['elements', 'style', 'diversity', 'consistency', 'focus']
+                description: 'Create variations of images',
+                factors: ['elements', 'style', 'diversity', 'consistency']
             }
         }
     }
@@ -79,4 +79,34 @@ export function getTypeInfo(medium, type) {
  */
 export function getMediumInfo(medium) {
     return mediumTypes[medium] || null;
+}
+
+// Helper function to get best practices for a specific medium and type
+export function getBestPractices(medium, type) {
+    const commonPractices = {
+        clearContext: true,
+        chainOfThought: true,
+        validateInput: true,
+        useExamples: false,
+        temperature: 0.7
+    };
+
+    const mediumPractices = {
+        text: {
+            general: { useExamples: true },
+            completion: { temperature: 0.9 },
+            chat: { temperature: 0.8 },
+            code: { temperature: 0.3 }
+        },
+        image: {
+            generation: { useWeighting: true },
+            editing: { preserveContext: true },
+            variation: { maintainStyle: true }
+        }
+    };
+
+    return {
+        ...commonPractices,
+        ...(mediumPractices[medium]?.[type] || {})
+    };
 } 
