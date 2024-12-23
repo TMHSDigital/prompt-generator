@@ -285,18 +285,20 @@ footer {
 .dark-mode select,
 .dark-mode #improvementsList li {
     background: var(--dark-bg);
-    border-color: #404040;
+    border-color: var(--dark-border);
+    color: var(--dark-text);
 }
 
 .dark-mode .secondary-btn {
-    background: var(--dark-surface);
-    border-color: #404040;
+    background: transparent;
+    border-color: var(--dark-border);
     color: var(--dark-text);
 }
 
 .dark-mode .secondary-btn:hover {
-    border-color: #60a5fa;
-    color: #60a5fa;
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    background-color: var(--dark-hover);
 }
 
 /* Character Counter */
@@ -640,7 +642,7 @@ footer {
 /* Dark mode adjustments for buttons */
 .dark-mode .secondary-btn {
     background: transparent;
-    border-color: #4b5563;
+    border-color: var(--dark-border);
     color: var(--dark-text);
 }
 
@@ -949,6 +951,7 @@ footer {
     background-size: 1.25rem;
     padding-right: 2.5rem;
     min-width: 180px;
+    height: 3.25rem;
 }
 
 .form-select:hover {
@@ -989,6 +992,7 @@ footer {
     background-color: var(--background-color);
     color: var(--text-color);
     font-size: 0.9375rem;
+    line-height: 1.5;
 }
 
 /* Dark mode dropdown options */
@@ -1049,8 +1053,9 @@ footer {
 /* Dark mode tooltip adjustments */
 .dark-mode .form-select[title]:hover::after,
 .dark-mode .form-select option[title]:hover::after {
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.95);
     color: var(--dark-bg);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
 /* Mobile adjustments */
@@ -1062,7 +1067,8 @@ footer {
 
     .form-select {
         width: 100%;
-        padding: 0.75rem 1rem;
+        min-width: 0;
+        height: 3rem;
     }
 }
 
