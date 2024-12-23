@@ -18,9 +18,12 @@
             <div class="prompt-container">
                 <div class="input-section">
                     <h2>Original Prompt</h2>
-                    <textarea id="originalPrompt" placeholder="Enter your prompt here..."></textarea>
+                    <textarea id="originalPrompt" 
+                        placeholder="Enter your prompt here..."
+                        aria-label="Enter your original prompt"
+                    ></textarea>
                     <div class="options">
-                        <select id="promptType">
+                        <select id="promptType" aria-label="Select prompt type">
                             <option value="general">General</option>
                             <option value="completion">Completion</option>
                             <option value="chat">Chat</option>
@@ -34,7 +37,7 @@
 
                 <div class="output-section">
                     <h2>Enhanced Prompt</h2>
-                    <div id="enhancedPrompt" class="enhanced-output">
+                    <div id="enhancedPrompt" class="enhanced-output" aria-live="polite">
                         <p class="placeholder">Your enhanced prompt will appear here...</p>
                     </div>
                     <div class="actions">
@@ -61,8 +64,8 @@
         </footer>
     </div>
 
-    <script src="js/bestPractices.js"></script>
-    <script src="js/promptEnhancer.js"></script>
-    <script src="js/main.js"></script>
+    <script type="module" src="js/bestPractices.js"></script>
+    <script type="module" src="js/promptEnhancer.js"></script>
+    <script type="module" src="js/main.js"></script>
 </body>
 </html> 
