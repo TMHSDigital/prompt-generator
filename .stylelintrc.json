@@ -1,0 +1,9 @@
+{
+    "extends": "stylelint-config-standard",
+    "rules": {
+        "color-hex-length": "short",
+        "color-no-invalid-hex": true,
+        "custom-property-empty-line-before": null,
+        "declaration-empty-line-before": null
+    }
+} 
