@@ -30,7 +30,7 @@ body {
 .container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 2rem;
+    padding: 2rem 4rem;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
@@ -38,8 +38,9 @@ body {
 
 header {
     text-align: center;
-    margin-bottom: 3rem;
+    margin-bottom: 4rem;
     position: relative;
+    padding-top: 2rem;
 }
 
 header h1 {
@@ -63,18 +64,18 @@ header p {
 .prompt-container {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 2rem;
-    margin-bottom: 0;
+    gap: 3rem;
+    margin-bottom: 2rem;
 }
 
 .input-section, .output-section {
     background: white;
-    padding: 2rem;
-    border-radius: 1rem;
+    padding: 2.5rem;
+    border-radius: 1.25rem;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
     display: flex;
     flex-direction: column;
-    gap: 1.25rem;
+    gap: 1.5rem;
 }
 
 h2 {
@@ -86,14 +87,16 @@ h2 {
 
 textarea, .enhanced-output {
     flex: 1;
-    min-height: 200px;
-    padding: 1.25rem;
+    min-height: 250px;
+    padding: 1.5rem;
     border: 1px solid var(--border-color);
-    border-radius: 0.75rem;
-    font-size: 1rem;
-    line-height: 1.6;
+    border-radius: 1rem;
+    font-size: 1.125rem;
+    line-height: 1.7;
     background: var(--background-color);
-    transition: border-color 0.2s ease;
+    transition: all 0.2s ease;
+    resize: vertical;
+    max-height: 500px;
 }
 
 textarea:focus {
@@ -104,15 +107,16 @@ textarea:focus {
 
 .options {
     display: flex;
-    gap: 1rem;
+    gap: 1.25rem;
     align-items: center;
+    flex-wrap: wrap;
 }
 
 select {
-    min-width: 150px;
-    padding: 0.75rem 1rem;
+    min-width: 180px;
+    padding: 0.875rem 1.25rem;
     border: 1px solid var(--border-color);
-    border-radius: 0.75rem;
+    border-radius: 0.875rem;
     font-size: 1rem;
     background-color: white;
     cursor: pointer;
@@ -196,9 +200,10 @@ select:hover {
 
 .improvements-section {
     background: white;
-    padding: 2rem;
-    border-radius: 1rem;
+    padding: 2.5rem;
+    border-radius: 1.25rem;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    margin-top: 1rem;
 }
 
 .improvements-section h3 {
@@ -210,17 +215,17 @@ select:hover {
 
 #improvementsList {
     display: grid;
-    gap: 1rem;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.25rem;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
 }
 
 #improvementsList li {
-    padding: 1rem;
+    padding: 1.25rem;
     background: var(--background-color);
-    border-radius: 0.75rem;
+    border-radius: 1rem;
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: 1rem;
     transition: transform 0.2s ease;
 }
 
@@ -626,4 +631,59 @@ footer {
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
+}
+
+/* Responsive Design Updates */
+@media (max-width: 1200px) {
+    .container {
+        padding: 2rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .prompt-container {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+
+    .input-section, .output-section {
+        padding: 2rem;
+    }
+
+    .options {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    select, .primary-btn {
+        width: 100%;
+    }
+
+    .actions {
+        flex-wrap: wrap;
+        justify-content: stretch;
+    }
+
+    .secondary-btn {
+        flex: 1;
+        min-width: 0;
+    }
+}
+
+/* Character Counter Position */
+.char-counter {
+    position: absolute;
+    bottom: 0.75rem;
+    right: 1.5rem;
+    font-size: 0.875rem;
+    color: var(--text-color);
+    opacity: 0.8;
+    background: var(--background-color);
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.5rem;
+}
+
+/* Input Section Position */
+.input-section {
+    position: relative;
 } 
