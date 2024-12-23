@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Prompt Generator</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>AI Prompt Generator</h1>
+            <p>Transform your prompts with best practices</p>
+        </header>
+
+        <main>
+            <div class="prompt-container">
+                <div class="input-section">
+                    <h2>Original Prompt</h2>
+                    <textarea id="originalPrompt" placeholder="Enter your prompt here..."></textarea>
+                    <div class="options">
+                        <select id="promptType">
+                            <option value="general">General</option>
+                            <option value="completion">Completion</option>
+                            <option value="chat">Chat</option>
+                            <option value="image">Image Generation</option>
+                        </select>
+                        <button id="generateBtn" class="primary-btn">
+                            <i class="fas fa-magic"></i> Enhance Prompt
+                        </button>
+                    </div>
+                </div>
+
+                <div class="output-section">
+                    <h2>Enhanced Prompt</h2>
+                    <div id="enhancedPrompt" class="enhanced-output">
+                        <p class="placeholder">Your enhanced prompt will appear here...</p>
+                    </div>
+                    <div class="actions">
+                        <button id="copyBtn" class="secondary-btn">
+                            <i class="fas fa-copy"></i> Copy
+                        </button>
+                        <button id="saveBtn" class="secondary-btn">
+                            <i class="fas fa-save"></i> Save
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="improvements-section">
+                <h3>Improvements Made</h3>
+                <ul id="improvementsList">
+                    <!-- Will be populated by JavaScript -->
+                </ul>
+            </div>
+        </main>
+
+        <footer>
+            <p>Built with ❤️ by TMHS Digital</p>
+        </footer>
+    </div>
+
+    <script src="js/bestPractices.js"></script>
+    <script src="js/promptEnhancer.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html> 
