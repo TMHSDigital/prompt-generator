@@ -5,11 +5,13 @@ Transform your AI prompts with best practices and smart enhancements.
 ## Features
 
 - 🚀 **Smart Prompt Enhancement**
-  - Automatically improve prompts based on type
-  - Support for completion, chat, and image prompts
+  - Content medium selection (Text/Image)
+  - Type-specific enhancements
   - Real-time processing and feedback
+  - Comprehensive improvement suggestions
 
 - 🎨 **Beautiful Interface**
+  - Intuitive medium and type selection
   - Dark/Light mode with system preference detection
   - Responsive design for all devices
   - Clean, modern UI with smooth animations
@@ -18,11 +20,15 @@ Transform your AI prompts with best practices and smart enhancements.
   - Save your favorite prompts
   - View and manage prompt history
   - Quick load of previous prompts
+  - Categorized prompt organization
 
 - 🔗 **Easy Sharing**
   - Share enhanced prompts across platforms
-  - Generate shareable links
-  - Multiple sharing options (social, messaging, email)
+  - Multiple sharing options:
+    - Social media (LinkedIn, Instagram)
+    - Messaging apps (WhatsApp, Telegram)
+    - Email and direct links
+    - QR code generation
 
 ## Preview
 
@@ -35,10 +41,11 @@ Transform your AI prompts with best practices and smart enhancements.
 ## Getting Started
 
 1. Visit [Prompt Engine](https://your-username.github.io/prompt-engine)
-2. Enter your prompt in the input area
-3. Select the prompt type
-4. Click "Enhance Prompt" to see the improved version
-5. Use the share, copy, or save buttons to manage your prompt
+2. Select your content medium (Text/Image)
+3. Choose the appropriate prompt type
+4. Enter your prompt in the input area
+5. Click "Enhance Prompt" to see the improved version
+6. Use the share, copy, or save buttons to manage your prompt
 
 ## Local Development
 
@@ -77,7 +84,8 @@ prompt-engine/
 │   ├── bestPractices.js
 │   ├── promptEnhancer.js
 │   └── main.js
-└── index.html
+├── index.html
+└── footer.html
 ```
 
 ## Contributing
@@ -96,4 +104,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - Thanks to all contributors who have helped shape this project
 - Inspired by best practices in prompt engineering
-- Built with modern web technologies 
+- Built with modern web technologies
+- Created by TMHS Digital 
