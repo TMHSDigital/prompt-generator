@@ -472,10 +472,19 @@ class PromptUI {
 async function loadFooter() {
     try {
         const response = await fetch('footer.html');
+        if (!response.ok) {
+            throw new Error(`Failed to load footer: ${response.status}`);
+        }
         const footerContent = await response.text();
-        document.getElementById('footer-container').innerHTML = footerContent;
+        const footerContainer = document.getElementById('footer-container');
+        if (footerContainer) {
+            footerContainer.innerHTML = footerContent;
+        } else {
+            console.error('Footer container not found');
+        }
     } catch (error) {
         console.error('Failed to load footer:', error);
+        uiFeatures.notifications.show('Failed to load page footer', 'error');
     }
 }
 
@@ -484,8 +493,10 @@ let promptUI;
 try {
     promptUI = new PromptUI();
     
-    // Load footer
-    loadFooter();
+    // Load footer immediately
+    loadFooter().catch(error => {
+        console.error('Footer loading error:', error);
+    });
     
     // Cleanup on page unload
     window.addEventListener('unload', () => {
