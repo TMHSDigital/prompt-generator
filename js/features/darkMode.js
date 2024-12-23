@@ -2,15 +2,29 @@
 export const darkMode = {
     isDark: false,
     initialize() {
-        // Check system preference
-        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            this.enable();
-        }
-        // Check saved preference
+        // Check saved preference first
         const savedPreference = localStorage.getItem('darkMode');
         if (savedPreference === 'true') {
             this.enable();
+            return;
         }
+        
+        // Then check system preference
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            this.enable();
+        }
+
+        // Add system preference change listener
+        window.matchMedia('(prefers-color-scheme: dark)')
+            .addEventListener('change', e => {
+                if (localStorage.getItem('darkMode') === null) {
+                    if (e.matches) {
+                        this.enable();
+                    } else {
+                        this.disable();
+                    }
+                }
+            });
     },
     enable() {
         document.body.classList.add('dark-mode');

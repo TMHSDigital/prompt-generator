@@ -65,6 +65,7 @@ class PromptUI {
     initializeFeatures() {
         // Initialize dark mode
         uiFeatures.darkMode.initialize();
+        this.updateDarkModeButton(); // Add initial button state
 
         // Initialize character counter
         uiFeatures.characterCounter.initialize(
@@ -95,7 +96,7 @@ class PromptUI {
         // Dark mode toggle
         this.elements.darkModeBtn.addEventListener('click', () => {
             const isDark = uiFeatures.darkMode.toggle();
-            this.elements.darkModeBtn.innerHTML = `<i class="fas fa-${isDark ? 'sun' : 'moon'}"></i>`;
+            this.updateDarkModeButton();
             uiFeatures.notifications.show(`${isDark ? 'Dark' : 'Light'} mode enabled`, 'info');
         });
 
@@ -436,8 +437,10 @@ class PromptUI {
     }
 
     updateDarkModeButton() {
-        const icon = this.elements.darkModeBtn.querySelector('i');
-        icon.className = uiFeatures.darkMode.isDark ? 'fas fa-sun' : 'fas fa-moon';
+        const isDark = uiFeatures.darkMode.isDark;
+        this.elements.darkModeBtn.innerHTML = `<i class="fas fa-${isDark ? 'sun' : 'moon'}"></i>`;
+        this.elements.darkModeBtn.setAttribute('aria-pressed', isDark.toString());
+        this.elements.darkModeBtn.title = `${isDark ? 'Disable' : 'Enable'} dark mode`;
     }
 }
 
