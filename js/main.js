@@ -157,11 +157,18 @@ class PromptUI {
             // Update UI
             this.elements.enhancedPrompt.innerHTML = `<pre>${enhancedPrompt}</pre>`;
             this.elements.improvementsList.innerHTML = improvements
-                .map(improvement => `<li>${improvement}</li>`)
-                .join('');
+                .map(improvement => `
+                    <li>
+                        <span class="improvement-text">${improvement}</span>
+                    </li>
+                `).join('');
 
             // Show success message
-            uiFeatures.notifications.show('Prompt enhanced successfully!', 'success');
+            if (wasModified) {
+                uiFeatures.notifications.show('Prompt enhanced successfully!', 'success');
+            } else {
+                uiFeatures.notifications.show('Prompt is already well-structured.', 'info');
+            }
         } catch (error) {
             console.error('Enhancement error:', error);
             uiFeatures.notifications.show('Failed to enhance prompt.', 'error');

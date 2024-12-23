@@ -339,11 +339,91 @@ h2 {
     border-radius: 1.25rem;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
     margin-bottom: 4rem;
+    border: 2px solid var(--border-color);
 }
 
 .dark-mode .improvements-section {
     background: var(--dark-surface);
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    border-color: var(--dark-border);
+}
+
+/* Improvements List */
+#improvementsList {
+    display: grid;
+    gap: 1.25rem;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+#improvementsList li {
+    background: var(--background-color);
+    padding: 1.5rem;
+    border-radius: 1rem;
+    border: 2px solid var(--border-color);
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    transition: all 0.2s ease;
+    line-height: 1.6;
+    font-size: 1rem;
+    color: var(--text-color);
+}
+
+.improvement-text {
+    flex: 1;
+    display: block;
+    padding: 0.25rem 0;
+}
+
+.dark-mode #improvementsList li {
+    background: var(--dark-bg);
+    border-color: var(--dark-border);
+    color: var(--dark-text);
+}
+
+#improvementsList li::before {
+    content: "✓";
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    background: var(--success-color);
+    color: white;
+    border-radius: 50%;
+    flex-shrink: 0;
+    font-size: 1rem;
+    margin-top: 0.125rem;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.2);
+}
+
+.dark-mode #improvementsList li::before {
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.4);
+}
+
+#improvementsList li:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+    border-color: var(--primary-color);
+}
+
+.dark-mode #improvementsList li:hover {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    border-color: var(--primary-color);
+    background: var(--dark-hover);
+}
+
+.improvements-section h2 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 /* Actions section */
@@ -835,53 +915,6 @@ h2 {
 @keyframes spin {
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
-}
-
-/* Improvements List */
-#improvementsList {
-    display: grid;
-    gap: 1.25rem;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-}
-
-#improvementsList li {
-    background: var(--background-color);
-    padding: 1.25rem;
-    border-radius: 1rem;
-    border: 2px solid var(--border-color);
-    display: flex;
-    align-items: flex-start;
-    gap: 1rem;
-    transition: all 0.2s ease;
-}
-
-.dark-mode #improvementsList li {
-    background: var(--dark-bg);
-    border-color: var(--dark-border);
-}
-
-#improvementsList li::before {
-    content: "✓";
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 24px;
-    height: 24px;
-    background: var(--success-color);
-    color: white;
-    border-radius: 50%;
-    flex-shrink: 0;
-    font-size: 0.875rem;
-    margin-top: 0.125rem;
-}
-
-#improvementsList li:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-}
-
-.dark-mode #improvementsList li:hover {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 /* Mobile Adjustments */
