@@ -910,7 +910,7 @@ footer {
 .prompt-type-section {
     display: flex;
     gap: 1rem;
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
 }
 
 .select-group {
@@ -923,43 +923,71 @@ footer {
 .select-group label {
     font-size: 0.9rem;
     color: var(--text-color);
-    font-weight: 500;
+    font-weight: 600;
+    margin-left: 0.25rem;
 }
 
 .form-select {
-    padding: 0.5rem;
-    border: 1px solid var(--border-color);
-    border-radius: 0.5rem;
-    background-color: var(--bg-color);
+    padding: 0.875rem 1.25rem;
+    border: 2px solid var(--border-color);
+    border-radius: 1rem;
+    background-color: var(--background-color);
     color: var(--text-color);
-    font-size: 0.9rem;
+    font-size: 0.9375rem;
+    font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1.25rem;
+    padding-right: 2.5rem;
 }
 
 .form-select:hover {
     border-color: var(--primary-color);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1);
 }
 
 .form-select:focus {
     outline: none;
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 2px var(--primary-color-alpha);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
 }
 
 /* Dark mode adjustments */
 .dark-mode .form-select {
-    background-color: var(--bg-color-dark);
-    border-color: var(--border-color-dark);
+    background-color: var(--dark-surface);
+    border-color: #404040;
+    color: var(--dark-text);
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23e5e5e5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
 }
 
 .dark-mode .form-select:hover {
-    border-color: var(--primary-color-light);
+    border-color: var(--primary-color);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
 }
 
 .dark-mode .form-select:focus {
-    border-color: var(--primary-color-light);
-    box-shadow: 0 0 0 2px var(--primary-color-light-alpha);
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+    .prompt-type-section {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .form-select {
+        width: 100%;
+        padding: 0.75rem 1rem;
+    }
 }
 
 /* ... rest of the existing styles ... */ 
