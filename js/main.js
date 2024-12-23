@@ -1,12 +1,11 @@
 import { PromptEnhancer } from './features/promptEnhancer.js';
 import { promptTypes } from './features/promptTypes.js';
 import { uiFeatures } from './features/uiFeatures.js';
-import { ShareManager } from './features/shareFeatures.js';
+import { shareFeatures } from './features/shareFeatures.js';
 
 class PromptUI {
     constructor() {
         this.enhancer = new PromptEnhancer();
-        this.shareManager = new ShareManager();
         this.initializeElements();
         this.initializeFeatures();
         this.attachEventListeners();
@@ -124,18 +123,18 @@ class PromptUI {
         };
 
         // Show share options if available
-        const platforms = this.shareManager.getAvailablePlatforms();
+        const platforms = shareFeatures.getAvailablePlatforms();
         if (platforms.length > 1 && !navigator.share) {
             // If we have multiple platforms and no native share, show platform selection
             const platform = await this.showSharePlatformDialog(platforms);
             if (platform) {
-                return await this.shareManager.share(promptData, platform);
+                return await shareFeatures.sharePrompt(promptData, platform);
             }
             return { success: false, message: 'Share cancelled' };
         }
 
         // Otherwise use default sharing
-        return await this.shareManager.share(promptData);
+        return await shareFeatures.sharePrompt(promptData);
     }
 
     async showSharePlatformDialog(platforms) {
@@ -249,15 +248,16 @@ class PromptUI {
             timestamp: new Date().toISOString()
         };
 
-        this.saveToLocalStorage(promptData);
-        this.showSavedPrompts();
+        // Use the new savedPrompts module
+        uiFeatures.savedPrompts.save(promptData);
+        uiFeatures.savedPrompts.showViewer();
         uiFeatures.notifications.show('Prompt saved successfully!', 'success');
     }
 
     showSavedPrompts() {
         const viewer = document.getElementById('savedPromptsViewer');
         const listContainer = viewer.querySelector('.saved-prompts-list');
-        const savedPrompts = JSON.parse(localStorage.getItem('savedPrompts') || '[]');
+        const savedPrompts = uiFeatures.savedPrompts.getAll();
 
         listContainer.innerHTML = savedPrompts.length ? savedPrompts.map((prompt, index) => `
             <div class="saved-prompt-item">
@@ -294,21 +294,20 @@ class PromptUI {
                 this.elements.originalPrompt.value = prompt.original;
                 this.elements.promptType.value = prompt.type;
                 this.generateEnhancedPrompt();
-                viewer.classList.remove('show');
+                uiFeatures.savedPrompts.hideViewer();
             });
         });
 
         listContainer.querySelectorAll('.delete-prompt-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 const index = e.currentTarget.dataset.index;
-                savedPrompts.splice(index, 1);
-                localStorage.setItem('savedPrompts', JSON.stringify(savedPrompts));
+                uiFeatures.savedPrompts.delete(index);
                 this.showSavedPrompts(); // Refresh the list
                 uiFeatures.notifications.show('Prompt deleted successfully!', 'success');
             });
         });
 
-        viewer.classList.add('show');
+        uiFeatures.savedPrompts.showViewer();
     }
 
     getOptionsForType(type) {
