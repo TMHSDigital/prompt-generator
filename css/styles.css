@@ -985,3 +985,137 @@ h2 {
         display: none;
     }
 }
+
+/* Footer Styles */
+.site-footer {
+    margin-top: auto;
+    padding: 2rem 0;
+    text-align: center;
+    border-top: 1px solid var(--border-color);
+    background: white;
+}
+
+.dark-mode .site-footer {
+    border-color: var(--dark-border);
+    background: var(--dark-surface);
+}
+
+.footer-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.25rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+.footer-branding p {
+    font-size: 1rem;
+    color: var(--text-color);
+    opacity: 0.9;
+    margin: 0;
+}
+
+.dark-mode .footer-branding p {
+    color: var(--dark-text);
+}
+
+.footer-branding .heart {
+    display: inline-block;
+    animation: heartbeat 1.5s ease infinite;
+    margin: 0 0.25rem;
+}
+
+.social-links {
+    display: flex;
+    gap: 1.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.social-link {
+    color: var(--text-color);
+    font-size: 1.25rem;
+    opacity: 0.7;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    background: var(--background-color);
+    border: 2px solid var(--border-color);
+}
+
+.dark-mode .social-link {
+    color: var(--dark-text);
+    background: var(--dark-bg);
+    border-color: var(--dark-border);
+}
+
+.social-link:hover {
+    opacity: 1;
+    transform: translateY(-2px);
+    border-color: currentColor;
+}
+
+.social-link:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.3);
+}
+
+.social-link:hover i {
+    animation: bounce 0.5s ease;
+}
+
+/* Social media brand colors on hover */
+.social-link[title*="GitHub"]:hover {
+    color: #333;
+    border-color: #333;
+}
+
+.dark-mode .social-link[title*="GitHub"]:hover {
+    color: #fff;
+    border-color: #fff;
+}
+
+.social-link[title*="Twitter"]:hover {
+    color: #1DA1F2;
+    border-color: #1DA1F2;
+}
+
+.social-link[title*="LinkedIn"]:hover {
+    color: #0077B5;
+    border-color: #0077B5;
+}
+
+@keyframes heartbeat {
+    0% { transform: scale(1); }
+    5% { transform: scale(1.1); }
+    10% { transform: scale(1); }
+    15% { transform: scale(1.1); }
+    20% { transform: scale(1); }
+    100% { transform: scale(1); }
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+
+/* Screen reader only */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
