@@ -1,4 +1,7 @@
-// Prompt Types Configuration
+/**
+ * Defines the available mediums and their associated prompt types.
+ * Each medium has a name and a set of types, and each type has specific factors.
+ */
 export const mediumTypes = {
     text: {
         name: 'Text',
@@ -49,17 +52,31 @@ export const mediumTypes = {
     }
 };
 
-// Helper function to get all available factors for a medium and type
+/**
+ * Gets the factors associated with a specific medium and type.
+ * @param {string} medium - The medium (text/image)
+ * @param {string} type - The prompt type within the medium
+ * @returns {string[]} Array of factors for the specified medium and type
+ */
 export function getFactors(medium, type) {
     return mediumTypes[medium]?.types[type]?.factors || [];
 }
 
-// Helper function to get type info
+/**
+ * Gets information about a specific prompt type within a medium.
+ * @param {string} medium - The medium (text/image)
+ * @param {string} type - The prompt type to get info for
+ * @returns {Object|null} Type information or null if not found
+ */
 export function getTypeInfo(medium, type) {
     return mediumTypes[medium]?.types[type] || null;
 }
 
-// Helper function to get medium info
+/**
+ * Gets information about a specific medium.
+ * @param {string} medium - The medium to get info for
+ * @returns {Object|null} Medium information or null if not found
+ */
 export function getMediumInfo(medium) {
     return mediumTypes[medium] || null;
 } 
