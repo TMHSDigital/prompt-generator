@@ -176,21 +176,33 @@ export class PromptValidator {
 
     hasFactor(prompt, factor, options) {
         const factorPatterns = {
-            objective: /(goal|objective|purpose|task|aim):|^(i want|i need|please|could you)/im,
-            context: /(context|background|situation):|given that|assuming/i,
-            role: /(you are|act as|behave like|take on the role)/i,
-            tone: /(tone|style|manner|voice):|professional|casual|formal/i,
-            format: /(format|structure|organize|layout):|step[- ]by[- ]step/i,
-            language: /(using|in|with)\s+\w+(\s+programming)?(\s+language)?/i,
-            documentation: /comments|documentation|explain|describe/i,
-            tests: /test cases?|unit tests?|testing/i,
-            quality: /(quality|resolution|detailed|professional)/i,
-            style: /(style|artistic|aesthetic|visual)/i,
-            composition: /(composition|layout|arrangement|positioning)/i,
-            lighting: /(lighting|illumination|shadows|brightness)/i,
-            mood: /(mood|atmosphere|feeling|emotion|tone)/i,
-            constraints: /(constraints?|limitations?|restrictions?|requirements?)/i,
-            examples: /(examples?|instances?|cases?|scenarios?)/i
+            objective: /(goal|objective|purpose|task|aim|intent|target):|^(i want|i need|please|could you|help me|create|make|generate)/im,
+            context: /(context|background|situation|scenario|environment|setting|given|assuming|when|if):|for use in|in the context of/i,
+            role: /(you are|act as|behave like|take on the role|function as|serve as|perform as|work as)/i,
+            tone: /(tone|style|manner|voice|approach|attitude):|professional|casual|formal|friendly|serious|playful|technical/i,
+            format: /(format|structure|organize|layout|arrange|present|display):|step[- ]by[- ]step|in (points|sections|parts)/i,
+            language: /(using|in|with|written in|coded in|programmed in)\s+\w+(\s+programming)?(\s+language)?/i,
+            documentation: /comments|documentation|explain|describe|clarify|elaborate|annotate|document/i,
+            tests: /test cases?|unit tests?|testing|verification|validation|assert|check/i,
+            quality: /(quality|resolution|detailed|professional|refined|polished|high[- ]end|premium)/i,
+            style: /(style|artistic|aesthetic|visual|design|look|appearance|theme)/i,
+            composition: /(composition|layout|arrangement|positioning|framing|structure|balance|harmony)/i,
+            lighting: /(lighting|illumination|shadows|brightness|exposure|contrast|highlights|ambient)/i,
+            mood: /(mood|atmosphere|feeling|emotion|tone|ambiance|vibe|character)/i,
+            constraints: /(constraints?|limitations?|restrictions?|requirements?|boundaries|parameters|scope)/i,
+            examples: /(examples?|instances?|cases?|scenarios?|illustrations?|demonstrations?|samples?)/i,
+            creativity: /(creative|innovative|original|unique|novel|imaginative|inventive)/i,
+            continuity: /(continue|maintain|follow|consistent with|in line with|matching|flowing)/i,
+            memory: /(remember|recall|previous|earlier|before|maintain context|keep in mind)/i,
+            complexity: /(simple|complex|basic|advanced|intermediate|difficulty level|sophistication)/i,
+            detail: /(detailed|specific|precise|exact|thorough|comprehensive|complete)/i,
+            perspective: /(perspective|viewpoint|angle|pov|view|shot|camera)/i,
+            modification: /(modify|change|adjust|transform|alter|edit|revise|update)/i,
+            strength: /(strength|intensity|power|level|magnitude|force|impact)/i,
+            preservation: /(preserve|maintain|keep|retain|protect|safeguard|conserve)/i,
+            blend: /(blend|mix|combine|merge|integrate|fuse|unite)/i,
+            diversity: /(diverse|different|variety|range|assortment|mixture|varied)/i,
+            consistency: /(consistent|coherent|uniform|matching|aligned|harmonious|synchronized)/i
         };
 
         // Check if the factor is present in the prompt or options

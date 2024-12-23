@@ -15,6 +15,12 @@ export class PromptEnhancer {
             // Get best practices for this medium and type
             const practices = getBestPractices(medium, type);
             
+            // Add temperature recommendation if applicable
+            if (practices.temperature !== 0.7) { // Only add if different from default
+                enhancedPrompt = `[Temperature: ${practices.temperature}]\n${enhancedPrompt}`;
+                this.improvements.push(`Set temperature to ${practices.temperature}`);
+            }
+
             // Validate prompt
             if (!this.validator.validate(enhancedPrompt, medium, type, options)) {
                 const errors = this.validator.getErrors();
@@ -43,6 +49,13 @@ export class PromptEnhancer {
             // Apply medium-specific enhancements
             enhancedPrompt = this.applyMediumSpecificEnhancements(enhancedPrompt, medium, type, practices);
 
+            // Add version control comment if enabled
+            if (options.versionControl) {
+                const version = new Date().toISOString();
+                enhancedPrompt = `[Version: ${version}]\n${enhancedPrompt}`;
+                this.improvements.push('Added version control information');
+            }
+
             // Ensure prompt doesn't exceed max length
             const maxLength = medium === 'text' ? 2000 : 1000;
             enhancedPrompt = this.truncateIfNeeded(enhancedPrompt, maxLength);
@@ -50,7 +63,11 @@ export class PromptEnhancer {
             return {
                 enhancedPrompt,
                 improvements: this.improvements,
-                wasModified: enhancedPrompt !== prompt
+                wasModified: enhancedPrompt !== prompt,
+                settings: {
+                    temperature: practices.temperature,
+                    version: options.versionControl ? version : undefined
+                }
             };
         } catch (error) {
             console.error('Error enhancing prompt:', error);
@@ -159,17 +176,43 @@ export class PromptEnhancer {
             text: {
                 general: [
                     '- Clear, concise explanation with key points highlighted',
-                    '- Step-by-step instructions with examples'
+                    '- Step-by-step instructions with examples',
+                    '- Structured response with introduction, main points, and conclusion',
+                    '- Bullet points for easy readability'
+                ],
+                completion: [
+                    '- Natural continuation maintaining the original style and tone',
+                    '- Coherent transition from the existing content',
+                    '- Consistent voice and narrative flow'
+                ],
+                chat: [
+                    '- Natural conversational flow with appropriate context',
+                    '- Clear response addressing the user\'s query',
+                    '- Professional yet friendly tone with relevant information'
                 ],
                 code: [
-                    '- Well-documented function with clear parameters',
-                    '- Implementation with error handling'
+                    '- Well-documented function with clear parameters and return values',
+                    '- Implementation with comprehensive error handling',
+                    '- Clean, maintainable code following best practices',
+                    '- Unit tests covering edge cases'
                 ]
             },
             image: {
                 generation: [
-                    '- Professional portrait with soft lighting',
-                    '- Detailed landscape with atmospheric effects'
+                    '- Professional portrait with soft lighting and natural pose',
+                    '- Detailed landscape with atmospheric effects and depth',
+                    '- Product shot with clean background and proper lighting',
+                    '- Abstract concept with clear visual hierarchy'
+                ],
+                editing: [
+                    '- Color correction maintaining natural appearance',
+                    '- Style transfer preserving key elements',
+                    '- Background modification with seamless integration'
+                ],
+                variation: [
+                    '- Different perspectives of the same subject',
+                    '- Style variations maintaining core elements',
+                    '- Mood variations through lighting and color'
                 ]
             }
         };
