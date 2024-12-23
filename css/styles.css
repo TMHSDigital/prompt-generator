@@ -363,3 +363,316 @@ h2 {
         min-width: 0;
     }
 }
+
+/* Share Dialog */
+.share-dialog {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+.share-dialog-content {
+    background: white;
+    border-radius: 1.25rem;
+    padding: 2rem;
+    width: 90%;
+    max-width: 600px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.dark-mode .share-dialog-content {
+    background: var(--dark-surface);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.share-section {
+    margin-bottom: 2rem;
+}
+
+.share-section h4 {
+    color: var(--text-color);
+    margin-bottom: 1rem;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.dark-mode .share-section h4 {
+    color: var(--dark-text);
+}
+
+.share-platforms {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 1rem;
+}
+
+.share-platform-btn {
+    background: transparent;
+    border: 2px solid var(--border-color);
+    color: var(--text-color);
+    padding: 1rem;
+    border-radius: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.dark-mode .share-platform-btn {
+    border-color: var(--dark-border);
+    color: var(--dark-text);
+}
+
+.share-platform-btn:hover {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1);
+}
+
+.dark-mode .share-platform-btn:hover {
+    background-color: var(--dark-hover);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+}
+
+.share-platform-btn i {
+    font-size: 1.5rem;
+}
+
+.share-dialog-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: transparent;
+    border: none;
+    color: var(--text-color);
+    cursor: pointer;
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s ease;
+}
+
+.dark-mode .share-dialog-close {
+    color: var(--dark-text);
+}
+
+.share-dialog-close:hover {
+    color: var(--primary-color);
+    transform: scale(1.1);
+}
+
+/* Saved Prompts Viewer */
+.saved-prompts-viewer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+.saved-prompts-viewer.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.saved-prompts-content {
+    background: white;
+    width: 90%;
+    max-width: 800px;
+    max-height: 90vh;
+    border-radius: 1.25rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transform: translateY(20px);
+    transition: transform 0.3s ease;
+}
+
+.dark-mode .saved-prompts-content {
+    background: var(--dark-surface);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.saved-prompts-header {
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.dark-mode .saved-prompts-header {
+    border-color: var(--dark-border);
+}
+
+.saved-prompts-header h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.saved-prompts-list {
+    padding: 2rem;
+    overflow-y: auto;
+    max-height: calc(90vh - 5rem);
+}
+
+.saved-prompt-item {
+    background: var(--background-color);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    transition: all 0.2s ease;
+}
+
+.dark-mode .saved-prompt-item {
+    background: var(--dark-bg);
+}
+
+.saved-prompt-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.dark-mode .saved-prompt-item:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.prompt-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-color);
+    font-size: 0.875rem;
+}
+
+.dark-mode .prompt-info {
+    color: var(--dark-text);
+}
+
+.prompt-separator {
+    opacity: 0.5;
+}
+
+.prompt-date {
+    color: var(--text-color);
+    opacity: 0.7;
+    font-size: 0.875rem;
+}
+
+.dark-mode .prompt-date {
+    color: var(--dark-text);
+}
+
+.prompt-content {
+    margin: 1rem 0;
+}
+
+.prompt-content strong {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--text-color);
+}
+
+.dark-mode .prompt-content strong {
+    color: var(--dark-text);
+}
+
+.prompt-content p {
+    color: var(--text-color);
+    opacity: 0.9;
+    margin: 0 0 1rem;
+    line-height: 1.6;
+}
+
+.dark-mode .prompt-content p {
+    color: var(--dark-text);
+}
+
+.prompt-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+}
+
+.load-prompt-btn,
+.delete-prompt-btn {
+    padding: 0.75rem 1.25rem;
+    border-radius: 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.load-prompt-btn {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+}
+
+.load-prompt-btn:hover {
+    background: var(--secondary-color);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+}
+
+.delete-prompt-btn {
+    background: transparent;
+    color: var(--notification-error);
+    border: 1px solid currentColor;
+}
+
+.dark-mode .delete-prompt-btn {
+    color: #ef4444;
+}
+
+.delete-prompt-btn:hover {
+    background: rgba(239, 68, 68, 0.1);
+    transform: translateY(-1px);
+}
+
+.dark-mode .delete-prompt-btn:hover {
+    background: rgba(239, 68, 68, 0.2);
+}
+
+.no-prompts {
+    text-align: center;
+    padding: 3rem;
+    color: var(--text-color);
+    opacity: 0.7;
+    font-style: italic;
+}
+
+.dark-mode .no-prompts {
+    color: var(--dark-text);
+}
