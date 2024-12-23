@@ -3,60 +3,98 @@ import { darkMode } from './darkMode.js';
 import { savedPrompts } from './savedPrompts.js';
 import { shareFeatures } from './shareFeatures.js';
 
-// UI Features Module
+// Notifications module
+const notifications = {
+    timeoutId: null,
+    show(message, type = 'info') {
+        this.clear();
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        notification.textContent = message;
+        document.body.appendChild(notification);
+        
+        // Force reflow to trigger animation
+        notification.offsetHeight;
+        notification.classList.add('show');
+        
+        this.timeoutId = setTimeout(() => this.clear(), 3000);
+    },
+    
+    clear() {
+        if (this.timeoutId) {
+            clearTimeout(this.timeoutId);
+            this.timeoutId = null;
+        }
+        const existingNotification = document.querySelector('.notification');
+        if (existingNotification) {
+            existingNotification.remove();
+        }
+    }
+};
+
+// Loading state module
+const loadingState = {
+    show(element) {
+        const originalContent = element.innerHTML;
+        element.innerHTML = '<i class="fas fa-spinner"></i>';
+        element.classList.add('loading');
+        return () => {
+            element.innerHTML = originalContent;
+            element.classList.remove('loading');
+        };
+    }
+};
+
+// Character counter module
+const characterCounter = {
+    initialize(textarea, counter) {
+        const maxLength = parseInt(textarea.dataset.maxLength) || 2000;
+        const updateCount = () => {
+            const count = textarea.value.length;
+            counter.textContent = `${count}/${maxLength}`;
+            counter.style.color = count > maxLength ? 'var(--notification-error)' : '';
+        };
+        textarea.addEventListener('input', updateCount);
+        updateCount();
+    }
+};
+
+// Export all UI features
 export const uiFeatures = {
-    darkMode,
-    savedPrompts,
-    shareFeatures,
-
-    characterCounter: {
-        initialize(textarea, counter, maxLength = 2000) {
-            const updateCount = () => {
-                const length = textarea.value.length;
-                counter.textContent = `${length}/${maxLength}`;
-                
-                if (length >= maxLength * 0.9) {
-                    counter.classList.add('near-limit');
-                } else {
-                    counter.classList.remove('near-limit');
+    darkMode: {
+        ...darkMode,
+        cleanup() {
+            // Remove system color scheme listener if it exists
+            if (this.systemThemeQuery) {
+                this.systemThemeQuery.removeEventListener('change', this.handleSystemThemeChange);
+            }
+        }
+    },
+    savedPrompts: {
+        ...savedPrompts,
+        cleanup() {
+            // Remove event listeners from saved prompts viewer
+            const viewer = document.getElementById('savedPromptsViewer');
+            if (viewer) {
+                const closeBtn = viewer.querySelector('.close-viewer-btn');
+                if (closeBtn) {
+                    closeBtn.removeEventListener('click', this.hideViewer);
                 }
-            };
-
-            textarea.addEventListener('input', updateCount);
-            updateCount();
+            }
         }
     },
-
-    loadingState: {
-        show(button) {
-            const originalContent = button.innerHTML;
-            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
-            button.disabled = true;
-            button.classList.add('loading');
-
-            return () => {
-                button.innerHTML = originalContent;
-                button.disabled = false;
-                button.classList.remove('loading');
-            };
-        }
-    },
-
+    shareFeatures,
     notifications: {
-        show(message, type = 'info') {
-            const notification = document.createElement('div');
-            notification.className = `notification ${type}`;
-            notification.textContent = message;
-            document.body.appendChild(notification);
-
-            // Trigger animation
-            setTimeout(() => notification.classList.add('show'), 10);
-
-            // Remove after delay
-            setTimeout(() => {
-                notification.classList.remove('show');
-                setTimeout(() => notification.remove(), 300);
-            }, 3000);
+        ...notifications,
+        cleanup() {
+            this.clear();
+        }
+    },
+    loadingState,
+    characterCounter: {
+        ...characterCounter,
+        cleanup() {
+            // Character counter cleanup would be handled by the element removal
         }
     }
 }; 

@@ -3,9 +3,18 @@ import { mediumTypes, getFactors, getTypeInfo, getMediumInfo } from './features/
 import { uiFeatures } from './features/uiFeatures.js';
 import { shareFeatures } from './features/shareFeatures.js';
 
+// Error handling for module loading
+window.addEventListener('error', (event) => {
+    if (event.filename.includes('.js')) {
+        console.error('Module loading error:', event.error);
+        uiFeatures.notifications.show('Failed to load application. Please refresh the page.', 'error');
+    }
+});
+
 class PromptUI {
     constructor() {
         this.enhancer = new PromptEnhancer();
+        this.boundHandlers = new Map();
         this.initializeElements();
         this.initializeFeatures();
         this.attachEventListeners();
@@ -78,39 +87,54 @@ class PromptUI {
     }
 
     attachEventListeners() {
-        // Generate enhanced prompt
-        this.elements.generateBtn.addEventListener('click', () => this.generateEnhancedPrompt());
-
-        // Copy enhanced prompt
-        this.elements.copyBtn.addEventListener('click', () => this.copyToClipboard());
-
-        // Share prompt
-        this.elements.shareBtn.addEventListener('click', async () => {
+        // Store bound handlers for cleanup
+        this.boundHandlers.set('generate', () => this.generateEnhancedPrompt());
+        this.boundHandlers.set('copy', () => this.copyToClipboard());
+        this.boundHandlers.set('share', async () => {
             const result = await this.sharePrompt();
             uiFeatures.notifications.show(result.message, result.success ? 'success' : 'error');
         });
-
-        // Save prompt
-        this.elements.saveBtn.addEventListener('click', () => this.savePrompt());
-
-        // Dark mode toggle
-        this.elements.darkModeBtn.addEventListener('click', () => {
+        this.boundHandlers.set('save', () => this.savePrompt());
+        this.boundHandlers.set('darkMode', () => {
             const isDark = uiFeatures.darkMode.toggle();
             this.updateDarkModeButton();
             uiFeatures.notifications.show(`${isDark ? 'Dark' : 'Light'} mode enabled`, 'info');
         });
-
-        // Handle textarea auto-resize
-        this.elements.originalPrompt.addEventListener('input', (e) => this.autoResizeTextarea(e.target));
-
-        // Handle medium change
-        this.elements.promptMedium.addEventListener('change', (e) => {
+        this.boundHandlers.set('autoResize', (e) => this.autoResizeTextarea(e.target));
+        this.boundHandlers.set('mediumChange', (e) => {
             this.updatePromptTypes(e.target.value);
             this.handleTypeChange();
         });
+        this.boundHandlers.set('typeChange', () => this.handleTypeChange());
 
-        // Handle type change
-        this.elements.promptType.addEventListener('change', () => this.handleTypeChange());
+        // Attach event listeners
+        this.elements.generateBtn.addEventListener('click', this.boundHandlers.get('generate'));
+        this.elements.copyBtn.addEventListener('click', this.boundHandlers.get('copy'));
+        this.elements.shareBtn.addEventListener('click', this.boundHandlers.get('share'));
+        this.elements.saveBtn.addEventListener('click', this.boundHandlers.get('save'));
+        this.elements.darkModeBtn.addEventListener('click', this.boundHandlers.get('darkMode'));
+        this.elements.originalPrompt.addEventListener('input', this.boundHandlers.get('autoResize'));
+        this.elements.promptMedium.addEventListener('change', this.boundHandlers.get('mediumChange'));
+        this.elements.promptType.addEventListener('change', this.boundHandlers.get('typeChange'));
+    }
+
+    cleanup() {
+        // Remove event listeners
+        this.elements.generateBtn.removeEventListener('click', this.boundHandlers.get('generate'));
+        this.elements.copyBtn.removeEventListener('click', this.boundHandlers.get('copy'));
+        this.elements.shareBtn.removeEventListener('click', this.boundHandlers.get('share'));
+        this.elements.saveBtn.removeEventListener('click', this.boundHandlers.get('save'));
+        this.elements.darkModeBtn.removeEventListener('click', this.boundHandlers.get('darkMode'));
+        this.elements.originalPrompt.removeEventListener('input', this.boundHandlers.get('autoResize'));
+        this.elements.promptMedium.removeEventListener('change', this.boundHandlers.get('mediumChange'));
+        this.elements.promptType.removeEventListener('change', this.boundHandlers.get('typeChange'));
+
+        // Clear bound handlers
+        this.boundHandlers.clear();
+
+        // Cleanup features
+        uiFeatures.darkMode.cleanup();
+        uiFeatures.savedPrompts.cleanup();
     }
 
     async generateEnhancedPrompt() {
@@ -444,10 +468,21 @@ class PromptUI {
     }
 }
 
-// Initialize the UI when DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
-    window.promptUI = new PromptUI();
-});
+// Initialize the UI
+let promptUI;
+try {
+    promptUI = new PromptUI();
+    
+    // Cleanup on page unload
+    window.addEventListener('unload', () => {
+        if (promptUI) {
+            promptUI.cleanup();
+        }
+    });
+} catch (error) {
+    console.error('Initialization error:', error);
+    uiFeatures.notifications.show('Failed to initialize application. Please refresh the page.', 'error');
+}
 
 // Initialize dark mode button with pulse animation
 document.addEventListener('DOMContentLoaded', () => {
