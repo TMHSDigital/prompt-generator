@@ -136,23 +136,65 @@ class PromptUI {
     }
 
     async showSharePlatformDialog(platforms) {
-        // Create a simple dialog for platform selection
         const dialog = document.createElement('div');
         dialog.className = 'share-dialog';
+        
+        // Group platforms into categories
+        const socialPlatforms = ['twitter', 'linkedin', 'facebook'];
+        const messagingPlatforms = ['whatsapp', 'telegram'];
+        const otherPlatforms = ['email', 'copyLink', 'qrCode'];
+
         dialog.innerHTML = `
             <div class="share-dialog-content">
                 <h3>Share Enhanced Prompt</h3>
-                <div class="share-platforms">
-                    ${platforms.map(platform => `
-                        <button class="share-platform-btn" data-platform="${platform}">
-                            <i class="fab fa-${platform}"></i>
-                            <span>${platform.charAt(0).toUpperCase() + platform.slice(1)}</span>
-                        </button>
-                    `).join('')}
+                
+                <div class="share-section">
+                    <h4>Social Media</h4>
+                    <div class="share-platforms">
+                        ${socialPlatforms.filter(p => platforms.includes(p)).map(platform => `
+                            <button class="share-platform-btn" data-platform="${platform}">
+                                <i class="fab fa-${platform}"></i>
+                                <span>${platform.charAt(0).toUpperCase() + platform.slice(1)}</span>
+                            </button>
+                        `).join('')}
+                    </div>
                 </div>
+
+                <div class="share-section">
+                    <h4>Messaging</h4>
+                    <div class="share-platforms">
+                        ${messagingPlatforms.filter(p => platforms.includes(p)).map(platform => `
+                            <button class="share-platform-btn" data-platform="${platform}">
+                                <i class="fab fa-${platform}"></i>
+                                <span>${platform.charAt(0).toUpperCase() + platform.slice(1)}</span>
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+
+                <div class="share-section">
+                    <h4>Other Options</h4>
+                    <div class="share-platforms">
+                        ${otherPlatforms.filter(p => platforms.includes(p)).map(platform => `
+                            <button class="share-platform-btn" data-platform="${platform}">
+                                <i class="fas fa-${
+                                    platform === 'email' ? 'envelope' :
+                                    platform === 'copyLink' ? 'link' :
+                                    platform === 'qrCode' ? 'qrcode' : ''
+                                }"></i>
+                                <span>${
+                                    platform === 'copyLink' ? 'Copy Link' :
+                                    platform === 'qrCode' ? 'QR Code' :
+                                    platform.charAt(0).toUpperCase() + platform.slice(1)
+                                }</span>
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+
                 <button class="share-dialog-close">
                     <i class="fas fa-times"></i>
-                    <span>Cancel</span>
+                    <span>Close</span>
                 </button>
             </div>
         `;

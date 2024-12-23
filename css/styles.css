@@ -360,9 +360,11 @@ footer {
     border-radius: 1rem;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
     max-width: 90%;
-    width: 400px;
+    width: 500px;
     transform: translateY(20px);
     animation: slideUp 0.3s ease forwards;
+    max-height: 90vh;
+    overflow-y: auto;
 }
 
 @keyframes slideUp {
@@ -387,11 +389,32 @@ footer {
     text-align: center;
 }
 
+.share-section {
+    margin-bottom: 2rem;
+}
+
+.share-section:last-of-type {
+    margin-bottom: 1.5rem;
+}
+
+.share-section h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-color);
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.dark-mode .share-section h4 {
+    color: var(--dark-text);
+    border-color: #404040;
+}
+
 .share-platforms {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
     gap: 1rem;
-    margin-bottom: 1.5rem;
 }
 
 .share-platform-btn {
@@ -495,6 +518,49 @@ footer {
 .share-platform-btn[data-platform="facebook"] {
     color: #1877F2;
     border-color: #1877F2;
+}
+
+.share-platform-btn[data-platform="whatsapp"] {
+    color: #25D366;
+    border-color: #25D366;
+}
+
+.share-platform-btn[data-platform="telegram"] {
+    color: #0088cc;
+    border-color: #0088cc;
+}
+
+.share-platform-btn[data-platform="email"] {
+    color: #EA4335;
+    border-color: #EA4335;
+}
+
+.share-platform-btn[data-platform="copyLink"] {
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.share-platform-btn[data-platform="qrCode"] {
+    color: #000000;
+    border-color: #000000;
+}
+
+.dark-mode .share-platform-btn[data-platform="qrCode"] {
+    color: #ffffff;
+    border-color: #ffffff;
+}
+
+/* QR Code Modal */
+.qr-code-container {
+    text-align: center;
+    padding: 1rem;
+    background: white;
+    border-radius: 0.5rem;
+    margin-top: 1rem;
+}
+
+.dark-mode .qr-code-container {
+    background: var(--dark-surface);
 }
 
 /* Dark mode adjustments for gradient text */
