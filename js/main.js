@@ -45,6 +45,10 @@ class PromptUI {
     }
 
     updatePromptTypes(medium) {
+        // Show loading state
+        this.elements.promptType.disabled = true;
+        this.elements.promptType.style.opacity = '0.7';
+
         const types = mediumTypes[medium]?.types || {};
         this.elements.promptType.innerHTML = Object.entries(types)
             .map(([value, type]) => `
@@ -52,6 +56,10 @@ class PromptUI {
                     ${type.name}
                 </option>
             `).join('');
+
+        // Remove loading state
+        this.elements.promptType.disabled = false;
+        this.elements.promptType.style.opacity = '1';
     }
 
     initializeFeatures() {
