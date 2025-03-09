@@ -209,8 +209,11 @@ class PromptUI {
             // Get enhanced prompt from promptEnhancer
             const enhancedPrompt = await this.enhancer.enhance(originalPrompt, medium, type);
             
+            // Format the enhanced prompt properly to ensure it fits in the container
+            const formattedPrompt = this.formatEnhancedPrompt(enhancedPrompt, medium);
+            
             // Display enhanced prompt
-            this.elements.enhancedPrompt.innerHTML = enhancedPrompt.replace(/\n/g, '<br>');
+            this.elements.enhancedPrompt.innerHTML = formattedPrompt;
             
             // Add improvements
             this.elements.improvementsList.innerHTML = '';
@@ -267,6 +270,31 @@ class PromptUI {
             this.elements.generateBtn.classList.remove('loading');
             this.elements.generateBtn.innerHTML = '<i class="fas fa-magic"></i> Enhance Prompt';
         }
+    }
+
+    // Format enhanced prompt for proper display
+    formatEnhancedPrompt(prompt, medium) {
+        // Sanitize HTML to prevent XSS
+        const sanitizedPrompt = this.sanitizeHTML(prompt);
+        
+        if (medium === 'image') {
+            // For image prompts, format with proper line breaks for parameters
+            // This helps with midjourney/stable diffusion style prompts
+            return sanitizedPrompt
+                .replace(/\(([^)]+)\)/g, '<span class="parameter">($1)</span>')
+                .replace(/\n/g, '<br>')
+                .replace(/,\s+/g, ',<br>');
+        } else {
+            // For text prompts, preserve formatting but ensure proper wrapping
+            return sanitizedPrompt.replace(/\n/g, '<br>');
+        }
+    }
+
+    // Simple HTML sanitizer
+    sanitizeHTML(text) {
+        const element = document.createElement('div');
+        element.textContent = text;
+        return element.innerHTML;
     }
 
     async sharePrompt() {
