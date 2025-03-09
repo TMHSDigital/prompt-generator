@@ -2,6 +2,8 @@ import { PromptEnhancer } from './features/promptEnhancer.js';
 import { mediumTypes, getFactors, getTypeInfo, getMediumInfo } from './features/promptTypes.js';
 import { uiFeatures } from './features/uiFeatures.js';
 import { shareFeatures } from './features/shareFeatures.js';
+import storageManager from './features/storageManager.js';
+import aiPromptHelper from './features/aiSuggestions.js';
 
 // Error handling for module loading
 window.addEventListener('error', (event) => {
@@ -20,6 +22,7 @@ class PromptUI {
         this.attachEventListeners();
         this.loadSavedPrompts();
         this.checkForSharedPrompt();
+        this.updateDarkModeButton();
     }
 
     initializeElements() {
@@ -34,7 +37,16 @@ class PromptUI {
             shareBtn: document.getElementById('shareBtn'),
             improvementsList: document.getElementById('improvementsList'),
             charCounter: document.getElementById('charCounter'),
-            darkModeBtn: document.getElementById('darkModeBtn')
+            darkModeBtn: document.getElementById('darkModeBtn'),
+            exportBtn: document.getElementById('exportBtn'),
+            importFile: document.getElementById('importFile'),
+            promptSearchField: document.getElementById('promptSearchField'),
+            notification: document.getElementById('notification'),
+            confirmDialog: document.getElementById('confirmDialog'),
+            confirmOk: document.getElementById('confirmOk'),
+            confirmCancel: document.getElementById('confirmCancel'),
+            confirmTitle: document.getElementById('confirmTitle'),
+            confirmMessage: document.getElementById('confirmMessage')
         };
 
         // Initialize medium selector
@@ -107,6 +119,28 @@ class PromptUI {
         });
         this.boundHandlers.set('typeChange', () => this.handleTypeChange());
 
+        // Export/Import functionality
+        this.elements.exportBtn.addEventListener('click', () => this.exportPrompts());
+        this.elements.importFile.addEventListener('change', (e) => this.importPrompts(e));
+        
+        // Search functionality
+        this.elements.promptSearchField.addEventListener('input', this.debounce(() => this.searchSavedPrompts(), 300));
+        
+        // Confirmation dialog events
+        this.elements.confirmOk.addEventListener('click', () => {
+            if (typeof this.confirmCallback === 'function') {
+                this.confirmCallback(true);
+            }
+            this.hideConfirmDialog();
+        });
+        
+        this.elements.confirmCancel.addEventListener('click', () => {
+            if (typeof this.confirmCallback === 'function') {
+                this.confirmCallback(false);
+            }
+            this.hideConfirmDialog();
+        });
+
         // Attach event listeners
         this.elements.generateBtn.addEventListener('click', this.boundHandlers.get('generate'));
         this.elements.copyBtn.addEventListener('click', this.boundHandlers.get('copy'));
@@ -116,6 +150,17 @@ class PromptUI {
         this.elements.originalPrompt.addEventListener('input', this.boundHandlers.get('autoResize'));
         this.elements.promptMedium.addEventListener('change', this.boundHandlers.get('mediumChange'));
         this.elements.promptType.addEventListener('change', this.boundHandlers.get('typeChange'));
+
+        // Add debounced handler for prompt text changes
+        this.elements.originalPrompt.addEventListener('input', this.debounce(() => {
+            this.updateCharCounter();
+            this.autoResizeTextarea(this.elements.originalPrompt);
+            
+            // Only trigger type analysis if there's substantial text
+            if (this.elements.originalPrompt.value.length > 15) {
+                this.handleTypeChange();
+            }
+        }, 1000));
     }
 
     cleanup() {
@@ -138,42 +183,89 @@ class PromptUI {
     }
 
     async generateEnhancedPrompt() {
-        const prompt = this.elements.originalPrompt.value.trim();
-        if (!prompt) {
-            uiFeatures.notifications.show('Please enter a prompt first.', 'error');
+        const originalPrompt = this.elements.originalPrompt.value.trim();
+        if (!originalPrompt) {
+            this.showNotification('Please enter a prompt to enhance', 'info');
             return;
         }
 
-        const medium = this.elements.promptMedium.value;
-        const type = this.elements.promptType.value;
-        const options = this.getOptionsForType(medium, type);
-
-        // Show loading state
-        const hideLoading = uiFeatures.loadingState.show(this.elements.generateBtn);
+        // Set loading state
+        this.elements.generateBtn.classList.add('loading');
+        this.elements.generateBtn.innerHTML = '<i class="fas fa-spinner"></i> Enhancing...';
+        this.elements.enhancedPrompt.innerHTML = '<p>Processing prompt...</p>';
+        this.elements.improvementsList.innerHTML = '';
 
         try {
-            const { enhancedPrompt, improvements, wasModified } = this.enhancer.enhance(prompt, medium, type, options);
+            // Get the selected medium and type
+            const medium = this.elements.promptMedium.value;
+            const type = this.elements.promptType.value;
 
-            // Update UI
-            this.elements.enhancedPrompt.innerHTML = `<pre>${enhancedPrompt}</pre>`;
-            this.elements.improvementsList.innerHTML = improvements
-                .map(improvement => `
-                    <li>
-                        <span class="improvement-text">${improvement}</span>
-                    </li>
-                `).join('');
+            // Log analytics for enhancement
+            storageManager.logAnalytics('enhance', { medium, type, length: originalPrompt.length });
 
-            // Show success message
-            if (wasModified) {
-                uiFeatures.notifications.show('Prompt enhanced successfully!', 'success');
-            } else {
-                uiFeatures.notifications.show('Prompt is already well-structured.', 'info');
+            // Get AI suggestions
+            const aiSuggestions = await aiPromptHelper.getSuggestions(originalPrompt, medium, type);
+
+            // Get enhanced prompt from promptEnhancer
+            const enhancedPrompt = await this.enhancer.enhance(originalPrompt, medium, type);
+            
+            // Display enhanced prompt
+            this.elements.enhancedPrompt.innerHTML = enhancedPrompt.replace(/\n/g, '<br>');
+            
+            // Add improvements
+            this.elements.improvementsList.innerHTML = '';
+            
+            // Add improvements from AI suggestions
+            aiSuggestions.forEach(suggestion => {
+                const li = document.createElement('li');
+                li.innerHTML = `<span class="improvement-text">${suggestion}</span>`;
+                this.elements.improvementsList.appendChild(li);
+            });
+            
+            // Add basic improvements
+            const basicImprovements = [
+                'Added structural consistency',
+                'Improved clarity and specificity',
+                'Enhanced formatting for better readability'
+            ];
+            
+            basicImprovements.forEach(improvement => {
+                const li = document.createElement('li');
+                li.innerHTML = `<span class="improvement-text">${improvement}</span>`;
+                this.elements.improvementsList.appendChild(li);
+            });
+            
+            // Add type-specific improvements
+            if (type === 'code') {
+                const codeImprovements = [
+                    'Added language-specific syntax guidance',
+                    'Included error handling suggestions'
+                ];
+                
+                codeImprovements.forEach(improvement => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `<span class="improvement-text">${improvement}</span>`;
+                    this.elements.improvementsList.appendChild(li);
+                });
+            } else if (medium === 'image') {
+                const imageImprovements = [
+                    'Added style and composition details',
+                    'Improved visual description clarity'
+                ];
+                
+                imageImprovements.forEach(improvement => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `<span class="improvement-text">${improvement}</span>`;
+                    this.elements.improvementsList.appendChild(li);
+                });
             }
         } catch (error) {
-            console.error('Enhancement error:', error);
-            uiFeatures.notifications.show('Failed to enhance prompt.', 'error');
+            console.error('Error enhancing prompt:', error);
+            this.elements.enhancedPrompt.innerHTML = '<p class="error">Error enhancing prompt. Please try again.</p>';
         } finally {
-            hideLoading();
+            // Remove loading state
+            this.elements.generateBtn.classList.remove('loading');
+            this.elements.generateBtn.innerHTML = '<i class="fas fa-magic"></i> Enhance Prompt';
         }
     }
 
@@ -300,7 +392,7 @@ class PromptUI {
         }
     }
 
-    savePrompt() {
+    async savePrompt() {
         const originalText = this.elements.originalPrompt.value;
         const enhancedText = this.elements.enhancedPrompt.textContent;
         const medium = this.elements.promptMedium.value;
@@ -456,9 +548,30 @@ class PromptUI {
         }
     }
 
-    handleTypeChange() {
-        if (this.elements.originalPrompt.value && !this.elements.enhancedPrompt.textContent.includes('Your enhanced prompt will appear here...')) {
-            this.generateEnhancedPrompt();
+    async handleTypeChange() {
+        // Get current prompt text
+        const promptText = this.elements.originalPrompt.value.trim();
+        
+        // If there's text and AI helper is available, analyze and suggest type
+        if (promptText.length > 10) {
+            try {
+                const { medium, type } = await aiPromptHelper.analyzePromptType(promptText);
+                
+                // Only update if the suggested type is different
+                if (medium !== this.elements.promptMedium.value) {
+                    this.elements.promptMedium.value = medium;
+                    this.updatePromptTypes(medium);
+                }
+                
+                // Set the type after the options are updated
+                setTimeout(() => {
+                    this.elements.promptType.value = type;
+                    this.showNotification(`Detected prompt type: ${medium} - ${type}`, 'info');
+                }, 0);
+            } catch (error) {
+                console.error('Error analyzing prompt type:', error);
+                // Silently fail - don't disrupt user experience
+            }
         }
     }
 
@@ -472,6 +585,200 @@ class PromptUI {
         this.elements.darkModeBtn.innerHTML = `<i class="fas fa-${isDark ? 'sun' : 'moon'}"></i>`;
         this.elements.darkModeBtn.setAttribute('aria-pressed', isDark.toString());
         this.elements.darkModeBtn.title = `${isDark ? 'Disable' : 'Enable'} dark mode`;
+    }
+
+    // Debounce function for search
+    debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    }
+    
+    async exportPrompts() {
+        try {
+            await storageManager.exportPrompts();
+        } catch (error) {
+            console.error('Export failed:', error);
+            this.showNotification('Failed to export prompts', 'error');
+        }
+    }
+    
+    async importPrompts(event) {
+        try {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            // Confirm import
+            this.showConfirmDialog(
+                'Import Prompts',
+                'This will add the imported prompts to your existing collection. Continue?',
+                async (confirmed) => {
+                    if (confirmed) {
+                        try {
+                            const count = await storageManager.importPrompts(file);
+                            this.showNotification(`Successfully imported ${count} prompts`, 'success');
+                            // Refresh the saved prompts view if it's open
+                            if (document.getElementById('savedPromptsViewer').classList.contains('show')) {
+                                this.showSavedPrompts();
+                            }
+                        } catch (error) {
+                            console.error('Import failed:', error);
+                            this.showNotification('Import failed: ' + error.message, 'error');
+                        }
+                    }
+                    // Reset the file input
+                    event.target.value = '';
+                }
+            );
+        } catch (error) {
+            console.error('Import failed:', error);
+            this.showNotification('Failed to import prompts', 'error');
+            // Reset the file input
+            event.target.value = '';
+        }
+    }
+    
+    async searchSavedPrompts() {
+        const query = this.elements.promptSearchField.value.trim();
+        const prompts = await storageManager.searchPrompts(query);
+        this.renderSavedPrompts(prompts);
+    }
+    
+    renderSavedPrompts(prompts) {
+        const savedPromptsList = document.querySelector('.saved-prompts-list');
+        
+        if (!prompts || prompts.length === 0) {
+            savedPromptsList.innerHTML = '<div class="no-prompts">No saved prompts found</div>';
+            return;
+        }
+        
+        // Sort prompts by date (newest first)
+        prompts.sort((a, b) => new Date(b.date) - new Date(a.date));
+        
+        savedPromptsList.innerHTML = '';
+        
+        prompts.forEach(prompt => {
+            const date = new Date(prompt.date);
+            const formattedDate = `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
+            
+            const promptElement = document.createElement('div');
+            promptElement.className = 'saved-prompt-item';
+            promptElement.dataset.id = prompt.id;
+            
+            promptElement.innerHTML = `
+                <div class="prompt-info">
+                    <div class="prompt-content">
+                        <strong>${prompt.medium} - ${prompt.type}</strong>
+                        <p>${this.truncateText(prompt.original, 80)}</p>
+                    </div>
+                    <div class="prompt-date">${formattedDate}</div>
+                </div>
+                <div class="prompt-actions">
+                    <button class="load-prompt-btn" title="Load Prompt">
+                        <i class="fas fa-upload"></i>
+                    </button>
+                    <button class="delete-prompt-btn" title="Delete Prompt">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            `;
+            
+            // Load prompt event
+            promptElement.querySelector('.load-prompt-btn').addEventListener('click', () => {
+                this.loadPrompt(prompt);
+            });
+            
+            // Delete prompt event
+            promptElement.querySelector('.delete-prompt-btn').addEventListener('click', () => {
+                this.showConfirmDialog(
+                    'Delete Prompt',
+                    'Are you sure you want to delete this prompt?',
+                    async (confirmed) => {
+                        if (confirmed) {
+                            try {
+                                await storageManager.deletePrompt(prompt.id);
+                                promptElement.remove();
+                                this.showNotification('Prompt deleted successfully', 'success');
+                                
+                                // Check if there are no more prompts
+                                if (savedPromptsList.children.length === 0) {
+                                    savedPromptsList.innerHTML = '<div class="no-prompts">No saved prompts found</div>';
+                                }
+                            } catch (error) {
+                                console.error('Failed to delete prompt:', error);
+                                this.showNotification('Failed to delete prompt', 'error');
+                            }
+                        }
+                    }
+                );
+            });
+            
+            savedPromptsList.appendChild(promptElement);
+        });
+    }
+    
+    loadPrompt(prompt) {
+        // Set values
+        this.elements.originalPrompt.value = prompt.original;
+        this.elements.promptMedium.value = prompt.medium;
+        this.updatePromptTypes(prompt.medium);
+        setTimeout(() => {
+            this.elements.promptType.value = prompt.type;
+        }, 0);
+        
+        // Set enhanced prompt
+        this.elements.enhancedPrompt.innerHTML = prompt.enhanced;
+        
+        // Set improvements if available
+        if (prompt.improvements && Array.isArray(prompt.improvements)) {
+            this.elements.improvementsList.innerHTML = '';
+            prompt.improvements.forEach(improvement => {
+                const li = document.createElement('li');
+                li.textContent = improvement;
+                this.elements.improvementsList.appendChild(li);
+            });
+        }
+        
+        // Close the saved prompts viewer
+        document.getElementById('savedPromptsViewer').classList.remove('show');
+        
+        // Auto-resize the textarea
+        this.autoResizeTextarea(this.elements.originalPrompt);
+        
+        this.showNotification('Prompt loaded', 'success');
+    }
+    
+    showNotification(message, type = 'info') {
+        this.elements.notification.textContent = message;
+        this.elements.notification.className = `notification ${type}`;
+        this.elements.notification.classList.add('show');
+        
+        setTimeout(() => {
+            this.elements.notification.classList.remove('show');
+        }, 3000);
+    }
+    
+    showConfirmDialog(title, message, callback) {
+        this.elements.confirmTitle.textContent = title;
+        this.elements.confirmMessage.textContent = message;
+        this.confirmCallback = callback;
+        this.elements.confirmDialog.style.display = 'flex';
+    }
+    
+    hideConfirmDialog() {
+        this.elements.confirmDialog.style.display = 'none';
+        this.confirmCallback = null;
+    }
+    
+    truncateText(text, maxLength) {
+        if (!text) return '';
+        return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
     }
 }
 

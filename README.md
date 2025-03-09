@@ -48,12 +48,66 @@ Transform your AI prompts with best practices and smart enhancements.
 
 ## Getting Started
 
-1. Visit [Prompt Engine](https://your-username.github.io/prompt-engine)
+1. Visit [Prompt Engine](https://tmhs-digital.github.io/prompt-engine)
 2. Select your content medium (Text/Image)
 3. Choose the appropriate prompt type
 4. Enter your prompt in the input area
 5. Click "Enhance Prompt" to see the improved version
 6. Use the share, copy, or save buttons to manage your prompt
+
+## Deployment Instructions
+
+### Setting Up Icons for PWA
+
+Before deploying to GitHub Pages, you need to generate the PWA icons:
+
+1. Create a high-resolution square image (at least 512x512 pixels) to use as your app icon
+2. Name this file `icon-source.png` and place it in the project root
+
+#### Option 1: Using the Shell Script (Recommended)
+If you have ImageMagick installed (available on most systems):
+
+```bash
+# Make the script executable
+chmod +x create-icons.sh
+
+# Run the script
+./create-icons.sh
+```
+
+#### Option 2: Using Node.js
+If you prefer using Node.js:
+
+```bash
+npm install sharp
+node generate-icons.js
+```
+
+#### Option 3: Manual Creation
+Alternatively, you can:
+- Use an online tool like [PWA Asset Generator](https://www.pwabuilder.com/imageGenerator)
+- Manually create the icons and place them in `images/icons/` directory with the correct filenames
+
+### Deploying to GitHub Pages
+
+1. Update the GitHub Pages URL in these files:
+   - `robots.txt`
+   - `sitemap.xml`
+   Replace `tmhs-digital.github.io/prompt-engine` with your GitHub username or organization.
+
+2. Push your changes to GitHub:
+```bash
+git add .
+git commit -m "Deploy Prompt Engine with PWA support"
+git push origin main
+```
+
+3. Enable GitHub Pages in your repository settings:
+   - Go to Settings > Pages
+   - Select the main branch as the source
+   - Click Save
+
+4. Your app will be available at `https://your-username.github.io/prompt-engine/`
 
 ## Prompt Types
 

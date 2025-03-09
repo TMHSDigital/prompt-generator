@@ -4,9 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#f8fafc">
+    <meta name="description" content="Transform your AI prompts with best practices and smart enhancements">
     <title>Prompt Engine - Transform Your Prompts</title>
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- PWA Support -->
+    <link rel="manifest" href="manifest.webmanifest">
+    <!-- Use a favicon from favicon.io as a fallback until custom icons are generated -->
+    <link rel="apple-touch-icon" href="https://cdn.jsdelivr.net/gh/favicon-generator/favicon-generator@master/favicons/apple-touch-icon.png">
+    <link rel="icon" href="https://cdn.jsdelivr.net/gh/favicon-generator/favicon-generator@master/favicons/favicon.ico">
 </head>
 <body>
     <div class="container">
@@ -14,6 +20,9 @@
             <div class="feature-buttons">
                 <button id="darkModeBtn" class="feature-btn" title="Toggle Dark Mode" aria-label="Toggle Dark Mode">
                     <i class="fas fa-moon"></i>
+                </button>
+                <button id="installPwaBtn" class="feature-btn" title="Install App" aria-label="Install App" style="display: none;">
+                    <i class="fas fa-download"></i>
                 </button>
             </div>
             <h1>Prompt Engine</h1>
@@ -66,6 +75,9 @@
                         <button id="saveBtn" class="secondary-btn" title="Save Prompt">
                             <i class="fas fa-save"></i> Save
                         </button>
+                        <button id="exportBtn" class="secondary-btn" title="Export Prompt">
+                            <i class="fas fa-file-export"></i> Export
+                        </button>
                     </div>
                 </div>
             </div>
@@ -73,6 +85,16 @@
             <div class="improvements-section">
                 <h2>Improvements Made</h2>
                 <ul id="improvementsList" aria-label="List of improvements made to the prompt"></ul>
+            </div>
+
+            <!-- Import prompt section -->
+            <div class="import-section" style="margin-top: 1rem; text-align: center;">
+                <label for="importFile" class="import-label">
+                    <span class="secondary-btn" style="display: inline-block; cursor: pointer;">
+                        <i class="fas fa-file-import"></i> Import Prompts
+                    </span>
+                    <input type="file" id="importFile" accept=".json,.txt" style="display: none;">
+                </label>
             </div>
         </main>
 
@@ -85,11 +107,29 @@
         <div class="saved-prompts-content">
             <div class="saved-prompts-header">
                 <h3>Saved Prompts</h3>
-                <button class="close-viewer-btn" title="Close saved prompts" aria-label="Close saved prompts">
-                    <i class="fas fa-times" aria-hidden="true"></i>
-                </button>
+                <div class="saved-prompts-controls">
+                    <input type="text" id="promptSearchField" placeholder="Search prompts..." aria-label="Search prompts">
+                    <button class="close-viewer-btn" title="Close saved prompts" aria-label="Close saved prompts">
+                        <i class="fas fa-times" aria-hidden="true"></i>
+                    </button>
+                </div>
             </div>
             <div class="saved-prompts-list"></div>
+        </div>
+    </div>
+
+    <!-- Notification system -->
+    <div id="notification" class="notification" role="alert" aria-live="assertive"></div>
+
+    <!-- Confirmation dialog -->
+    <div id="confirmDialog" class="modal" style="display: none;">
+        <div class="modal-content">
+            <h4 id="confirmTitle">Confirmation</h4>
+            <p id="confirmMessage">Are you sure you want to proceed?</p>
+            <div class="modal-actions">
+                <button id="confirmCancel" class="secondary-btn">Cancel</button>
+                <button id="confirmOk" class="primary-btn">OK</button>
+            </div>
         </div>
     </div>
 
@@ -100,6 +140,40 @@
     <script type="module" src="js/features/promptValidator.js"></script>
     <script type="module" src="js/features/promptEnhancer.js"></script>
     <script type="module" src="js/features/shareFeatures.js"></script>
+    <script type="module" src="js/features/storageManager.js"></script>
     <script type="module" src="js/main.js"></script>
+
+    <!-- PWA Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => console.log('Service Worker registered'))
+                    .catch(err => console.log('Service Worker registration failed:', err));
+            });
+        }
+
+        // PWA Installation
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            // Show the install button
+            document.getElementById('installPwaBtn').style.display = 'inline-block';
+        });
+
+        document.getElementById('installPwaBtn').addEventListener('click', () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('User accepted the install prompt');
+                        document.getElementById('installPwaBtn').style.display = 'none';
+                    }
+                    deferredPrompt = null;
+                });
+            }
+        });
+    </script>
 </body>
 </html> 

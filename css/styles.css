@@ -1172,3 +1172,220 @@ main {
         margin-bottom: 1.5rem;
     }
 }
+
+/* Import/Export Buttons */
+.import-section {
+    margin-top: 2rem;
+    text-align: center;
+}
+
+.import-label {
+    cursor: pointer;
+    display: inline-block;
+}
+
+.import-label input[type="file"] {
+    display: none;
+}
+
+/* Search field in saved prompts */
+.saved-prompts-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+#promptSearchField {
+    flex: 1;
+    padding: 0.5rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    background-color: #f8fafc;
+}
+
+.dark-mode #promptSearchField {
+    background-color: #1e293b;
+    border-color: #334155;
+    color: #f8fafc;
+}
+
+/* Modal Dialog */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+    width: 90%;
+    max-width: 500px;
+}
+
+.dark-mode .modal-content {
+    background-color: #1e293b;
+    color: #f8fafc;
+}
+
+.modal h4 {
+    margin-top: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+}
+
+/* Character counter warning */
+.char-counter.warning {
+    color: #e53e3e;
+}
+
+.dark-mode .char-counter.warning {
+    color: #fc8181;
+}
+
+/* Loading indicator */
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    color: #64748b;
+}
+
+.loading i {
+    margin-right: 0.5rem;
+    animation: spin 1s linear infinite;
+}
+
+/* Tooltip Styles */
+[data-tooltip] {
+    position: relative;
+    cursor: help;
+}
+
+[data-tooltip]::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 125%;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 0.5rem;
+    background-color: #334155;
+    color: #f8fafc;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease;
+    z-index: 100;
+}
+
+[data-tooltip]:hover::after {
+    opacity: 1;
+    visibility: visible;
+}
+
+.dark-mode [data-tooltip]::after {
+    background-color: #f8fafc;
+    color: #334155;
+}
+
+/* Analytics styling */
+.analytics-section {
+    margin-top: 2rem;
+    padding: 1rem;
+    border-radius: 8px;
+    background-color: #f8fafc;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.dark-mode .analytics-section {
+    background-color: #1e293b;
+}
+
+.analytics-title {
+    margin-bottom: 1rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.analytics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.analytics-card {
+    padding: 1rem;
+    background-color: #fff;
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.dark-mode .analytics-card {
+    background-color: #334155;
+}
+
+.analytics-chart {
+    width: 100%;
+    height: 200px;
+    margin-top: 1rem;
+}
+
+/* Responsive fixes */
+@media (max-width: 768px) {
+    .saved-prompts-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    #promptSearchField {
+        margin-bottom: 0.5rem;
+    }
+    
+    .modal-content {
+        padding: 1rem;
+        width: 95%;
+    }
+    
+    .analytics-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* PWA install button */
+#installPwaBtn {
+    background-color: #3b82f6;
+    color: white;
+}
+
+.dark-mode #installPwaBtn {
+    background-color: #60a5fa;
+    color: #1e293b;
+}
+
+#installPwaBtn:hover {
+    background-color: #2563eb;
+}
+
+.dark-mode #installPwaBtn:hover {
+    background-color: #93c5fd;
+}
