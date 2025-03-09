@@ -1,0 +1,78 @@
+[
+  {
+    "original": "Write a blog post about artificial intelligence",
+    "enhanced": "Write a comprehensive 1500-word blog post about recent advances in artificial intelligence for a tech-savvy audience. Focus on practical applications in healthcare, finance, and education. Include specific examples, statistics from 2024-2025, and ethical considerations. Format with clear headings, bullet points for key takeaways, and a conclusion that addresses future implications.",
+    "medium": "text",
+    "type": "general",
+    "date": "2025-03-09T14:22:18.123Z",
+    "improvements": [
+      "Added specific word count",
+      "Defined target audience",
+      "Specified key focus areas",
+      "Added formatting instructions",
+      "Requested recent statistics and examples",
+      "Included ethical considerations"
+    ]
+  },
+  {
+    "original": "Code a function to calculate Fibonacci numbers",
+    "enhanced": "Create an efficient JavaScript function to calculate the nth Fibonacci number. The function should:\n\n1. Handle inputs up to n=50 without performance issues\n2. Include proper error handling for invalid inputs (negative numbers, non-integers)\n3. Use memoization to optimize performance\n4. Include JSDoc comments documenting parameters, return values, and examples\n5. Add unit tests that verify correct results for edge cases (0, 1, large values)",
+    "medium": "text",
+    "type": "code",
+    "date": "2025-03-08T09:15:42.456Z",
+    "improvements": [
+      "Specified programming language",
+      "Added performance requirements",
+      "Suggested optimization technique",
+      "Requested error handling",
+      "Added documentation requirements",
+      "Included testing guidelines"
+    ]
+  },
+  {
+    "original": "Create an image of a futuristic city",
+    "enhanced": "Generate a detailed image of a futuristic city in the year 2150. The cityscape should feature:\n\n- Gleaming skyscrapers with vertical gardens and solar glass facades\n- Flying vehicles between buildings on designated air lanes\n- Pedestrian-only zones with lush greenery and water features\n- A dramatic sunset with orange and purple hues creating strong lighting contrast\n- Photorealistic style with cinematic composition and depth of field\n- High level of architectural detail and environmental storytelling",
+    "medium": "image",
+    "type": "generation",
+    "date": "2025-03-07T18:30:11.789Z",
+    "improvements": [
+      "Added specific time period",
+      "Detailed architectural elements",
+      "Specified transportation systems",
+      "Added environmental elements",
+      "Defined lighting conditions",
+      "Specified artistic style and composition"
+    ]
+  },
+  {
+    "original": "Help me with a conversation with a customer service rep",
+    "enhanced": "Role-play as a helpful customer service representative for a major tech company. I'll be a customer who purchased a smartphone that stopped working after two weeks. Respond with empathy, follow a troubleshooting process to diagnose the issue, and offer solutions according to standard warranty policies. Keep responses concise and professional, and demonstrate active listening by referencing details I provide. If troubleshooting fails, explain the repair/replacement process clearly.",
+    "medium": "text",
+    "type": "chat",
+    "date": "2025-03-06T11:45:33.222Z",
+    "improvements": [
+      "Defined specific roles for the conversation",
+      "Added context about the problem",
+      "Requested empathetic responses",
+      "Structured a troubleshooting approach",
+      "Specified communication style",
+      "Included policy guidelines"
+    ]
+  },
+  {
+    "original": "Edit this image to make it more professional",
+    "enhanced": "Edit this portrait photograph to make it suitable for a professional LinkedIn profile. Adjustments should include:\n\n- Neutral background (light gray or blue preferred)\n- Balanced lighting to eliminate harsh shadows while maintaining natural skin tones\n- Subtle color correction for a clean, professional look\n- Minor retouching for a polished appearance (remove temporary blemishes, reduce shine)\n- Ensure the subject remains natural-looking without excessive editing\n- Crop to professional headshot proportions (maintain head and shoulders composition)\n- Preserve 80% of the original image elements",
+    "medium": "image",
+    "type": "editing",
+    "date": "2025-03-05T15:20:55.987Z",
+    "improvements": [
+      "Specified the purpose of the edit",
+      "Detailed background requirements",
+      "Added lighting instructions",
+      "Defined retouching parameters",
+      "Included natural appearance guidance",
+      "Added composition instructions",
+      "Specified preservation requirements"
+    ]
+  }
+] 

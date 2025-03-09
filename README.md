@@ -55,6 +55,15 @@ Transform your AI prompts with best practices and smart enhancements.
 5. Click "Enhance Prompt" to see the improved version
 6. Use the share, copy, or save buttons to manage your prompt
 
+### Using Import/Export Feature
+
+The app allows you to import and export prompts for backup or sharing:
+
+- **Export**: Click the "Export" button to download your saved prompts as a JSON file
+- **Import**: Click "Import Prompts" to upload a previously exported file
+
+Download our [example-prompts.json](example-prompts.json) file to see the format and try importing sample prompts. You can also use this as a template to create your own collection.
+
 ## Deployment Instructions
 
 ### Setting Up Icons for PWA
