@@ -1,107 +1,46 @@
 /**
- * AI Suggestions Module
- * Uses TensorFlow.js to provide AI-powered prompt suggestions
- * Runs completely client-side for privacy and offline capability
+ * Prompt Suggestions Module
+ * Provides rule-based suggestions for improving prompts based on keywords and patterns.
+ * Runs completely client-side.
  */
 
-// Minimal model for text classification and suggestions
-// Uses a pre-trained universal sentence encoder (USE) with a small classification head
 class AIPromptHelper {
     constructor() {
-        this.modelLoaded = false;
-        this.encoder = null;
+        // Flag to indicate if patterns and classifier are ready
+        this.initialized = false; 
         this.classifier = null;
         this.promptPatterns = null;
-        this.isLoading = false;
-        this.loadCallbacks = [];
     }
 
     /**
-     * Initialize the AI model
-     * Only loads when needed to conserve resources
+     * Initialize the suggestion system by loading patterns and setting up the classifier.
+     * This is now a synchronous operation.
      */
-    async init() {
-        if (this.modelLoaded || this.isLoading) return;
-        
-        this.isLoading = true;
-        
+    init() {
+        if (this.initialized) return;
+
         try {
-            // Load TensorFlow.js dynamically to avoid blocking initial page load
-            await this.loadTensorFlow();
-            
-            // Load the universal sentence encoder
-            this.encoder = await this.loadEncoder();
-            
             // Load prompt patterns
-            this.promptPatterns = await this.loadPromptPatterns();
+            this.promptPatterns = this.loadPromptPatterns();
             
             // Initialize the classifier
-            this.classifier = await this.createClassifier();
+            this.classifier = this.createClassifier();
             
-            this.modelLoaded = true;
-            
-            // Notify any pending callbacks
-            this.loadCallbacks.forEach(callback => callback());
-            this.loadCallbacks = [];
+            this.initialized = true;
+            console.log("Prompt suggestion system initialized.");
+
         } catch (error) {
-            console.error('Failed to load AI model:', error);
-        } finally {
-            this.isLoading = false;
+            console.error('Failed to initialize prompt suggestion system:', error);
+            // Keep initialized false so attempts might be made again later if applicable
         }
     }
 
     /**
-     * Load TensorFlow.js dynamically
+     * Load prompt patterns.
+     * These are predefined patterns and suggestions.
      */
-    async loadTensorFlow() {
-        return new Promise((resolve, reject) => {
-            // Check if already loaded
-            if (window.tf) {
-                resolve();
-                return;
-            }
-            
-            // Load TensorFlow.js script
-            const script = document.createElement('script');
-            script.src = 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.18.0/dist/tf.min.js';
-            script.async = true;
-            
-            script.onload = () => {
-                // Also load the USE model
-                const useScript = document.createElement('script');
-                useScript.src = 'https://cdn.jsdelivr.net/npm/@tensorflow-models/universal-sentence-encoder@1.3.3/dist/universal-sentence-encoder.min.js';
-                useScript.async = true;
-                
-                useScript.onload = () => resolve();
-                useScript.onerror = () => reject(new Error('Failed to load Universal Sentence Encoder'));
-                
-                document.body.appendChild(useScript);
-            };
-            
-            script.onerror = () => reject(new Error('Failed to load TensorFlow.js'));
-            
-            document.body.appendChild(script);
-        });
-    }
-
-    /**
-     * Load the universal sentence encoder model
-     */
-    async loadEncoder() {
-        try {
-            return await window.use.load();
-        } catch (error) {
-            console.error('Error loading encoder:', error);
-            throw error;
-        }
-    }
-
-    /**
-     * Load prompt patterns
-     * In a real implementation, this could be a more sophisticated dataset
-     */
-    async loadPromptPatterns() {
-        // Simple example patterns - in a real app, this would be a larger dataset
+    loadPromptPatterns() {
+        // Simple example patterns
         return {
             'text': {
                 'general': [
@@ -141,153 +80,142 @@ class AIPromptHelper {
     }
 
     /**
-     * Create a simple classifier for prompt enhancement
+     * Create a simple rule-based classifier for prompt type detection.
      */
-    async createClassifier() {
-        // In a production system, this would be a proper model
-        // For this demo, we use a simple rule-based system
+    createClassifier() {
+        // Simple rule-based system based on keywords
         return {
             classify: (text) => {
                 // Convert to lowercase for matching
                 const lowerText = text.toLowerCase();
                 
-                // Sample classifications
+                // Simple keyword-based classifications
                 if (lowerText.includes('code') || lowerText.includes('function') || lowerText.includes('program')) {
                     return 'code';
                 } else if (lowerText.includes('chat') || lowerText.includes('conversation')) {
                     return 'chat';
                 } else if (lowerText.includes('image') || lowerText.includes('picture') || lowerText.includes('photo')) {
-                    return 'image';
+                    // Basic check - might need refinement if medium is already known
+                    return 'generation'; // Default image type
                 } else if (lowerText.includes('continue') || lowerText.includes('finish')) {
                     return 'completion';
                 } else {
-                    return 'general';
+                    return 'general'; // Default text type
                 }
             }
         };
     }
 
     /**
-     * Wait for model to be loaded
-     */
-    async waitForModel() {
-        if (this.modelLoaded) return Promise.resolve();
-        
-        if (!this.isLoading) {
-            this.init();
-        }
-        
-        return new Promise(resolve => {
-            this.loadCallbacks.push(resolve);
-        });
-    }
-
-    /**
-     * Get suggestions for a prompt
+     * Get suggestions for a prompt based on rules and patterns.
      * @param {string} prompt - The user's prompt
      * @param {string} medium - Text or Image
      * @param {string} type - Prompt type
-     * @returns {Promise<Array>} - Array of suggestions
+     * @returns {Array<string>} - Array of suggestion strings
      */
-    async getSuggestions(prompt, medium, type) {
+    getSuggestions(prompt, medium, type) {
+        // Ensure initialization
+        if (!this.initialized) {
+            this.init();
+            // If init failed, return a generic suggestion
+            if (!this.initialized) return ['Ensure the suggestion system initialized correctly.']; 
+        }
+        
         try {
-            // Initialize if not already loaded
-            if (!this.modelLoaded && !this.isLoading) {
-                this.init();
-            }
-            
-            // If still loading, wait
-            if (!this.modelLoaded) {
-                await this.waitForModel();
-            }
-            
-            // Simple pattern matching for suggestions
             const suggestions = [];
+            const lowerPrompt = prompt.toLowerCase();
             
-            // Get type-specific patterns
-            const mediumPatterns = this.promptPatterns[medium] || this.promptPatterns['text'];
-            const typePatterns = mediumPatterns[type] || mediumPatterns['general'];
+            // Get relevant patterns, falling back to text/general if specific ones don't exist
+            const mediumPatterns = this.promptPatterns[medium] || this.promptPatterns['text'] || {};
+            const typePatterns = mediumPatterns[type] || mediumPatterns['general'] || [];
             
-            // Add type-specific suggestions
-            if (typePatterns) {
-                typePatterns.forEach(({ pattern, suggestion }) => {
-                    if (prompt.toLowerCase().includes(pattern.toLowerCase())) {
+            // Add type-specific suggestions based on keyword patterns
+            typePatterns.forEach(({ pattern, suggestion }) => {
+                if (lowerPrompt.includes(pattern.toLowerCase())) {
+                    // Avoid duplicate suggestions
+                    if (!suggestions.includes(suggestion)) {
                         suggestions.push(suggestion);
                     }
-                });
-            }
+                }
+            });
             
-            // Add general suggestions
+            // Add general contextual suggestions
             if (prompt.length < 20) {
-                suggestions.push('Add more details to get better results');
+                const suggestion = 'Add more details to get better results';
+                if (!suggestions.includes(suggestion)) suggestions.push(suggestion);
             }
             
-            if (!prompt.includes('style') && medium === 'image') {
-                suggestions.push('Specify a style for more consistent results');
+            if (medium === 'image' && !lowerPrompt.includes('style')) {
+                 const suggestion = 'Specify a style (e.g., photorealistic, cartoon, watercolor) for more consistent results';
+                 if (!suggestions.includes(suggestion)) suggestions.push(suggestion);
             }
             
-            if (!prompt.includes('format') && medium === 'text' && type !== 'chat') {
-                suggestions.push('Specify a format (e.g., paragraph, bullet points)');
+            if (medium === 'text' && type !== 'chat' && !lowerPrompt.includes('format')) {
+                 const suggestion = 'Specify a format (e.g., paragraph, bullet points, JSON)';
+                 if (!suggestions.includes(suggestion)) suggestions.push(suggestion);
             }
-            
-            return suggestions;
+
+            // Limit the number of suggestions to avoid overwhelming the user
+            const MAX_SUGGESTIONS = 5;
+            return suggestions.slice(0, MAX_SUGGESTIONS);
+
         } catch (error) {
             console.error('Error generating suggestions:', error);
-            return ['Add more specificity to your prompt'];
+            // Return a generic suggestion on error
+            return ['Consider adding more specificity or context to your prompt.'];
         }
     }
 
     /**
-     * Analyze a prompt to suggest the best type
+     * Analyze a prompt to suggest the best type using the simple classifier.
      * @param {string} prompt - The user's prompt
-     * @returns {Promise<Object>} - Suggested medium and type
+     * @returns {Object} - Suggested { medium, type } or null if unable to classify
      */
-    async analyzePromptType(prompt) {
+    analyzePromptType(prompt) {
+         // Ensure initialization
+        if (!this.initialized) {
+            this.init();
+             if (!this.initialized) return null; // Init failed
+        }
+
+        if (!prompt || typeof prompt !== 'string' || prompt.trim().length === 0) {
+            return null;
+        }
+
         try {
-            if (!this.modelLoaded && !this.isLoading) {
-                this.init();
+            const classifiedType = this.classifier.classify(prompt);
+
+            // Determine medium based on classified type (simple mapping)
+            let suggestedMedium = 'text'; // Default to text
+            if (['generation', 'editing', 'variation'].includes(classifiedType) || prompt.toLowerCase().includes('image')) {
+                 suggestedMedium = 'image';
             }
-            
-            if (!this.modelLoaded) {
-                await this.waitForModel();
-            }
-            
-            // Use the classifier to determine type
-            const classification = this.classifier.classify(prompt);
-            
-            let medium = 'text';
-            let type = 'general';
-            
-            // Simple mapping from classification to medium/type
-            if (classification === 'image') {
-                medium = 'image';
-                
-                if (prompt.toLowerCase().includes('edit') || prompt.toLowerCase().includes('change')) {
-                    type = 'editing';
-                } else if (prompt.toLowerCase().includes('variation') || prompt.toLowerCase().includes('alternative')) {
-                    type = 'variation';
+           
+            // Refine type based on medium patterns
+            let suggestedType = 'general'; // Default type within medium
+            if (suggestedMedium === 'image') {
+                if (this.promptPatterns.image && this.promptPatterns.image[classifiedType]) {
+                    suggestedType = classifiedType;
                 } else {
-                    type = 'generation';
+                    suggestedType = 'generation'; // Fallback image type
                 }
-            } else {
-                // Text medium types
-                if (classification === 'code') {
-                    type = 'code';
-                } else if (classification === 'chat') {
-                    type = 'chat';
-                } else if (classification === 'completion') {
-                    type = 'completion';
+            } else { // medium is text
+                 if (this.promptPatterns.text && this.promptPatterns.text[classifiedType]) {
+                    suggestedType = classifiedType;
+                } else {
+                    suggestedType = 'general'; // Fallback text type
                 }
             }
-            
-            return { medium, type };
+
+            return { medium: suggestedMedium, type: suggestedType };
+
         } catch (error) {
             console.error('Error analyzing prompt type:', error);
-            return { medium: 'text', type: 'general' };
+            return null;
         }
     }
 }
 
-// Create and export the AI helper
+// Export a single instance
 const aiPromptHelper = new AIPromptHelper();
 export default aiPromptHelper; 
