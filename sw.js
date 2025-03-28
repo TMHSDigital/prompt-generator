@@ -1,10 +1,9 @@
-const CACHE_NAME = 'prompt-engine-v1';
+const CACHE_NAME = 'prompt-engine-v2';
 const ASSETS = [
   './',
   './index.html',
   './css/styles.css',
   './js/main.js',
-  './js/promptEnhancer.js',
   './js/bestPractices.js',
   './js/features/darkMode.js',
   './js/features/savedPrompts.js',
@@ -13,11 +12,13 @@ const ASSETS = [
   './js/features/promptTypes.js',
   './js/features/enhancementRules.js',
   './js/features/promptValidator.js',
+  './js/features/aiSuggestions.js',
+  './js/features/storageManager.js',
+  './js/features/promptEnhancer.js',
   './footer.html',
   './manifest.webmanifest',
   'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css',
   'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/webfonts/fa-solid-900.woff2',
-  'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/webfonts/fa-brands-400.woff2'
 ];
 
 // Install event - cache assets
