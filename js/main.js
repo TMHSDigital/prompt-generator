@@ -2,8 +2,7 @@ import { PromptEnhancer } from './features/promptEnhancer.js';
 import { mediumTypes, getFactors, getTypeInfo, getMediumInfo } from './features/promptTypes.js';
 import { uiFeatures } from './features/uiFeatures.js';
 import { shareFeatures } from './features/shareFeatures.js';
-import storageManager from './features/storageManager.js';
-import aiPromptHelper from './features/aiSuggestions.js';
+import storageManager from './features/aiSuggestions.js';
 
 // Error handling for module loading
 window.addEventListener('error', (event) => {
@@ -83,10 +82,10 @@ class PromptUI {
         this.elements.promptType.style.opacity = '1';
     }
 
-    initializeFeatures() {
+    async initializeFeatures() {
         // Initialize dark mode
-        uiFeatures.darkMode.initialize();
-        this.updateDarkModeButton(); // Add initial button state
+        await uiFeatures.darkMode.initialize();
+        this.updateDarkModeButton();
 
         // Initialize character counter
         uiFeatures.characterCounter.initialize(
@@ -95,7 +94,7 @@ class PromptUI {
         );
 
         // Initialize saved prompts
-        uiFeatures.savedPrompts.initialize();
+        await uiFeatures.savedPrompts.initialize();
     }
 
     attachEventListeners() {
@@ -107,8 +106,8 @@ class PromptUI {
             uiFeatures.notifications.show(result.message, result.success ? 'success' : 'error');
         });
         this.boundHandlers.set('save', () => this.savePrompt());
-        this.boundHandlers.set('darkMode', () => {
-            const isDark = uiFeatures.darkMode.toggle();
+        this.boundHandlers.set('darkMode', async () => {
+            const isDark = await uiFeatures.darkMode.toggle();
             this.updateDarkModeButton();
             uiFeatures.notifications.show(`${isDark ? 'Dark' : 'Light'} mode enabled`, 'info');
         });
