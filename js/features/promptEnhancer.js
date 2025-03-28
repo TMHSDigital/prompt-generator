@@ -197,32 +197,85 @@ export class PromptEnhancer {
     }
 
     /**
-     * Adds a specific enhancement factor to the prompt.
+     * Adds a specific enhancement factor to the prompt, checking for existing related content.
      * @param {string} prompt - The prompt to enhance
      * @param {string} factor - The factor to add
      * @param {string} medium - The medium type
      * @param {string} type - The prompt type
-     * @returns {string} Enhanced prompt with added factor
+     * @returns {string} Enhanced prompt with added factor (if applicable)
      * @private
      */
     addFactor(prompt, factor, medium, type) {
+        const lowerPrompt = prompt.toLowerCase();
+        const trimmedPrompt = prompt.trim();
+
         const factorMap = {
-            objective: (p) => `I want you to ${p}`,
-            context: (p) => `Context: This is a ${type} prompt for ${medium} generation.\n${p}`,
-            role: (p) => `You are an AI assistant specialized in ${type} ${medium} generation. ${p}`,
-            tone: (p) => `Please respond in a professional and clear tone.\n${p}`,
-            format: (p) => `Please format the output clearly and logically.\n${p}`,
-            style: (p, m) => m === 'image' ? `${p}\nStyle: High-quality, professional, detailed` : p,
-            quality: (p, m) => m === 'image' ? `${p}\nQuality: 4K, highly detailed, professional quality` : p,
-            language: (p) => `${p}\nUse clear, well-documented code with comments.`,
-            documentation: (p) => `${p}\nInclude comprehensive documentation and examples.`,
-            tests: (p) => `${p}\nProvide unit tests for the code.`,
-            subject: (p) => `${p}\nFocus on the main subject with clear composition.`,
-            composition: (p) => `${p}\nEnsure balanced composition and visual hierarchy.`,
-            lighting: (p) => `${p}\nOptimize lighting for clarity and atmosphere.`,
-            mood: (p) => `${p}\nConvey appropriate mood and atmosphere.`,
-            constraints: (p) => `${p}\nConsider the following constraints and limitations.`,
-            examples: (p) => `${p}\nHere are some examples to illustrate the desired outcome:`
+            objective: (p) => {
+                const objectiveStarters = /^\s*(create|generate|write|make|act as|you are|i want you to)/i;
+                if (!objectiveStarters.test(trimmedPrompt)) {
+                    return `I want you to ${p}`;
+                }
+                return p; // Already has an objective-like start
+            },
+            context: (p) => {
+                // Context is usually safe to add for structure
+                if (!lowerPrompt.includes('context:')) {
+                    return `Context: This is a ${type} prompt for ${medium} generation.\n${p}`;
+                }
+                return p;
+            },
+            role: (p) => {
+                const roleStarters = /\b(act as|you are|role:|persona:)/i;
+                if (!roleStarters.test(lowerPrompt)) {
+                    return `You are an AI assistant specialized in ${type} ${medium} generation. ${p}`;
+                }
+                return p; // Already seems to define a role
+            },
+            tone: (p) => {
+                const toneKeywords = /\b(tone:|style:|formal|casual|professional|friendly|serious|humorous)/i;
+                if (medium === 'text' && !toneKeywords.test(lowerPrompt)) {
+                    return `${p}\nPlease respond in a professional and clear tone.`; // Appending is less intrusive
+                }
+                return p;
+            },
+            format: (p) => {
+                const formatKeywords = /\b(format:|output:|json|markdown|list|bullet points|paragraph|table|csv|xml)/i;
+                if (medium === 'text' && !formatKeywords.test(lowerPrompt)) {
+                     return `${p}\nPlease format the output clearly and logically.`; // Appending
+                }
+                return p;
+            },
+            style: (p, m) => {
+                const styleKeywords = /\b(style:|style is|in the style of|photorealistic|cartoon|anime|sketch|drawing|illustration|3d render|low poly|pixel art|watercolor|oil painting|impressionist|cubist|surrealist)/i;
+                if (m === 'image' && !styleKeywords.test(lowerPrompt)) {
+                    return `${p}\nStyle: Consider specifying an artistic style (e.g., photorealistic, cartoon, painting).`; // Suggestion instead of default
+                }
+                return p;
+            },
+            quality: (p, m) => {
+                const qualityKeywords = /\b(quality:|resolution:|4k|8k|hd|high quality|highly detailed|photorealistic quality|low quality)/i;
+                 if (m === 'image' && !qualityKeywords.test(lowerPrompt)) {
+                    return `${p}\nQuality: Consider specifying the desired quality (e.g., 4K, highly detailed).`; // Suggestion
+                }
+                return p;
+            },
+            language: (p) => {
+                // Only adds comment suggestion if type is code and keywords missing
+                const codeKeywords = /\b(language:|python|javascript|java|c\+\+|c#|ruby|php|go|swift|kotlin|typescript|comment|documentation|documented)/i;
+                if (type === 'code' && !codeKeywords.test(lowerPrompt)) {
+                    return `${p}\nConsider adding comments and documentation to the code.`;
+                }
+                return p;
+            },
+            // Factors below are generally structural or specific requests, less likely to be redundant
+            documentation: (p) => type === 'code' && !lowerPrompt.includes('documentation') ? `${p}\nInclude comprehensive documentation and examples.` : p,
+            tests: (p) => type === 'code' && !lowerPrompt.includes('test') ? `${p}\nProvide unit tests for the code.` : p,
+            subject: (p, m) => m === 'image' && !lowerPrompt.includes('subject') && !lowerPrompt.includes('focus') ? `${p}\nFocus on the main subject with clear composition.` : p,
+            composition: (p, m) => m === 'image' && !lowerPrompt.includes('composition') && !lowerPrompt.includes('layout') ? `${p}\nEnsure balanced composition and visual hierarchy.` : p,
+            lighting: (p, m) => m === 'image' && !lowerPrompt.includes('lighting') ? `${p}\nOptimize lighting for clarity and atmosphere.` : p,
+            mood: (p, m) => m === 'image' && !lowerPrompt.includes('mood') && !lowerPrompt.includes('atmosphere') ? `${p}\nConvey appropriate mood and atmosphere.` : p,
+            constraints: (p) => !lowerPrompt.includes('constraint') && !lowerPrompt.includes('limitation') ? `${p}\nConsider the following constraints and limitations.` : p,
+            examples: (p) => !lowerPrompt.includes('example') ? `${p}\nHere are some examples to illustrate the desired outcome:` : p
         };
 
         return factorMap[factor] ? factorMap[factor](prompt, medium) : prompt;
