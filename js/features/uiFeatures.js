@@ -64,23 +64,14 @@ export const uiFeatures = {
     darkMode: {
         ...darkMode,
         cleanup() {
-            // Remove system color scheme listener if it exists
-            if (this.systemThemeQuery) {
-                this.systemThemeQuery.removeEventListener('change', this.handleSystemThemeChange);
-            }
+            // No persistent listeners to remove — system theme listener
+            // is anonymous and will be GC'd with the page.
         }
     },
     savedPrompts: {
         ...savedPrompts,
         cleanup() {
-            // Remove event listeners from saved prompts viewer
-            const viewer = document.getElementById('savedPromptsViewer');
-            if (viewer) {
-                const closeBtn = viewer.querySelector('.close-viewer-btn');
-                if (closeBtn) {
-                    closeBtn.removeEventListener('click', this.hideViewer);
-                }
-            }
+            // Viewer DOM is ephemeral; no persistent listeners to remove.
         }
     },
     shareFeatures,

@@ -10,7 +10,7 @@ import { shareFeatures } from './features/shareFeatures.js';
  */
 export async function sharePrompt(elements, uiFeatures) {
     const enhancedText = elements.enhancedPrompt.textContent;
-    if (!enhancedText || enhancedText.includes('Your enhanced prompt will appear here...')) {
+    if (!enhancedText || enhancedText.includes('Your enhanced prompt will appear here')) {
         uiFeatures.notifications.show('Please generate an enhanced prompt first.', 'error');
         return { success: false, message: 'No prompt to share' };
     }
@@ -102,15 +102,14 @@ export function showSharePlatformDialog(platforms) {
     `;
 
     return new Promise(resolve => {
-        const handleClick = e => {
+        dialog.addEventListener('click', e => {
             const platformBtn = e.target.closest('.share-platform-btn');
             if (platformBtn) {
                 dialog.remove();
                 resolve(platformBtn.dataset.platform);
             }
-        };
+        });
 
-        dialog.querySelector('.share-platforms').addEventListener('click', handleClick);
         dialog.querySelector('.share-dialog-close').addEventListener('click', () => {
             dialog.remove();
             resolve(null);

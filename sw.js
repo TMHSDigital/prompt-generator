@@ -1,16 +1,17 @@
-const CACHE_NAME = 'prompt-engine-v2';
+const CACHE_NAME = 'prompt-engine-v3';
 const ASSETS = [
   './',
   './index.html',
   './css/styles.css',
   './js/main.js',
-  './js/bestPractices.js',
+  './js/ui.js',
+  './js/share.js',
+  './js/storage.js',
   './js/features/darkMode.js',
   './js/features/savedPrompts.js',
   './js/features/shareFeatures.js',
   './js/features/uiFeatures.js',
   './js/features/promptTypes.js',
-  './js/features/enhancementRules.js',
   './js/features/promptValidator.js',
   './js/features/aiSuggestions.js',
   './js/features/storageManager.js',
@@ -19,6 +20,7 @@ const ASSETS = [
   './manifest.webmanifest',
   'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css',
   'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/webfonts/fa-solid-900.woff2',
+  'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap',
 ];
 
 // Install event - cache assets
@@ -51,7 +53,9 @@ self.addEventListener('activate', event => {
 self.addEventListener('fetch', event => {
   // Skip cross-origin requests
   if (!event.request.url.startsWith(self.location.origin) && 
-      !event.request.url.startsWith('https://cdnjs.cloudflare.com')) {
+      !event.request.url.startsWith('https://cdnjs.cloudflare.com') &&
+      !event.request.url.startsWith('https://fonts.googleapis.com') &&
+      !event.request.url.startsWith('https://fonts.gstatic.com')) {
     return;
   }
 

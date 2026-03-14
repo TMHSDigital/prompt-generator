@@ -13,7 +13,7 @@ export async function savePrompt(elements, uiFeatures) {
     const medium = elements.promptMedium.value;
     const type = elements.promptType.value;
 
-    if (!enhancedText || enhancedText.includes('Your enhanced prompt will appear here...')) {
+    if (!enhancedText || enhancedText.includes('Your enhanced prompt will appear here')) {
         uiFeatures.notifications.show('Please generate an enhanced prompt first.', 'error');
         return;
     }
@@ -194,10 +194,14 @@ export async function importPrompts(event, storageManager, showConfirmDialog, sh
             async confirmed => {
                 if (confirmed) {
                     try {
-                        const count = await storageManager.importPrompts(file);
-                        showNotification(`Successfully imported ${count} prompts`, 'success');
-                        if (document.getElementById('savedPromptsViewer')?.classList.contains('show')) {
-                            refreshView();
+                        const result = await storageManager.importPrompts(file);
+                        if (result.success) {
+                            showNotification(`Imported ${result.importedCount} prompt${result.importedCount !== 1 ? 's' : ''}${result.skippedCount ? ` (${result.skippedCount} skipped)` : ''}`, 'success');
+                            if (document.getElementById('savedPromptsViewer')?.classList.contains('show')) {
+                                refreshView();
+                            }
+                        } else {
+                            showNotification(result.error || 'Import failed', 'error');
                         }
                     } catch (error) {
                         console.error('Import failed:', error);
@@ -238,11 +242,11 @@ export function renderSavedPrompts(prompts, truncateText, onLoad, onDelete) {
         return;
     }
 
-    prompts.sort((a, b) => new Date(b.date) - new Date(a.date));
+    prompts.sort((a, b) => new Date(b.timestamp || b.date) - new Date(a.timestamp || a.date));
     savedPromptsList.innerHTML = '';
 
     prompts.forEach(prompt => {
-        const date = new Date(prompt.date);
+        const date = new Date(prompt.timestamp || prompt.date);
         const formattedDate = `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
 
         const promptElement = document.createElement('div');

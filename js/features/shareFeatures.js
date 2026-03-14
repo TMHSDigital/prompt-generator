@@ -2,6 +2,7 @@
 export const shareFeatures = {
     generateShareLink(promptData) {
         const shareData = {
+            medium: promptData.medium,
             type: promptData.type,
             original: promptData.original,
             enhanced: promptData.enhanced

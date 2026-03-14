@@ -72,8 +72,8 @@ export class PromptEnhancer {
             enhancedPrompt = this.applyMediumSpecificEnhancements(enhancedPrompt, medium, type, practices);
 
             // Add version control comment if enabled
-            if (options.versionControl) {
-                const version = new Date().toISOString();
+            const version = options.versionControl ? new Date().toISOString() : undefined;
+            if (version) {
                 enhancedPrompt = `[Version: ${version}]\n${enhancedPrompt}`;
                 this.improvements.push('Added version control information');
             }
@@ -88,7 +88,7 @@ export class PromptEnhancer {
                 wasModified: enhancedPrompt !== prompt,
                 settings: {
                     temperature: practices.temperature,
-                    version: options.versionControl ? version : undefined
+                    version,
                 }
             };
         } catch (error) {

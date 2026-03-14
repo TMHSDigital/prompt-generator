@@ -1,4 +1,4 @@
-import { mediumTypes, getFactors } from './promptTypes.js';
+import { mediumTypes } from './promptTypes.js';
 
 export class PromptValidator {
     constructor() {

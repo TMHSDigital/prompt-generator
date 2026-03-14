@@ -1,5 +1,5 @@
 import { PromptEnhancer } from './features/promptEnhancer.js';
-import { mediumTypes, getFactors, getTypeInfo, getMediumInfo } from './features/promptTypes.js';
+import { mediumTypes, getTypeInfo, getMediumInfo } from './features/promptTypes.js';
 import { uiFeatures } from './features/uiFeatures.js';
 import aiPromptHelper from './features/aiSuggestions.js';
 import storageManager from './features/storageManager.js';
@@ -233,12 +233,18 @@ class PromptUI {
             storageManager.logAnalytics('enhance', { medium, type, length: originalPrompt.length });
 
             const aiSuggestions = await aiPromptHelper.getSuggestions(originalPrompt, medium, type);
-            const enhanced = await this.enhancer.enhance(originalPrompt, medium, type);
+            const result = await this.enhancer.enhance(originalPrompt, medium, type);
 
-            el.enhancedPrompt.innerHTML = formatEnhancedPrompt(enhanced, medium);
+            el.enhancedPrompt.innerHTML = formatEnhancedPrompt(result.enhancedPrompt, medium);
             el.improvementsList.innerHTML = '';
 
-            [...aiSuggestions, ...this._baseImprovements(medium, type)].forEach(text => {
+            const allImprovements = [
+                ...result.improvements,
+                ...aiSuggestions,
+                ...this._baseImprovements(medium, type),
+            ];
+            const unique = [...new Set(allImprovements)];
+            unique.forEach(text => {
                 const li = document.createElement('li');
                 li.innerHTML = `<span class="improvement-text">${text}</span>`;
                 el.improvementsList.appendChild(li);
@@ -264,13 +270,6 @@ class PromptUI {
             base.push('Added style and composition details', 'Improved visual description clarity');
         }
         return base;
-    }
-
-    getOptionsForType(medium, type) {
-        const factors = getFactors(medium, type);
-        const options = {};
-        factors.forEach(factor => { options[factor] = true; });
-        return options;
     }
 
     loadSavedPrompts() {

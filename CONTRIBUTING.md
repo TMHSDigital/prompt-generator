@@ -23,26 +23,28 @@ Open `http://localhost:8000` in your browser. That's it.
 
 ---
 
-## Project Layout
+## Architecture Overview
 
 ```
-js/
-├── main.js                 # Entry point — wires modules together
-├── ui.js                   # UI helpers (notifications, dialogs, formatting)
-├── share.js                # Share/clipboard logic
-├── storage.js              # Save/load/export/import prompts
-└── features/
-    ├── promptEnhancer.js   # Core enhancement engine
-    ├── enhancementRules.js # Enhancement rule definitions  ← add new rules here
-    ├── promptTypes.js      # Medium/type definitions       ← add new types here
-    ├── promptValidator.js  # Input validation
-    ├── aiSuggestions.js    # Rule-based suggestion system
-    ├── shareFeatures.js    # Platform-specific share logic
-    ├── storageManager.js   # LocalStorage CRUD
-    ├── darkMode.js         # Theme management
-    ├── savedPrompts.js     # Saved prompts UI
-    └── uiFeatures.js       # UI feature aggregator
+index.html
+  └─ js/main.js  (entry point — PromptUI class)
+       ├─ js/ui.js              UI helpers (notifications, dialogs, formatting)
+       ├─ js/share.js           Share/clipboard logic
+       ├─ js/storage.js         Save/load/export/import prompts (UI layer)
+       └─ js/features/
+            ├─ promptEnhancer.js Core enhancement engine
+            ├─ promptTypes.js    Medium/type definitions + factors
+            ├─ promptValidator.js Input validation + factor detection
+            ├─ enhancementRules.js Rule definitions (add new rules here)
+            ├─ aiSuggestions.js  Rule-based suggestion system
+            ├─ shareFeatures.js  Platform-specific share + link generation
+            ├─ storageManager.js localStorage CRUD wrapper
+            ├─ darkMode.js       Theme management (uses storageManager)
+            ├─ savedPrompts.js   Saved prompts UI
+            └─ uiFeatures.js    Aggregates UI feature modules
 ```
+
+`main.js` is the only script loaded by `index.html` (as a `type="module"`). It imports everything else. The `features/` directory contains domain-specific logic; the top-level `js/` files contain UI coordination extracted from `main.js`.
 
 ---
 
@@ -56,7 +58,7 @@ js/
 myType: {
     name: 'My Type',
     description: 'What this type does',
-    factors: ['objective', 'tone', 'format'],   // factors to enhance
+    factors: ['objective', 'tone', 'format'],
 }
 ```
 
@@ -71,6 +73,12 @@ Enhancement rules live in [`js/features/enhancementRules.js`](js/features/enhanc
 Each rule receives the prompt text and returns an enhanced version (or appended guidance). Follow the existing pattern — keep rules composable and side-effect free.
 
 If the rule is type-specific, gate it on the `medium`/`type` arguments passed to the enhancer.
+
+---
+
+## Good First Issues
+
+Look for issues labeled [`good first issue`](https://github.com/TMHSDigital/prompt-generator/labels/good%20first%20issue) — these are scoped, well-described tasks ideal for a first contribution.
 
 ---
 
