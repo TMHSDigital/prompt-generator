@@ -1,260 +1,166 @@
-# Prompt Engine
+# Prompt Engine ⚡
 
-Transform your AI prompts with best practices and smart enhancements.
+> Instantly improve any AI prompt — paste in, enhance, copy out.
+
+[![Stars](https://img.shields.io/github/stars/TMHSDigital/prompt-generator?style=flat-square)](https://github.com/TMHSDigital/prompt-generator/stargazers)
+[![Forks](https://img.shields.io/github/forks/TMHSDigital/prompt-generator?style=flat-square)](https://github.com/TMHSDigital/prompt-generator/network/members)
+[![Last Commit](https://img.shields.io/github/last-commit/TMHSDigital/prompt-generator?style=flat-square)](https://github.com/TMHSDigital/prompt-generator/commits/main)
+[![License](https://img.shields.io/github/license/TMHSDigital/prompt-generator?style=flat-square)](LICENSE)
+[![Live Demo](https://img.shields.io/badge/demo-live-brightgreen?style=flat-square)](https://tmhsdigital.github.io/prompt-generator)
+
+**[→ Try the live demo](https://tmhsdigital.github.io/prompt-generator)**
+
+![Prompt Engine dark mode screenshot](dark-preview.png)
+
+---
+
+## What it does
+
+- **Transforms vague prompts into structured, high-quality instructions** ready for any AI model
+- **Applies prompt-engineering best practices automatically** — chain-of-thought, temperature hints, format specs, context grounding
+- **Works for text and image models** — ChatGPT, Claude, Gemini, Midjourney, Stable Diffusion, and more
+
+---
+
+## Use Cases
+
+| Goal | How Prompt Engine helps |
+|------|------------------------|
+| **ChatGPT / Claude** | Adds role, format, tone, and constraints so the model gives precise answers |
+| **Midjourney / DALL·E** | Expands sparse image ideas with style, lighting, composition, and mood parameters |
+| **Coding assistants** | Structures your request with language, paradigm, error-handling, and test requirements |
+| **Content creation** | Specifies audience, tone, length, and structure so drafts need less editing |
+| **Research & summarization** | Frames depth, perspective, and output format for more useful responses |
+
+---
 
 ## Features
 
-- 🚀 **Smart Prompt Enhancement**
-  - Content medium selection (Text/Image)
-  - Type-specific enhancements
-  - Real-time processing and feedback
-  - Comprehensive improvement suggestions
-  - Temperature recommendations
-  - Chain-of-thought prompting
-  - Version control support
+**Smart Enhancement**
+- Medium-aware processing (Text vs. Image)
+- Type-specific rules (chat, code, completion, generation, editing, variation)
+- Chain-of-thought and temperature hints applied automatically
+- AI-powered prompt type auto-detection
 
-- 🎨 **Beautiful Interface**
-  - Intuitive medium and type selection
-  - Dark/Light mode with system preference detection
-  - Responsive design for all devices
-  - Clean, modern UI with smooth animations
-  - Enhanced visual feedback
-  - Improved accessibility
-  - Tooltips for better guidance
+**Prompt Management**
+- Save, search, and reload prompt history (localStorage)
+- Export / import history as JSON
+- Load shared prompts from URL parameters
 
-- 💾 **Prompt Management**
-  - Save your favorite prompts
-  - View and manage prompt history
-  - Quick load of previous prompts
-  - Categorized prompt organization
-  - Version tracking
-  - Export/Import capabilities
+**Sharing**
+- Copy to clipboard
+- Share via Twitter, LinkedIn, WhatsApp, Telegram, Email
+- QR code generation
+- Direct shareable link
 
-- 🔗 **Easy Sharing**
-  - Share enhanced prompts across platforms
-  - Multiple sharing options:
-    - Social media (LinkedIn, Instagram)
-    - Messaging apps (WhatsApp, Telegram)
-    - Email and direct links
-    - QR code generation
+**Quality of Life**
+- Dark / light mode with system preference detection
+- PWA — installable as a desktop or mobile app
+- Fully offline after first load
+- No login, no backend, no data leaves your browser
 
-## Preview
+---
 
-### Light Mode
-![Light Mode Preview](light-preview.png)
+## Quick Start
 
-### Dark Mode
-![Dark Mode Preview](dark-preview.png)
+**Use online (no setup):**
 
-## Getting Started
-
-1. Visit [Prompt Engine](https://tmhs-digital.github.io/prompt-engine)
-2. Select your content medium (Text/Image)
-3. Choose the appropriate prompt type
-4. Enter your prompt in the input area
-5. Click "Enhance Prompt" to see the improved version
-6. Use the share, copy, or save buttons to manage your prompt
-
-### Using Import/Export Feature
-
-The app allows you to import and export prompts for backup or sharing:
-
-- **Export**: Click the "Export" button to download your saved prompts as a JSON file
-- **Import**: Click "Import Prompts" to upload a previously exported file
-
-Download our [example-prompts.json](example-prompts.json) file to see the format and try importing sample prompts. You can also use this as a template to create your own collection.
-
-## Deployment Instructions
-
-### Setting Up Icons for PWA
-
-Before deploying to GitHub Pages, you need to generate the PWA icons:
-
-1. Create a high-resolution square image (at least 512x512 pixels) to use as your app icon
-2. Name this file `icon-source.png` and place it in the project root
-
-#### Option 1: Using the Shell Script (Recommended)
-If you have ImageMagick installed (available on most systems):
-
-```bash
-# Make the script executable
-chmod +x create-icons.sh
-
-# Run the script
-./create-icons.sh
+```
+https://tmhsdigital.github.io/prompt-generator
 ```
 
-#### Option 2: Using Node.js
-If you prefer using Node.js:
+**Run locally:**
 
 ```bash
-npm install sharp
-node generate-icons.js
+git clone https://github.com/TMHSDigital/prompt-generator.git
+cd prompt-generator
+python -m http.server 8000
+# open http://localhost:8000
 ```
 
-#### Option 3: Manual Creation
-Alternatively, you can:
-- Use an online tool like [PWA Asset Generator](https://www.pwabuilder.com/imageGenerator)
-- Manually create the icons and place them in `images/icons/` directory with the correct filenames
+> ES modules require a real server — opening `index.html` directly via `file://` won't work in most browsers.
 
-### Deploying to GitHub Pages
+---
 
-1. Update the GitHub Pages URL in these files:
-   - `robots.txt`
-   - `sitemap.xml`
-   Replace `tmhs-digital.github.io/prompt-engine` with your GitHub username or organization.
+## How It Works
 
-2. Push your changes to GitHub:
-```bash
-git add .
-git commit -m "Deploy Prompt Engine with PWA support"
-git push origin main
+```
+Your rough prompt
+      ↓
+Select medium (Text / Image) + type (chat, code, generation…)
+      ↓
+Prompt Engine applies enhancement rules + best practices
+      ↓
+Structured, AI-ready prompt — copy, save, or share
 ```
 
-3. Enable GitHub Pages in your repository settings:
-   - Go to Settings > Pages
-   - Select the main branch as the source
-   - Click Save
+Enhancement rules live in [`js/features/enhancementRules.js`](js/features/enhancementRules.js). Prompt types and their factors are defined in [`js/features/promptTypes.js`](js/features/promptTypes.js).
 
-4. Your app will be available at `https://your-username.github.io/prompt-engine/`
+---
 
-## Prompt Types
+## Deploy Your Own
 
-### Text Medium
-- **General**: General purpose text generation
-- **Completion**: Continue or complete existing text
-- **Chat**: Conversational interactions
-- **Code**: Generate or modify code
+1. Fork this repo
+2. Go to **Settings → Pages → Source**: `main` branch / root
+3. Your instance is live at `https://yourusername.github.io/prompt-generator`
 
-### Image Medium
-- **Generation**: Create new images
-- **Editing**: Modify existing images
-- **Variation**: Create variations of images
+No build step, no CI, no config — pure static files.
 
-## Enhancement Factors
-
-### Text Factors
-- Objective
-- Tone
-- Format
-- Constraints
-- Examples
-- Creativity
-- Continuity
-- Memory
-- Documentation
-- Tests
-
-### Image Factors
-- Subject
-- Style
-- Composition
-- Lighting
-- Color
-- Mood
-- Detail
-- Perspective
-- Modification
-- Strength
-- Preservation
-- Blend
-
-## Local Development
-
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/your-username/prompt-engine.git
-   ```
-
-2. Open the project folder:
-   ```bash
-   cd prompt-engine
-   ```
-
-3. Start a local server (e.g., using Python):
-   ```bash
-   python -m http.server 8000
-   ```
-
-4. Visit `http://localhost:8000` in your browser
+---
 
 ## Project Structure
 
 ```
-prompt-engine/
+prompt-generator/
+├── index.html              # App shell
 ├── css/
 │   └── styles.css
 ├── js/
-│   ├── features/
-│   │   ├── darkMode.js
-│   │   ├── savedPrompts.js
-│   │   ├── shareFeatures.js
-│   │   ├── uiFeatures.js
-│   │   ├── promptTypes.js
-│   │   ├── enhancementRules.js
-│   │   └── promptValidator.js
-│   ├── bestPractices.js
-│   ├── promptEnhancer.js
-│   └── main.js
-├── index.html
-└── footer.html
+│   ├── main.js             # Entry point — wires everything together
+│   ├── ui.js               # Formatting, notifications, dialogs, dark mode
+│   ├── share.js            # Clipboard, platform dialog, share dispatch
+│   ├── storage.js          # Save/load/search/export/import prompts
+│   └── features/
+│       ├── promptEnhancer.js   # Core enhancement engine
+│       ├── enhancementRules.js # Enhancement rule definitions
+│       ├── promptTypes.js      # Medium and type definitions
+│       ├── promptValidator.js  # Input validation
+│       ├── aiSuggestions.js    # Rule-based suggestion system
+│       ├── shareFeatures.js    # Platform-specific share logic
+│       ├── storageManager.js   # LocalStorage CRUD + export/import
+│       ├── darkMode.js         # Theme management
+│       ├── savedPrompts.js     # Saved prompts UI
+│       └── uiFeatures.js       # UI feature aggregator
+├── manifest.webmanifest    # PWA manifest
+├── sw.js                   # Service worker (offline support)
+└── example-prompts.json    # Sample prompts for import
 ```
 
-## Technical Details
-
-- Pure JavaScript (ES6+)
-- No external dependencies
-- Local storage for data persistence
-- Modular design for easy maintenance
-- Responsive CSS with Flexbox/Grid
-- Progressive enhancement approach
-- Semantic HTML structure
-- Accessibility features
-- Cross-browser compatibility
-
-## Best Practices
-
-### Code Organization
-- Modular file structure
-- Clear separation of concerns
-- Consistent naming conventions
-- Comprehensive error handling
-- JSDoc documentation
-
-### Performance
-- Minimal DOM manipulation
-- Efficient event handling
-- Optimized animations
-- Lazy loading where appropriate
-
-### Accessibility
-- ARIA labels and roles
-- Keyboard navigation
-- Screen reader support
-- Color contrast compliance
-
-### User Experience
-- Intuitive navigation
-- Clear feedback
-- Responsive design
-- Progressive enhancement
-- Tooltips and guidance
+---
 
 ## Contributing
 
-1. Fork the repository
-2. Create your feature branch: `git checkout -b feature/amazing-feature`
-3. Commit your changes: `git commit -m 'Add amazing feature'`
-4. Push to the branch: `git push origin feature/amazing-feature`
-5. Open a Pull Request
+Contributions are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for how to:
+- Run the project locally
+- Add a new prompt type or enhancement rule
+- Submit a pull request
+
+Browse [open issues](https://github.com/TMHSDigital/prompt-generator/issues) for ideas.
+
+---
+
+## Topics
+
+Add these in **Settings → Topics** to improve discoverability:
+
+`prompt-engineering` `ai-tools` `chatgpt` `llm` `claude-ai` `midjourney` `javascript` `pwa` `productivity` `open-source`
+
+---
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+MIT — see [LICENSE](LICENSE).
 
-## Acknowledgments
+---
 
-- Thanks to all contributors who have helped shape this project
-- Inspired by best practices in prompt engineering
-- Built with modern web technologies
-- Created by TMHS Digital 
+*Built by [TMHS Digital](https://github.com/TMHSDigital)*
