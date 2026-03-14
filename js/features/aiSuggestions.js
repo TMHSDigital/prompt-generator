@@ -1,180 +1,170 @@
 /**
  * Prompt Suggestions Module
- * Provides rule-based suggestions for improving prompts based on keywords and patterns.
- * Runs completely client-side.
+ * Rule-based suggestions and type detection. Runs completely client-side.
  */
 
 class AIPromptHelper {
     constructor() {
-        // Flag to indicate if patterns and classifier are ready
-        this.initialized = false; 
+        this.initialized = false;
         this.classifier = null;
         this.promptPatterns = null;
     }
 
-    /**
-     * Initialize the suggestion system by loading patterns and setting up the classifier.
-     * This is now a synchronous operation.
-     */
     init() {
         if (this.initialized) return;
 
         try {
-            // Load prompt patterns
             this.promptPatterns = this.loadPromptPatterns();
-            
-            // Initialize the classifier
             this.classifier = this.createClassifier();
-            
             this.initialized = true;
-
         } catch (error) {
             console.error('Failed to initialize prompt suggestion system:', error);
-            // Keep initialized false so attempts might be made again later if applicable
         }
     }
 
-    /**
-     * Load prompt patterns.
-     * These are predefined patterns and suggestions.
-     */
     loadPromptPatterns() {
-        // Simple example patterns
         return {
-            'text': {
-                'general': [
+            text: {
+                general: [
                     { pattern: 'explain', suggestion: 'Be specific about the audience and desired depth' },
                     { pattern: 'write', suggestion: 'Specify tone, length, and format' },
-                    { pattern: 'summarize', suggestion: 'Specify the key points to focus on' }
+                    { pattern: 'summarize', suggestion: 'Specify the key points to focus on' },
+                    { pattern: 'compare', suggestion: 'Define comparison criteria and output format' },
+                    { pattern: 'list', suggestion: 'Specify how many items and level of detail per item' },
+                    { pattern: 'translate', suggestion: 'Specify source and target languages' },
                 ],
-                'completion': [
+                completion: [
                     { pattern: 'continue', suggestion: 'Provide context and desired outcome' },
-                    { pattern: 'finish', suggestion: 'Specify the ending tone and themes' }
+                    { pattern: 'finish', suggestion: 'Specify the ending tone and themes' },
+                    { pattern: 'complete', suggestion: 'Indicate desired length and style consistency' },
                 ],
-                'chat': [
+                chat: [
                     { pattern: 'persona', suggestion: 'Define personality traits and knowledge base' },
-                    { pattern: 'conversation', suggestion: 'Set context and relationship between participants' }
+                    { pattern: 'conversation', suggestion: 'Set context and relationship between participants' },
+                    { pattern: 'roleplay', suggestion: 'Define the scenario, rules, and boundaries' },
                 ],
-                'code': [
+                code: [
                     { pattern: 'function', suggestion: 'Specify language, paradigm, and error handling' },
                     { pattern: 'debug', suggestion: 'Include error messages and expected behavior' },
-                    { pattern: 'optimize', suggestion: 'Define metrics for optimization (speed, memory, etc)' }
-                ]
+                    { pattern: 'optimize', suggestion: 'Define metrics for optimization (speed, memory, etc)' },
+                    { pattern: 'refactor', suggestion: 'Specify goals: readability, performance, or maintainability' },
+                    { pattern: 'api', suggestion: 'Define endpoints, methods, auth, and response format' },
+                    { pattern: 'test', suggestion: 'Specify framework, coverage targets, and edge cases' },
+                ],
             },
-            'image': {
-                'generation': [
+            image: {
+                generation: [
                     { pattern: 'create', suggestion: 'Specify style, lighting, and composition' },
-                    { pattern: 'design', suggestion: 'Include color palette and mood' }
+                    { pattern: 'design', suggestion: 'Include color palette and mood' },
+                    { pattern: 'portrait', suggestion: 'Specify pose, expression, and background' },
+                    { pattern: 'landscape', suggestion: 'Define atmosphere, time of day, and depth' },
                 ],
-                'editing': [
+                editing: [
                     { pattern: 'change', suggestion: 'Be specific about what elements to preserve' },
-                    { pattern: 'remove', suggestion: 'Describe what should replace the removed elements' }
+                    { pattern: 'remove', suggestion: 'Describe what should replace the removed elements' },
+                    { pattern: 'retouch', suggestion: 'Specify intensity and areas to focus on' },
                 ],
-                'variation': [
+                variation: [
                     { pattern: 'similar', suggestion: 'Specify which elements to vary and which to keep' },
-                    { pattern: 'alternative', suggestion: 'Define parameters for variation (color, style, etc)' }
-                ]
-            }
+                    { pattern: 'alternative', suggestion: 'Define parameters for variation (color, style, etc)' },
+                    { pattern: 'version', suggestion: 'Describe how each version should differ' },
+                ],
+            },
         };
     }
 
-    /**
-     * Create a simple rule-based classifier for prompt type detection.
-     */
     createClassifier() {
-        // Simple rule-based system based on keywords
+        const langKeywords = /\b(python|javascript|typescript|java|c\+\+|c#|ruby|go|rust|php|sql|swift|kotlin|html|css|react|vue|angular|node|django|flask|spring)\b/i;
+        const codeVerbs = /\b(code|function|method|class|def|algorithm|sort|filter|implement|refactor|debug|deploy|compile|parse|api|endpoint|script|module|component|hook|query|schema|migration)\b/i;
+        const codePatterns = /\b(write me|create a|build a|implement a|make a|develop a)\b.*\b(code|function|script|program|app|api|server|class|component|module|database|query)\b/i;
+
+        const imageKeywords = /\b(image|picture|photo|illustration|portrait|landscape|render|artwork|scene|painting|drawing|sketch|wallpaper|poster|logo|icon|banner|thumbnail)\b/i;
+        const imageVerbs = /\b(draw|paint|render|visualize|illustrate|depict)\b/i;
+
+        const editKeywords = /\b(edit|retouch|adjust|fix|correct|crop|resize|filter|overlay|touch up|color correct|remove background)\b/i;
+        const variationKeywords = /\b(variation|variant|similar to|alternative|different version|remix|restyle|reimagine)\b/i;
+
+        const chatKeywords = /\b(chat|conversation|roleplay|role-play|persona|act as|you are|pretend|simulate|interview|dialogue|talk to me as)\b/i;
+        const completionKeywords = /\b(continue|finish|complete|extend|carry on|pick up where|next part|keep going|what happens next)\b/i;
+
         return {
             classify: (text) => {
-                // Convert to lowercase for matching
-                const lowerText = text.toLowerCase();
-                
-                // Simple keyword-based classifications
-                if (lowerText.includes('code') || lowerText.includes('function') || lowerText.includes('program')) {
-                    return 'code';
-                } else if (lowerText.includes('chat') || lowerText.includes('conversation')) {
-                    return 'chat';
-                } else if (lowerText.includes('image') || lowerText.includes('picture') || lowerText.includes('photo')) {
-                    // Basic check - might need refinement if medium is already known
-                    return 'generation'; // Default image type
-                } else if (lowerText.includes('continue') || lowerText.includes('finish')) {
-                    return 'completion';
-                } else {
-                    return 'general'; // Default text type
+                const lower = text.toLowerCase();
+
+                if (codePatterns.test(text) || langKeywords.test(text) || codeVerbs.test(lower)) {
+                    return { medium: 'text', type: 'code' };
                 }
-            }
+
+                if (chatKeywords.test(lower)) {
+                    return { medium: 'text', type: 'chat' };
+                }
+
+                if (completionKeywords.test(lower)) {
+                    return { medium: 'text', type: 'completion' };
+                }
+
+                const hasImageContext = imageKeywords.test(lower) || imageVerbs.test(lower);
+
+                if (hasImageContext && variationKeywords.test(lower)) {
+                    return { medium: 'image', type: 'variation' };
+                }
+                if (hasImageContext && editKeywords.test(lower)) {
+                    return { medium: 'image', type: 'editing' };
+                }
+                if (hasImageContext) {
+                    return { medium: 'image', type: 'generation' };
+                }
+
+                return { medium: 'text', type: 'general' };
+            },
         };
     }
 
-    /**
-     * Get suggestions for a prompt based on rules and patterns.
-     * @param {string} prompt - The user's prompt
-     * @param {string} medium - Text or Image
-     * @param {string} type - Prompt type
-     * @returns {Array<string>} - Array of suggestion strings
-     */
     getSuggestions(prompt, medium, type) {
-        // Ensure initialization
         if (!this.initialized) {
             this.init();
-            // If init failed, return a generic suggestion
-            if (!this.initialized) return ['Ensure the suggestion system initialized correctly.']; 
+            if (!this.initialized) return [];
         }
-        
+
         try {
             const suggestions = [];
             const lowerPrompt = prompt.toLowerCase();
-            
-            // Get relevant patterns, falling back to text/general if specific ones don't exist
-            const mediumPatterns = this.promptPatterns[medium] || this.promptPatterns['text'] || {};
-            const typePatterns = mediumPatterns[type] || mediumPatterns['general'] || [];
-            
-            // Add type-specific suggestions based on keyword patterns
-            typePatterns.forEach(({ pattern, suggestion }) => {
-                if (lowerPrompt.includes(pattern.toLowerCase())) {
-                    // Avoid duplicate suggestions
-                    if (!suggestions.includes(suggestion)) {
-                        suggestions.push(suggestion);
-                    }
+
+            const mediumPatterns = this.promptPatterns[medium] || this.promptPatterns.text || {};
+            const typePatterns = mediumPatterns[type] || mediumPatterns.general || [];
+
+            for (const { pattern, suggestion } of typePatterns) {
+                if (lowerPrompt.includes(pattern.toLowerCase()) && !suggestions.includes(suggestion)) {
+                    suggestions.push(suggestion);
                 }
-            });
-            
-            // Add general contextual suggestions
+            }
+
             if (prompt.length < 20) {
-                const suggestion = 'Add more details to get better results';
-                if (!suggestions.includes(suggestion)) suggestions.push(suggestion);
+                const s = 'Add more details to get better results';
+                if (!suggestions.includes(s)) suggestions.push(s);
             }
-            
+
             if (medium === 'image' && !lowerPrompt.includes('style')) {
-                 const suggestion = 'Specify a style (e.g., photorealistic, cartoon, watercolor) for more consistent results';
-                 if (!suggestions.includes(suggestion)) suggestions.push(suggestion);
+                const s = 'Specify a style (e.g., photorealistic, cartoon, watercolor)';
+                if (!suggestions.includes(s)) suggestions.push(s);
             }
-            
+
             if (medium === 'text' && type !== 'chat' && !lowerPrompt.includes('format')) {
-                 const suggestion = 'Specify a format (e.g., paragraph, bullet points, JSON)';
-                 if (!suggestions.includes(suggestion)) suggestions.push(suggestion);
+                const s = 'Specify a format (e.g., paragraph, bullet points, JSON)';
+                if (!suggestions.includes(s)) suggestions.push(s);
             }
 
-            // Limit the number of suggestions to avoid overwhelming the user
-            const MAX_SUGGESTIONS = 5;
-            return suggestions.slice(0, MAX_SUGGESTIONS);
-
+            return suggestions.slice(0, 5);
         } catch (error) {
             console.error('Error generating suggestions:', error);
-            // Return a generic suggestion on error
-            return ['Consider adding more specificity or context to your prompt.'];
+            return [];
         }
     }
 
-    /**
-     * Analyze a prompt to suggest the best type using the simple classifier.
-     * @param {string} prompt - The user's prompt
-     * @returns {Object} - Suggested { medium, type } or null if unable to classify
-     */
     analyzePromptType(prompt) {
-         // Ensure initialization
         if (!this.initialized) {
             this.init();
-             if (!this.initialized) return null; // Init failed
+            if (!this.initialized) return null;
         }
 
         if (!prompt || typeof prompt !== 'string' || prompt.trim().length === 0) {
@@ -182,32 +172,7 @@ class AIPromptHelper {
         }
 
         try {
-            const classifiedType = this.classifier.classify(prompt);
-
-            // Determine medium based on classified type (simple mapping)
-            let suggestedMedium = 'text'; // Default to text
-            if (['generation', 'editing', 'variation'].includes(classifiedType) || prompt.toLowerCase().includes('image')) {
-                 suggestedMedium = 'image';
-            }
-           
-            // Refine type based on medium patterns
-            let suggestedType = 'general'; // Default type within medium
-            if (suggestedMedium === 'image') {
-                if (this.promptPatterns.image && this.promptPatterns.image[classifiedType]) {
-                    suggestedType = classifiedType;
-                } else {
-                    suggestedType = 'generation'; // Fallback image type
-                }
-            } else { // medium is text
-                 if (this.promptPatterns.text && this.promptPatterns.text[classifiedType]) {
-                    suggestedType = classifiedType;
-                } else {
-                    suggestedType = 'general'; // Fallback text type
-                }
-            }
-
-            return { medium: suggestedMedium, type: suggestedType };
-
+            return this.classifier.classify(prompt);
         } catch (error) {
             console.error('Error analyzing prompt type:', error);
             return null;
@@ -215,6 +180,5 @@ class AIPromptHelper {
     }
 }
 
-// Export a single instance
 const aiPromptHelper = new AIPromptHelper();
-export default aiPromptHelper; 
+export default aiPromptHelper;

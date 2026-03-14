@@ -67,11 +67,11 @@ myType: {
 
 ## Adding a New Enhancement Rule
 
-Enhancement rules are embedded in [`js/features/promptEnhancer.js`](js/features/promptEnhancer.js).
+Enhancement factors are defined in `addFactor()` within [`js/features/promptEnhancer.js`](js/features/promptEnhancer.js). Each factor is a function `(prompt) => enhancedPrompt` that checks for existing keywords before appending guidance.
 
-Each rule receives the prompt text and returns an enhanced version (or appended guidance). Follow the existing pattern — keep rules composable and side-effect free.
+Type-specific expansion hints live in `applyExpansionHints()` in the same file — these trigger for short prompts and add targeted suggestions (e.g., "Specify: target audience, word count...").
 
-If the rule is type-specific, gate it on the `medium`/`type` arguments passed to the enhancer.
+Keep rules composable and side-effect free. Gate them on `medium`/`type` arguments.
 
 ---
 

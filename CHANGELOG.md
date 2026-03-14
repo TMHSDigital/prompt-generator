@@ -51,6 +51,13 @@ All notable changes to Prompt Engine are documented here.
 - Three separate `@media (max-width: 768px)` blocks consolidated
 
 ### Changed
+- **Enhancement engine rewritten** — removed boilerplate (generic `context`, `constraints`, `examples` factors are now no-ops); `role` only applied for chat type; smarter `objective` wrapping that respects existing action verbs
+- **Chain-of-thought restructured** — only triggers on multi-step prompts (80+ chars, multiple action sentences); skipped for completion type; appends structured steps instead of prepending redundant scaffolding
+- **Type auto-detection expanded** — `aiSuggestions.js` classifier now recognizes 20+ programming languages, image-specific verbs (draw, paint, render), editing/variation patterns, and phrase combinations; returns `{ medium, type }` directly instead of a bare string
+- **Missing factor implementations added** — creativity, continuity, memory, color, detail, perspective, modification, preservation, blend, diversity, consistency, purpose, elements, focus, strength now produce meaningful guidance instead of silently skipping
+- **Type-specific expansion hints** — short prompts for blog posts, code, and images now get targeted guidance (e.g., "Specify: target audience, approximate word count, and key sections to cover")
+- **Improvement labels cleaned up** — deduplication removes subsumed labels; empty/redundant additions (default temperature, no-op factors) no longer listed
+- **`promptTypes.js` factor lists trimmed** — removed `constraints`, `examples`, `context` from type factor arrays since these no longer produce output
 - **Accent color swapped from indigo to emerald** — all CSS design tokens, README capsule-render banners, badges, and Mermaid diagram styles updated from `#6366f1`/`#818cf8` to `#059669`/`#10b981`
 - **`storageManager.js` rewritten** — from 729-line IndexedDB/localStorage hybrid to ~120-line pure localStorage wrapper with standardized field names (`original`, `enhanced`, `medium`, `type`, `timestamp`)
 - `css/styles.css` completely rewritten with a structured design-token system (CSS custom properties for surface, border, text, accent, spacing, radius, shadow, transition layers)
@@ -63,7 +70,7 @@ All notable changes to Prompt Engine are documented here.
 - `CONTRIBUTING.md` updated with architecture overview, good-first-issues callout, and cleaned-up project tree
 - `main.js` refactored from a monolithic 36KB class to a slim entry point delegating to extracted modules
 - `light-preview.png` and `dark-preview.png` replaced with fresh screenshots of the new UI
-- Service worker cache bumped to `prompt-engine-v4` with Google Fonts URLs added
+- Service worker cache bumped to `prompt-engine-v5` with Google Fonts URLs added
 - `sitemap.xml` lastmod updated to `2026-03-14`
 - `example-prompts.json` `date` field renamed to `timestamp` for consistency
 - Redundant `<script>` tags for transitive modules removed from `index.html` — only `main.js` entry point remains

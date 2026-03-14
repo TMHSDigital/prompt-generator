@@ -31,17 +31,17 @@ export const mediumTypes = {
             general: {
                 name: 'General',
                 description: 'General purpose text generation',
-                factors: ['objective', 'tone', 'format', 'constraints', 'examples']
+                factors: ['objective', 'tone', 'format']
             },
             completion: {
                 name: 'Completion',
                 description: 'Continue or complete existing text',
-                factors: ['creativity', 'format', 'continuity', 'style', 'context']
+                factors: ['creativity', 'format', 'continuity', 'style']
             },
             chat: {
                 name: 'Chat',
                 description: 'Conversational interactions',
-                factors: ['role', 'tone', 'context', 'memory', 'constraints']
+                factors: ['role', 'tone', 'memory']
             },
             code: {
                 name: 'Code',
@@ -125,7 +125,7 @@ export function getBestPractices(medium, type) {
     const mediumPractices = {
         text: {
             general: { useExamples: true },
-            completion: { temperature: 0.9 },
+            completion: { temperature: 0.9, chainOfThought: false },
             chat: { temperature: 0.8 },
             code: { temperature: 0.3 }
         },

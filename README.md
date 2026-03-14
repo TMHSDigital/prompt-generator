@@ -33,10 +33,17 @@
 
 See the difference in one glance:
 
-| Raw prompt | After Prompt Engine |
-|---|---|
-| *"write me python code for sorting"* | **[Temperature: 0.5]** You are an AI assistant specialized in code text generation. Context: This is a code prompt for text generation. Let's break this down into steps: 1. Write me python code for sorting. Now, addressing each point: I want you to write me python code for sorting. Please respond in a professional and clear tone. Please format the output clearly and logically. Include comprehensive documentation and examples. Provide unit tests for the code. Consider adding comments and documentation to the code. Guidance: Consider requesting comments or documentation for the code. |
-| *"cat sitting on a cloud"* | **[Temperature: 0.8]** You are an AI assistant specialized in generation image generation. Context: This is a generation prompt for image generation. I want you to cat sitting on a cloud. Focus on the main subject with clear composition. Ensure balanced composition and visual hierarchy. Optimize lighting for clarity and atmosphere. Convey appropriate mood and atmosphere. Style: Consider specifying an artistic style (e.g., photorealistic, cartoon, painting). Quality: Consider adding quality terms (e.g., 'high resolution', '4k', 'highly detailed'). Composition: Consider specifying composition details (e.g., 'close-up shot', 'wide angle', 'rule of thirds'). |
+**Code prompt:**
+
+> **Raw:** *"write me python code for sorting"*
+>
+> **Enhanced:** [Temperature: 0.3] Write me python code for sorting. Include a brief description of what the code should accomplish. Include clear documentation and inline comments. Provide unit tests covering key scenarios. Follow standard style guidelines for the language.
+
+**Image prompt:**
+
+> **Raw:** *"cat sitting on a cloud"*
+>
+> **Enhanced:** I want you to cat sitting on a cloud. Focus on the main subject with clear composition. Specify an artistic style (e.g., photorealistic, illustration, watercolor). Ensure balanced composition and visual hierarchy. Optimize lighting for clarity and atmosphere. Convey appropriate mood and atmosphere.
 
 ---
 
@@ -57,7 +64,7 @@ Zero dependencies. No build step. No framework. Just vanilla JS with ES modules.
 ## What It Does
 
 - **Transforms vague prompts into structured, high-quality instructions** ready for any AI model
-- **Applies prompt-engineering best practices automatically** — chain-of-thought, temperature hints, format specs, context grounding
+- **Applies prompt-engineering best practices automatically** — chain-of-thought breakdown, temperature hints, format specs, type-specific expansion
 - **Works for text and image models** — ChatGPT, Claude, Gemini, Midjourney, Stable Diffusion, and more
 
 ---
@@ -140,9 +147,9 @@ No build step, no CI, no config — pure static files.
 ```mermaid
 flowchart LR
     A["Your prompt"] --> B["Type detection"]
-    B --> C["Factor application"]
-    C --> D["Chain-of-thought"]
-    D --> E["Best practices"]
+    B --> C["Chain-of-thought"]
+    C --> D["Factor application"]
+    D --> E["Expansion hints"]
     E --> F["Structured output"]
 
     style A fill:#fafaf9,stroke:#d6d3d1,color:#1c1917
