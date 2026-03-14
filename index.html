@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#f8fafc">
+    <meta name="theme-color" content="#fafaf9">
     <meta name="description" content="Transform your AI prompts with best practices and smart enhancements">
     <!-- Open Graph -->
     <meta property="og:title" content="Prompt Engine — Instantly enhance any AI prompt">
@@ -16,113 +16,140 @@
     <meta name="twitter:title" content="Prompt Engine — Instantly enhance any AI prompt">
     <meta name="twitter:description" content="Paste your prompt in, get a structured, specific, AI-ready version out.">
     <meta name="twitter:image" content="https://tmhsdigital.github.io/prompt-generator/dark-preview.png">
-    <title>Prompt Engine - Transform Your Prompts</title>
+    <title>Prompt Engine</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <!-- PWA Support -->
+    <!-- PWA -->
     <link rel="manifest" href="manifest.webmanifest">
-    <!-- Use a favicon from favicon.io as a fallback until custom icons are generated -->
     <link rel="apple-touch-icon" href="https://cdn.jsdelivr.net/gh/favicon-generator/favicon-generator@master/favicons/apple-touch-icon.png">
     <link rel="icon" href="https://cdn.jsdelivr.net/gh/favicon-generator/favicon-generator@master/favicons/favicon.ico">
-    <!-- Preconnect to CDN -->
     <link rel="preconnect" href="https://cdnjs.cloudflare.com">
 </head>
 <body>
-    <div class="container">
-        <header>
-            <div class="feature-buttons">
-                <button id="darkModeBtn" class="feature-btn" title="Toggle Dark Mode" aria-label="Toggle Dark Mode">
-                    <i class="fas fa-moon"></i>
-                </button>
-                <button id="installPwaBtn" class="feature-btn" title="Install App" aria-label="Install App" style="display: none;">
-                    <i class="fas fa-download"></i>
-                </button>
+    <div class="app-shell">
+
+        <!-- Top bar -->
+        <header class="topbar">
+            <div class="topbar-inner">
+                <div class="topbar-brand">
+                    <span class="brand-icon"><i class="fas fa-bolt" aria-hidden="true"></i></span>
+                    <span class="brand-name">Prompt Engine</span>
+                </div>
+                <div class="topbar-actions">
+                    <button id="installPwaBtn" class="icon-btn" title="Install App" aria-label="Install App" style="display: none;">
+                        <i class="fas fa-download" aria-hidden="true"></i>
+                    </button>
+                    <button id="darkModeBtn" class="icon-btn icon-btn--theme" title="Toggle dark mode" aria-label="Toggle dark mode" aria-pressed="false">
+                        <i class="fas fa-moon" aria-hidden="true"></i>
+                    </button>
+                </div>
             </div>
-            <h1>Prompt Engine</h1>
-            <p>Transform your prompts with best practices</p>
         </header>
 
-        <main>
-            <div class="prompt-container">
-                <div class="input-section">
-                    <h2>Original Prompt</h2>
-                    <textarea 
-                        id="originalPrompt" 
-                        placeholder="Enter your prompt here..."
+        <!-- Hero tagline -->
+        <div class="hero-tagline">
+            <p>Instantly improve any AI prompt — paste in, enhance, copy out.</p>
+        </div>
+
+        <main class="main-content">
+
+            <!-- Two-column prompt workspace -->
+            <div class="workspace">
+
+                <!-- Input card -->
+                <section class="card card--input" aria-label="Input prompt">
+                    <div class="card-header">
+                        <h2 class="card-title">Your Prompt</h2>
+                        <div class="type-selectors">
+                            <div class="select-group">
+                                <label for="promptMedium">Medium</label>
+                                <select id="promptMedium" class="form-select" aria-label="Select prompt medium">
+                                    <option value="text">Text</option>
+                                    <option value="image">Image</option>
+                                </select>
+                            </div>
+                            <div class="select-group">
+                                <label for="promptType">Type</label>
+                                <select id="promptType" class="form-select" aria-label="Select prompt type">
+                                    <!-- Dynamically populated -->
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <textarea
+                        id="originalPrompt"
+                        placeholder="Describe what you want the AI to do…"
                         aria-label="Enter your original prompt"
                         data-max-length="2000"
                     ></textarea>
-                    <div class="char-counter" id="charCounter">0/2000</div>
-                    <div class="prompt-type-section">
-                        <div class="select-group">
-                            <label for="promptMedium">Medium</label>
-                            <select id="promptMedium" class="form-select" aria-label="Select prompt medium">
-                                <option value="text">Text</option>
-                                <option value="image">Image</option>
-                            </select>
-                        </div>
-                        <div class="select-group">
-                            <label for="promptType">Type</label>
-                            <select id="promptType" class="form-select" aria-label="Select prompt type">
-                                <!-- Dynamically populated based on selected medium -->
-                            </select>
-                        </div>
-                    </div>
-                    <button id="generateBtn" class="primary-btn">
-                        <i class="fas fa-magic" aria-hidden="true"></i> Enhance Prompt
+                    <div class="char-counter" id="charCounter">0 / 2000</div>
+
+                    <button id="generateBtn" class="btn btn--primary btn--full">
+                        <i class="fas fa-arrow-right" aria-hidden="true"></i>
+                        Enhance Prompt
                     </button>
-                </div>
+                </section>
 
-                <div class="output-section">
-                    <h2>Enhanced Prompt</h2>
+                <!-- Output card -->
+                <section class="card card--output" aria-label="Enhanced prompt output">
+                    <div class="card-header">
+                        <h2 class="card-title">Enhanced Prompt</h2>
+                        <div class="output-actions" role="toolbar" aria-label="Output actions">
+                            <button id="shareBtn" class="icon-btn" title="Share" aria-label="Share prompt">
+                                <i class="fas fa-share-alt" aria-hidden="true"></i>
+                            </button>
+                            <button id="copyBtn" class="icon-btn" title="Copy" aria-label="Copy to clipboard">
+                                <i class="fas fa-copy" aria-hidden="true"></i>
+                            </button>
+                            <button id="saveBtn" class="icon-btn" title="Save" aria-label="Save prompt">
+                                <i class="fas fa-bookmark" aria-hidden="true"></i>
+                            </button>
+                            <button id="exportBtn" class="icon-btn" title="Export history" aria-label="Export prompt history">
+                                <i class="fas fa-file-export" aria-hidden="true"></i>
+                            </button>
+                            <label class="icon-btn" title="Import history" aria-label="Import prompt history">
+                                <i class="fas fa-file-import" aria-hidden="true"></i>
+                                <input type="file" id="importFile" accept=".json,.txt" style="display: none;">
+                            </label>
+                        </div>
+                    </div>
+
                     <div id="enhancedPrompt" class="enhanced-output" aria-live="polite">
-                        <p class="placeholder">Your enhanced prompt will appear here...</p>
+                        <p class="placeholder">Your enhanced prompt will appear here…</p>
                     </div>
-                    <div class="actions">
-                        <button id="shareBtn" class="secondary-btn" title="Share Prompt">
-                            <i class="fas fa-share-alt" aria-hidden="true"></i> Share
-                        </button>
-                        <button id="copyBtn" class="secondary-btn" title="Copy to Clipboard">
-                            <i class="fas fa-copy" aria-hidden="true"></i> Copy
-                        </button>
-                        <button id="saveBtn" class="secondary-btn" title="Save Prompt">
-                            <i class="fas fa-save" aria-hidden="true"></i> Save
-                        </button>
-                        <button id="exportBtn" class="secondary-btn" title="Export Prompt">
-                            <i class="fas fa-file-export" aria-hidden="true"></i> Export
-                        </button>
-                    </div>
-                </div>
-            </div>
 
-            <div class="improvements-section">
-                <h2>Improvements Made</h2>
-                <ul id="improvementsList" aria-label="List of improvements made to the prompt"></ul>
-            </div>
+                    <!-- Improvements inline below output -->
+                    <details class="improvements-details" id="improvementsDetails">
+                        <summary class="improvements-summary">
+                            <i class="fas fa-sparkles" aria-hidden="true"></i>
+                            Improvements applied
+                        </summary>
+                        <ul id="improvementsList" class="improvements-pills" aria-label="List of improvements made to the prompt"></ul>
+                    </details>
+                </section>
 
-            <!-- Import prompt section -->
-            <div class="import-section">
-                <label for="importFile" class="import-label">
-                    <span class="secondary-btn" style="display: inline-block; cursor: pointer;">
-                        <i class="fas fa-file-import" aria-hidden="true"></i> Import Prompts
-                    </span>
-                    <input type="file" id="importFile" accept=".json,.txt" style="display: none;">
-                </label>
-            </div>
+            </div><!-- /workspace -->
+
         </main>
 
-        <!-- Footer Container -->
+        <!-- Footer injected here -->
         <div id="footer-container"></div>
-    </div>
+
+    </div><!-- /app-shell -->
 
     <!-- Saved Prompts Viewer -->
-    <div id="savedPromptsViewer" class="saved-prompts-viewer">
+    <div id="savedPromptsViewer" class="saved-prompts-viewer" role="dialog" aria-modal="true" aria-label="Saved Prompts">
         <div class="saved-prompts-content">
             <div class="saved-prompts-header">
                 <h3>Saved Prompts</h3>
                 <div class="saved-prompts-controls">
-                    <input type="text" id="promptSearchField" placeholder="Search prompts..." aria-label="Search prompts">
-                    <button class="close-viewer-btn" title="Close saved prompts" aria-label="Close saved prompts">
+                    <input type="text" id="promptSearchField" placeholder="Search…" aria-label="Search prompts">
+                    <button class="icon-btn close-viewer-btn" title="Close" aria-label="Close saved prompts">
                         <i class="fas fa-times" aria-hidden="true"></i>
                     </button>
                 </div>
@@ -131,17 +158,17 @@
         </div>
     </div>
 
-    <!-- Notification system -->
+    <!-- Notification -->
     <div id="notification" class="notification" role="alert" aria-live="assertive"></div>
 
-    <!-- Confirmation dialog -->
-    <div id="confirmDialog" class="modal" style="display: none;">
+    <!-- Confirm dialog -->
+    <div id="confirmDialog" class="modal" style="display: none;" role="dialog" aria-modal="true">
         <div class="modal-content">
             <h4 id="confirmTitle">Confirmation</h4>
             <p id="confirmMessage">Are you sure you want to proceed?</p>
             <div class="modal-actions">
-                <button id="confirmCancel" class="secondary-btn">Cancel</button>
-                <button id="confirmOk" class="primary-btn">OK</button>
+                <button id="confirmCancel" class="btn btn--ghost">Cancel</button>
+                <button id="confirmOk" class="btn btn--primary">Confirm</button>
             </div>
         </div>
     </div>
@@ -161,18 +188,16 @@
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./sw.js')
-                    .then(reg => console.log('Service Worker registered'))
+                    .then(() => console.log('Service Worker registered'))
                     .catch(err => console.log('Service Worker registration failed:', err));
             });
         }
 
-        // PWA Installation
         let deferredPrompt;
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
-            // Show the install button
-            document.getElementById('installPwaBtn').style.display = 'inline-block';
+            document.getElementById('installPwaBtn').style.display = 'flex';
         });
 
         document.getElementById('installPwaBtn').addEventListener('click', () => {
@@ -180,7 +205,6 @@
                 deferredPrompt.prompt();
                 deferredPrompt.userChoice.then((choiceResult) => {
                     if (choiceResult.outcome === 'accepted') {
-                        console.log('User accepted the install prompt');
                         document.getElementById('installPwaBtn').style.display = 'none';
                     }
                     deferredPrompt = null;
@@ -189,4 +213,4 @@
         });
     </script>
 </body>
-</html> 
+</html>

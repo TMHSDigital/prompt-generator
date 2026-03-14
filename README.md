@@ -10,7 +10,9 @@
 
 **[→ Try the live demo](https://tmhsdigital.github.io/prompt-generator)**
 
-![Prompt Engine dark mode screenshot](dark-preview.png)
+| Light mode | Dark mode |
+|:---:|:---:|
+| ![Prompt Engine light mode](light-preview.png) | ![Prompt Engine dark mode](dark-preview.png) |
 
 ---
 
@@ -53,8 +55,11 @@
 - QR code generation
 - Direct shareable link
 
-**Quality of Life**
-- Dark / light mode with system preference detection
+**Interface**
+- Redesigned UI — Inter typography, warm-neutral palette, indigo accent
+- Compact sticky topbar with inline dark / light mode toggle
+- Improvements shown as inline pill tags in the output card
+- JetBrains Mono for prompt input/output — clean, readable monospace
 - PWA — installable as a desktop or mobile app
 - Fully offline after first load
 - No login, no backend, no data leaves your browser

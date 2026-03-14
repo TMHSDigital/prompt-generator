@@ -47,7 +47,7 @@ export class PromptValidator {
 
         // Check for potentially problematic characters (less strict than before)
         // Allowed common markdown/formatting characters: *, _, `, #, -, [, ], (, )
-        if (/[<>{}|\]/g.test(prompt)) { 
+        if (/[<>{}|\\]/g.test(prompt)) {
             // Changed from error to warning
             console.warn('Validation warning: Prompt contains potentially problematic characters (<, >, {, }, |, \).');
            // return false; // Don't fail validation for these characters
