@@ -19,6 +19,7 @@ export async function savePrompt(elements, uiFeatures) {
     }
 
     const promptData = {
+        id: Date.now(),
         original: originalText,
         enhanced: enhancedText,
         medium,
@@ -39,6 +40,7 @@ export async function savePrompt(elements, uiFeatures) {
  */
 export function showSavedPrompts(elements, uiFeatures, updatePromptTypes, generateEnhancedPrompt) {
     const viewer = document.getElementById('savedPromptsViewer');
+    if (!viewer) return;
     const listContainer = viewer.querySelector('.saved-prompts-list');
     const savedPrompts = uiFeatures.savedPrompts.getAll();
 
@@ -138,13 +140,14 @@ export function ensureSavedPromptsViewer() {
  */
 export function loadPrompt(elements, prompt, updatePromptTypes, showNotification) {
     elements.originalPrompt.value = prompt.original;
-    elements.promptMedium.value = prompt.medium;
-    updatePromptTypes(prompt.medium);
+    const medium = prompt.medium || 'text';
+    elements.promptMedium.value = medium;
+    updatePromptTypes(medium);
     setTimeout(() => {
-        elements.promptType.value = prompt.type;
+        elements.promptType.value = prompt.type || 'general';
     }, 0);
 
-    elements.enhancedPrompt.innerHTML = prompt.enhanced;
+    elements.enhancedPrompt.textContent = prompt.enhanced;
 
     if (prompt.improvements && Array.isArray(prompt.improvements)) {
         elements.improvementsList.innerHTML = '';

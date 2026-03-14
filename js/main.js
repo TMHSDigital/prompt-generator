@@ -1,5 +1,5 @@
 import { PromptEnhancer } from './features/promptEnhancer.js';
-import { mediumTypes, getTypeInfo, getMediumInfo } from './features/promptTypes.js';
+import { mediumTypes } from './features/promptTypes.js';
 import { uiFeatures } from './features/uiFeatures.js';
 import aiPromptHelper from './features/aiSuggestions.js';
 import storageManager from './features/storageManager.js';
@@ -379,8 +379,10 @@ try {
 
 document.addEventListener('DOMContentLoaded', () => {
     const darkModeBtn = document.getElementById('darkModeBtn');
-    darkModeBtn.classList.add('pulse');
-    setTimeout(() => darkModeBtn.classList.remove('pulse'), 6000);
-    darkModeBtn.addEventListener('mouseenter', () => darkModeBtn.classList.remove('pulse'));
-    darkModeBtn.addEventListener('click', () => darkModeBtn.classList.remove('pulse'));
+    if (darkModeBtn) {
+        darkModeBtn.classList.add('pulse');
+        setTimeout(() => darkModeBtn.classList.remove('pulse'), 6000);
+        darkModeBtn.addEventListener('mouseenter', () => darkModeBtn.classList.remove('pulse'));
+        darkModeBtn.addEventListener('click', () => darkModeBtn.classList.remove('pulse'));
+    }
 });

@@ -1,10 +1,10 @@
 <p align="center">
-  <img src="https://capsule-render.vercel.app/api?type=waving&color=6366f1&height=200&section=header&text=Prompt%20Engine&fontSize=42&fontColor=ffffff&animation=fadeIn&fontAlignY=35&desc=Instantly%20enhance%20any%20AI%20prompt&descSize=18&descAlignY=55" alt="Prompt Engine header" width="100%"/>
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=059669&height=200&section=header&text=Prompt%20Engine&fontSize=42&fontColor=ffffff&animation=fadeIn&fontAlignY=35&desc=Instantly%20enhance%20any%20AI%20prompt&descSize=18&descAlignY=55" alt="Prompt Engine header" width="100%"/>
 </p>
 
 <p align="center">
-  <a href="https://github.com/TMHSDigital/prompt-generator/stargazers"><img src="https://img.shields.io/github/stars/TMHSDigital/prompt-generator?style=for-the-badge&color=6366f1&labelColor=1c1917" alt="Stars"></a>
-  <a href="https://github.com/TMHSDigital/prompt-generator/network/members"><img src="https://img.shields.io/github/forks/TMHSDigital/prompt-generator?style=for-the-badge&color=a78bfa&labelColor=1c1917" alt="Forks"></a>
+  <a href="https://github.com/TMHSDigital/prompt-generator/stargazers"><img src="https://img.shields.io/github/stars/TMHSDigital/prompt-generator?style=for-the-badge&color=059669&labelColor=1c1917" alt="Stars"></a>
+  <a href="https://github.com/TMHSDigital/prompt-generator/network/members"><img src="https://img.shields.io/github/forks/TMHSDigital/prompt-generator?style=for-the-badge&color=34d399&labelColor=1c1917" alt="Forks"></a>
   <a href="https://github.com/TMHSDigital/prompt-generator/commits/main"><img src="https://img.shields.io/github/last-commit/TMHSDigital/prompt-generator?style=for-the-badge&color=22c55e&labelColor=1c1917" alt="Last Commit"></a>
   <a href="LICENSE"><img src="https://img.shields.io/github/license/TMHSDigital/prompt-generator?style=for-the-badge&color=f59e0b&labelColor=1c1917" alt="License"></a>
   <a href="https://tmhsdigital.github.io/prompt-generator"><img src="https://img.shields.io/badge/DEMO-LIVE-brightgreen?style=for-the-badge&color=10b981&labelColor=1c1917" alt="Live Demo"></a>
@@ -95,7 +95,7 @@ Zero dependencies. No build step. No framework. Just vanilla JS with ES modules.
 
 **Interface**
 - Dark-first developer tool aesthetic — Inter + JetBrains Mono typography
-- Warm stone/indigo design system with CSS custom properties
+- Warm stone/emerald design system with CSS custom properties
 - Compact sticky topbar with inline dark/light toggle
 - Improvements shown as collapsible pill tags in the output card
 - PWA — installable as a desktop or mobile app
@@ -146,14 +146,14 @@ flowchart LR
     E --> F["Structured output"]
 
     style A fill:#fafaf9,stroke:#d6d3d1,color:#1c1917
-    style B fill:#eef2ff,stroke:#6366f1,color:#1c1917
-    style C fill:#eef2ff,stroke:#6366f1,color:#1c1917
-    style D fill:#eef2ff,stroke:#6366f1,color:#1c1917
-    style E fill:#eef2ff,stroke:#6366f1,color:#1c1917
+    style B fill:#ecfdf5,stroke:#059669,color:#1c1917
+    style C fill:#ecfdf5,stroke:#059669,color:#1c1917
+    style D fill:#ecfdf5,stroke:#059669,color:#1c1917
+    style E fill:#ecfdf5,stroke:#059669,color:#1c1917
     style F fill:#ecfdf5,stroke:#10b981,color:#1c1917
 ```
 
-Enhancement rules live in [`js/features/enhancementRules.js`](js/features/enhancementRules.js). Prompt types and their factors are defined in [`js/features/promptTypes.js`](js/features/promptTypes.js).
+Enhancement rules are embedded in [`js/features/promptEnhancer.js`](js/features/promptEnhancer.js). Prompt types and their factors are defined in [`js/features/promptTypes.js`](js/features/promptTypes.js).
 
 ---
 
@@ -161,28 +161,27 @@ Enhancement rules live in [`js/features/enhancementRules.js`](js/features/enhanc
 
 ```
 prompt-generator/
-├── index.html                 # App shell
+├── index.html                  # App shell
 ├── css/
-│   └── styles.css             # Design system (CSS custom properties)
+│   └── styles.css              # Design system (CSS custom properties)
 ├── js/
-│   ├── main.js                # Entry point — wires everything together
-│   ├── ui.js                  # Formatting, notifications, dialogs, dark mode
-│   ├── share.js               # Clipboard, platform dialog, share dispatch
-│   ├── storage.js             # Save/load/search/export/import prompts
+│   ├── main.js                 # Entry point — wires everything together
+│   ├── ui.js                   # Formatting, notifications, dialogs, dark mode
+│   ├── share.js                # Clipboard, platform dialog, share dispatch
+│   ├── storage.js              # Save/load/search/export/import prompts
 │   └── features/
-│       ├── promptEnhancer.js  # Core enhancement engine
-│       ├── enhancementRules.js# Enhancement rule definitions
-│       ├── promptTypes.js     # Medium and type definitions
-│       ├── promptValidator.js # Input validation
-│       ├── aiSuggestions.js   # Rule-based suggestion system
-│       ├── shareFeatures.js   # Platform-specific share logic
-│       ├── storageManager.js  # localStorage CRUD wrapper
-│       ├── darkMode.js        # Theme management
-│       ├── savedPrompts.js    # Saved prompts UI
-│       └── uiFeatures.js     # UI feature aggregator
-├── manifest.webmanifest       # PWA manifest
-├── sw.js                      # Service worker (offline support)
-└── example-prompts.json       # Sample prompts for import
+│       ├── promptEnhancer.js   # Core enhancement engine
+│       ├── promptTypes.js      # Medium and type definitions
+│       ├── promptValidator.js  # Input validation
+│       ├── aiSuggestions.js    # Rule-based suggestion system
+│       ├── shareFeatures.js    # Platform-specific share logic
+│       ├── storageManager.js   # localStorage CRUD wrapper
+│       ├── darkMode.js         # Theme management
+│       ├── savedPrompts.js     # Saved prompts UI
+│       └── uiFeatures.js      # UI feature aggregator
+├── manifest.webmanifest        # PWA manifest
+├── sw.js                       # Service worker (offline support)
+└── example-prompts.json        # Sample prompts for import
 ```
 
 ---
@@ -226,4 +225,4 @@ MIT — see [LICENSE](LICENSE).
   <em>Built by <a href="https://github.com/TMHSDigital">TMHS Digital</a></em>
 </p>
 
-<img src="https://capsule-render.vercel.app/api?type=waving&color=6366f1&height=100&section=footer" alt="" width="100%"/>
+<img src="https://capsule-render.vercel.app/api?type=waving&color=059669&height=100&section=footer" alt="" width="100%"/>

@@ -35,7 +35,6 @@ index.html
             ├─ promptEnhancer.js Core enhancement engine
             ├─ promptTypes.js    Medium/type definitions + factors
             ├─ promptValidator.js Input validation + factor detection
-            ├─ enhancementRules.js Rule definitions (add new rules here)
             ├─ aiSuggestions.js  Rule-based suggestion system
             ├─ shareFeatures.js  Platform-specific share + link generation
             ├─ storageManager.js localStorage CRUD wrapper
@@ -62,13 +61,13 @@ myType: {
 }
 ```
 
-4. Open [`js/features/enhancementRules.js`](js/features/enhancementRules.js) and add any type-specific enhancement rules under your new key.
+4. Open [`js/features/promptEnhancer.js`](js/features/promptEnhancer.js) and add any type-specific enhancement logic under your new key.
 
 ---
 
 ## Adding a New Enhancement Rule
 
-Enhancement rules live in [`js/features/enhancementRules.js`](js/features/enhancementRules.js).
+Enhancement rules are embedded in [`js/features/promptEnhancer.js`](js/features/promptEnhancer.js).
 
 Each rule receives the prompt text and returns an enhanced version (or appended guidance). Follow the existing pattern — keep rules composable and side-effect free.
 

@@ -29,6 +29,7 @@ class StorageManager {
     }
 
     async deletePrompt(id) {
+        if (id === undefined || id === null) return false;
         const prompts = this._getPrompts().filter(p => p.id !== id);
         this._setPrompts(prompts);
         return true;

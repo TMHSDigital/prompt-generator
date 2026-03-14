@@ -27,7 +27,6 @@ class AIPromptHelper {
             this.classifier = this.createClassifier();
             
             this.initialized = true;
-            console.log("Prompt suggestion system initialized.");
 
         } catch (error) {
             console.error('Failed to initialize prompt suggestion system:', error);

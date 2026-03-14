@@ -1,7 +1,7 @@
 /* =============================================================================
    PROMPT ENGINE — Design System
    =============================================================================
-   Palette: warm neutrals (Stone scale) + indigo accent
+   Palette: warm neutrals (Stone scale) + emerald accent
    Typography: Inter (UI) + JetBrains Mono (code/prompt output)
    ============================================================================= */
 
@@ -17,22 +17,22 @@
 
     /* Border */
     --border:       #e7e5e4;
-    --border-focus: #6366f1;
+    --border-focus: #059669;
 
     /* Text */
     --text:         #1c1917;
     --text-muted:   #78716c;
     --text-faint:   #a8a29e;
 
-    /* Accent (indigo) */
-    --accent:       #6366f1;
-    --accent-hover: #4f46e5;
-    --accent-dim:   rgba(99, 102, 241, 0.12);
+    /* Accent (emerald) */
+    --accent:       #059669;
+    --accent-hover: #047857;
+    --accent-dim:   rgba(5, 150, 105, 0.12);
 
     /* Status */
     --success:      #10b981;
     --error:        #ef4444;
-    --info:         #6366f1;
+    --info:         #059669;
 
     /* Spacing base unit = 4px */
     --space-1:  0.25rem;
@@ -69,15 +69,15 @@
     --surface-3:    #3c3836;
 
     --border:       #3c3836;
-    --border-focus: #818cf8;
+    --border-focus: #10b981;
 
     --text:         #fafaf9;
     --text-muted:   #a8a29e;
     --text-faint:   #78716c;
 
-    --accent:       #818cf8;
-    --accent-hover: #6366f1;
-    --accent-dim:   rgba(129, 140, 248, 0.12);
+    --accent:       #10b981;
+    --accent-hover: #059669;
+    --accent-dim:   rgba(16, 185, 129, 0.12);
 
     --shadow-sm:  0 1px 2px rgba(0,0,0,0.3);
     --shadow:     0 2px 8px rgba(0,0,0,0.4);
@@ -299,7 +299,7 @@ body {
     color: var(--text);
     width: 100%;
     cursor: pointer;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236366f1' stroke-width='2.5'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23059669' stroke-width='2.5'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 0.4rem center;
     background-size: 1em;
@@ -317,7 +317,7 @@ body {
 }
 
 .dark-mode .form-select {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23818cf8' stroke-width='2.5'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2310b981' stroke-width='2.5'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
 }
 
 /* Output action buttons row */
@@ -333,6 +333,7 @@ body {
 
 /* Base icon button */
 .icon-btn {
+    position: relative;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -725,8 +726,7 @@ body {
 
 /* Modal headings */
 .modal-content h4,
-.saved-prompts-header h3,
-.share-dialog-content h3 {
+.saved-prompts-header h3 {
     font-size: 1rem;
     font-weight: 600;
     color: var(--text);
@@ -913,6 +913,9 @@ body {
    14. SHARE DIALOG
    ----------------------------------------------------------------------------- */
 .share-dialog-content h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text);
     margin-bottom: var(--space-5);
 }
 
@@ -1042,9 +1045,6 @@ body {
 .heart { display: inline-block; animation: heartbeat 2s ease infinite; }
 
 /* Tooltip via title attribute (feature buttons) */
-.icon-btn {
-    position: relative;
-}
 
 .icon-btn::after {
     content: attr(title);

@@ -5,7 +5,8 @@ export const savedPrompts = {
         document.addEventListener('click', (e) => {
             const viewer = document.getElementById('savedPromptsViewer');
             if (viewer && viewer.classList.contains('show')) {
-                if (!viewer.querySelector('.saved-prompts-content').contains(e.target)) {
+                const content = viewer.querySelector('.saved-prompts-content');
+                if (content && !content.contains(e.target)) {
                     viewer.classList.remove('show');
                 }
             }

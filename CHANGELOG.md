@@ -7,13 +7,16 @@ All notable changes to Prompt Engine are documented here.
 ## [Unreleased]
 
 ### Added
-- **Full UI overhaul** — new design system inspired by Linear/Vercel: warm stone palette, indigo accent, Inter + JetBrains Mono typography
+- **Full UI overhaul** — new design system inspired by Linear/Vercel: warm stone palette, emerald accent, Inter + JetBrains Mono typography
 - Sticky topbar with wordmark + dark mode toggle replacing the old centered floating-button header
 - Hero tagline below topbar replacing the generic `<h1>` block
 - Improvements rendered as inline pill tags inside the output card (collapsible `<details>`) — no more separate section below
 - Import button moved into the output card action toolbar (alongside Share, Copy, Save, Export)
 - GitHub link added to footer social links
 - `CONTRIBUTING.md` with local dev setup, architecture overview, how to add prompt types/rules, and PR checklist
+- `LICENSE` file (MIT)
+- `.gitignore` with standard exclusions
+- `.github/PULL_REQUEST_TEMPLATE.md` with lightweight PR checklist
 - Open Graph and Twitter Card meta tags in `index.html` for better link previews
 - `js/ui.js` — extracted UI helpers (notifications, dialogs, formatting, dark mode sync) from `main.js`
 - `js/share.js` — extracted share/clipboard logic from `main.js`
@@ -36,6 +39,10 @@ All notable changes to Prompt Engine are documented here.
 - **CSS share-platforms grid breakpoint** — `grid-template-columns` was set without `display: grid` in the `@media (max-width: 600px)` rule
 - **`uiFeatures.js` cleanup methods** — referenced non-existent properties (`systemThemeQuery`, `handleSystemThemeChange`, `hideViewer`); simplified to no-ops
 - **`storage.js` import result handling** — `importPrompts` returns `{ importedCount, skippedCount }` but was treated as a number
+- **`storageManager.deletePrompt` mass-delete bug** — calling `deletePrompt(undefined)` removed all prompts without IDs; added `null`/`undefined` guard
+- **`savePrompt` missing ID** — prompts saved via the UI were not assigned an `id`, now get `Date.now()` at creation
+- **`loadPrompt` XSS vulnerability** — `innerHTML` used with user-stored text replaced with `textContent`; added medium/type fallbacks for missing fields
+- **Share platform routing ignored** — `shareFeatures.sharePrompt` ignored the `platform` parameter; now routes to correct share URLs (Twitter, LinkedIn, Facebook, WhatsApp, Telegram, Email, copy link)
 - Invalid regex `/[<>{}|\]/g` in `promptValidator.js` causing a `SyntaxError` that blocked app initialization — fixed escape sequence to `/[<>{}|\\]/g`
 - `aiPromptHelper` was imported as `storageManager` in `main.js`, causing a `ReferenceError` on every enhance and type-detect action — corrected both imports
 - Live demo URL in `README.md`, `robots.txt`, and `sitemap.xml` was pointing to the wrong org (`tmhs-digital.github.io/prompt-engine`) — updated to `tmhsdigital.github.io/prompt-generator`
@@ -44,6 +51,7 @@ All notable changes to Prompt Engine are documented here.
 - Three separate `@media (max-width: 768px)` blocks consolidated
 
 ### Changed
+- **Accent color swapped from indigo to emerald** — all CSS design tokens, README capsule-render banners, badges, and Mermaid diagram styles updated from `#6366f1`/`#818cf8` to `#059669`/`#10b981`
 - **`storageManager.js` rewritten** — from 729-line IndexedDB/localStorage hybrid to ~120-line pure localStorage wrapper with standardized field names (`original`, `enhanced`, `medium`, `type`, `timestamp`)
 - `css/styles.css` completely rewritten with a structured design-token system (CSS custom properties for surface, border, text, accent, spacing, radius, shadow, transition layers)
 - Dark mode now uses warm near-black (`#0c0a09`) instead of cold slate — significantly better contrast and more distinctive from light mode
@@ -55,13 +63,24 @@ All notable changes to Prompt Engine are documented here.
 - `CONTRIBUTING.md` updated with architecture overview, good-first-issues callout, and cleaned-up project tree
 - `main.js` refactored from a monolithic 36KB class to a slim entry point delegating to extracted modules
 - `light-preview.png` and `dark-preview.png` replaced with fresh screenshots of the new UI
-- Service worker cache bumped to `prompt-engine-v3` with Google Fonts URLs added
+- Service worker cache bumped to `prompt-engine-v4` with Google Fonts URLs added
 - `sitemap.xml` lastmod updated to `2026-03-14`
+- `example-prompts.json` `date` field renamed to `timestamp` for consistency
+- Redundant `<script>` tags for transitive modules removed from `index.html` — only `main.js` entry point remains
+- Duplicate `.icon-btn` and `.share-dialog-content h3` CSS rules merged
+- Confirm dialog gets `aria-labelledby` / `aria-describedby` attributes
+- Null guards added in `main.js`, `storage.js`, and `savedPrompts.js` to prevent runtime errors when elements are missing
 
 ### Removed
 - `js/bestPractices.js` — dead code, never imported by any module
-- `enhancementRules.js` `<script>` tag from `index.html` — loaded but never imported by any module at runtime
+- `js/features/enhancementRules.js` — orphan module, never imported at runtime
+- `project-overview.md` — severely outdated internal doc
+- `ENHANCEMENTS.md` — outdated internal doc
+- Instagram link from footer
+- Production `console.log` from `aiSuggestions.js`
+- Non-existent PWA icon references from `manifest.webmanifest`
 - Unused `getOptionsForType()` method from `main.js`
+- Unused `getTypeInfo`, `getMediumInfo` imports from `main.js`
 - Unused `getFactors` import from `promptValidator.js`
 
 ---
