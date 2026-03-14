@@ -73,11 +73,12 @@ Zero dependencies. No build step. No framework. Just vanilla JS with ES modules.
 
 | Goal | How Prompt Engine helps |
 |------|------------------------|
-| **ChatGPT / Claude** | Adds role, format, tone, and constraints so the model gives precise answers |
-| **Midjourney / DALL·E** | Expands sparse image ideas with style, lighting, composition, and mood parameters |
-| **Coding assistants** | Structures your request with language, paradigm, error-handling, and test requirements |
-| **Content creation** | Specifies audience, tone, length, and structure so drafts need less editing |
-| **Research & summarization** | Frames depth, perspective, and output format for more useful responses |
+| **ChatGPT / Claude** | Adds role, tone, format, and step-by-step structure so the model gives precise, well-organized answers |
+| **Midjourney / DALL-E / Stable Diffusion** | Expands sparse image ideas with style, lighting, composition, color palette, mood, and detail level |
+| **GitHub Copilot / Cursor / coding LLMs** | Structures requests with language, purpose, documentation, tests, and error-handling guidance |
+| **Blog posts & content** | Suggests target audience, word count, key sections, and tone — so first drafts need less editing |
+| **Image editing & variation** | Adds modification intensity, preservation rules, blend guidance, and consistency parameters |
+| **Research & summarization** | Frames desired depth, output format, and audience level for more actionable responses |
 
 ---
 
